@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/requirements_done"
+    android:padding="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:clickable="true"
+    >
+    <ImageView
+        android:id="@+id/requirements_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/img_back"
+        android:layout_centerVertical="true"
+        />
+
+    <TextView
+        android:id="@+id/rqu_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:fontFamily="@font/charter"
+        android:textColor="?attr/colorPrimaryDark"
+        android:layout_marginLeft="8dp"
+        android:text="Lorem lorem"
+        android:layout_toRightOf="@id/requirements_image"
+        android:layout_toLeftOf="@id/status"
+        />
+    <TextView
+        android:id="@+id/rqu_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:fontFamily="@font/charterblackc"
+        android:textColor="#9C27B0"
+        android:layout_marginLeft="8dp"
+        android:layout_below="@id/rqu_name"
+        android:layout_toRightOf="@id/requirements_image"
+        android:layout_toLeftOf="@id/status"
+        />
+
+    <CheckBox
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:buttonTint="?attr/colorPrimaryDark"
+        android:layout_centerVertical="true"/>
+
+
+
+</RelativeLayout>

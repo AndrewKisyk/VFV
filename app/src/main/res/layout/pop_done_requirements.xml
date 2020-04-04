@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/requirement_layout"
+    android:layout_marginTop="200dp"
+    android:paddingTop="24dp"
+    android:paddingBottom="20dp"
+    >
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/done_requirements_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
+
+    <at.markushi.ui.CircleButton
+        android:id="@+id/add"
+        android:layout_width="74dip"
+        android:layout_height="74dip"
+        android:src="@drawable/ic_check_black_24dp"
+        app:cb_color="?attr/colorPrimaryDark"
+        app:cb_pressedRingWidth="8dip"
+        android:layout_marginRight="8dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+       />
+
+</RelativeLayout>

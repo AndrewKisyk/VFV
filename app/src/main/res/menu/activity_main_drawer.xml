@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+
+        <item
+            android:id="@+id/nav_home"
+            android:title="Змінити вік"
+            android:icon="@drawable/ic_home_black_24dp"/>
+        <item
+            android:id="@+id/nav_progress"
+            android:title="Прогрес"
+            android:icon="@drawable/ic_trending_up_black_24dp"/>
+        <item
+            android:id="@+id/nav_requirements"
+            android:title="Вимоги"
+            android:icon="@drawable/ic_check_black_24dp"/>
+        <item
+            android:id="@+id/nav_reсomendation"
+            android:title="Рекомендації"
+            android:icon="@drawable/muscle"/>
+        <item
+            android:id="@+id/dark_theme"
+            android:title="Чорна тема"
+            android:icon="@drawable/ic_brightness_2_black_24dp"/>
+
+
+</menu>

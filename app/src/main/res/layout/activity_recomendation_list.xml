@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RecomendationListActivity">
+    <com.mxn.soul.flowingdrawer_core.FlowingDrawer
+        android:id="@+id/drawerlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        app:edPosition="1"
+        app:edMenuSize="260dp"
+        app:edMenuBackground="?attr/backgroundE">
+        <RelativeLayout
+            android:id="@+id/background"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:elevation="2dp"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gradienttitle"
+                    android:elevation="2dp">
+
+                    <ImageView
+                        android:layout_width="145dp"
+                        android:layout_height="128dp"
+                        android:layout_alignParentBottom="true"
+                        android:src="@drawable/bigfillcircle" />
+
+                    <ImageView
+                        android:id="@+id/firstsmall"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerInParent="true"
+                        android:layout_margin="8dp"
+                        android:src="@drawable/smallnonefillcircle" />
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_toLeftOf="@id/firstsmall"
+                        android:layout_margin="8dp"
+                        android:src="@drawable/smallnonefillcircle" />
+
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="-200dp"
+                        android:layout_marginLeft="100dp"
+                        android:src="@drawable/bignonefillcircle" />
+
+                    <ImageView
+                        android:id="@+id/settings"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/icon_tuch_ripple"
+                        android:src="@drawable/ic_settings_black_24dp" />
+                    <ImageView
+                        android:id="@+id/back"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_chevron_left_black_24dp"
+                        android:background="@drawable/icon_tuch_ripple"
+                        android:layout_marginTop="5dp"
+                        android:layout_alignParentLeft="true"/>
+                    <TextView
+                        android:id="@+id/top"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Рекомендації"
+                        android:fontFamily="@font/charter"
+                        android:textColor="?attr/backgroundS"
+                        android:textSize="40dp"
+                        android:paddingBottom="12dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Щоб був прогрес в тренуваннях,\nперш за все потрібно тренуватися."
+                        android:fontFamily="@font/charter"
+                        android:textColor="#64ffffff"
+                        android:textSize="18dp"
+                        android:gravity="center|left"
+                        android:layout_alignTop="@id/top"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="20dp"
+                       />
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+                <ScrollView
+                    android:id="@+id/motion"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                       >
+                        <android.support.v7.widget.CardView
+                            android:id="@+id/warm_up"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            app:cardCornerRadius="10dp"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:layout_marginTop="16dp"
+                            >
+                            <ImageView
+                                android:id="@+id/card_back1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="16dp">
+
+                                <ImageView
+                                    android:id="@+id/requirements_image"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:background="@drawable/grad_back"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/heart"/>
+
+                                <LinearLayout
+                                    android:id="@+id/title_block1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="left"
+                                        android:text="Руханка?"
+                                        android:layout_marginLeft="3dp"
+                                        android:textColor="?attr/textcolor"
+                                        android:fontFamily="@font/charter"
+                                        android:textSize="24dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="шлях до ВФВ"
+                                        android:layout_gravity="left"
+                                        android:layout_marginLeft="3dp"
+                                        android:textColor="?attr/secondtext"
+                                        android:fontFamily="@font/charter"
+                                        android:textSize="16dp" />
+                                </LinearLayout>
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <net.igenius.customcheckbox.CustomCheckBox
+                                        android:id="@+id/cardi_check"
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:layout_margin="16dp"
+                                        app:color_checked="@android:color/transparent"
+                                        app:color_tick="@color/colorPrimaryDark"
+                                        app:color_unchecked_stroke="@color/endGrad"
+                                        app:small_tick="false"
+                                        android:layout_toLeftOf="@id/href1"
+                                        android:layout_centerVertical="true"
+                                        android:clickable="false"
+                                   />
+                                    <ImageView
+                                        android:id="@+id/href1"
+                                        android:layout_width="24dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_centerVertical="true"
+                                        android:src="@drawable/next_grad" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+                        </android.support.v7.widget.CardView>
+
+                        <android.support.v7.widget.CardView
+                            android:id="@+id/jump"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            app:cardCornerRadius="10dp"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:layout_marginTop="16dp">
+                            <ImageView
+                                android:id="@+id/card_back2"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="16dp">
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:background="@drawable/grad_back"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/long_jump"/>
+
+                                <LinearLayout
+                                    android:id="@+id/title_block2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="left"
+                                        android:text="Стрибки"
+                                        android:layout_marginLeft="3dp"
+                                        android:textColor="?attr/textcolor"
+                                        android:fontFamily="@font/charter"
+                                        android:textSize="24dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="як літати?"
+                                        android:layout_gravity="left"
+                                        android:layout_marginLeft="3dp"
+                                        android:textColor="?attr/secondtext"
+                                        android:fontFamily="@font/charter"
+                                        android:textSize="16dp" />
+                                </LinearLayout>
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <net.igenius.customcheckbox.CustomCheckBox
+                                        android:id="@+id/jump_check"
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:layout_margin="16dp"
+                                        app:color_checked="@android:color/transparent"
+                                        app:color_tick="@color/colorPrimaryDark"
+                                        app:color_unchecked_stroke="@color/endGrad"
+                                        app:small_tick="false"
+                                        android:layout_toLeftOf="@id/href2"
+                                        android:layout_centerVertical="true"
+                                        android:clickable="false"
+                                        />
+                                    <ImageView
+                                        android:id="@+id/href2"
+                                        android:layout_width="24dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_centerVertical="true"
+                                        android:src="@drawable/next_grad" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+                        </android.support.v7.widget.CardView>
+
+                        <android.support.v7.widget.CardView
+                            android:id="@+id/run"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            app:cardCornerRadius="10dp"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:layout_marginTop="16dp">
+                            <ImageView
+                                android:id="@+id/card_back3"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="16dp">
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:background="@drawable/grad_back"
+                                    android:layout_gravity="center"
+                                    android:padding="5dp"
+                                    android:src="@drawable/run"/>
+
+                                <LinearLayout
+                                    android:id="@+id/title_block4"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="left"
+                                        android:text="Біг"
+                                        android:layout_marginLeft="3dp"
+                                        android:textColor="?attr/textcolor"
+                                        android:fontFamily="@font/charter"
+                                        android:textSize="24dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="без лабіринту"
+                                        android:layout_gravity="left"
+                                        android:layout_marginLeft="3dp"
+                                        android:textColor="?attr/secondtext"
+                                        android:fontFamily="@font/charter"
+                                        android:textSize="16dp" />
+                                </LinearLayout>
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <net.igenius.customcheckbox.CustomCheckBox
+                                        android:id="@+id/run_check"
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:layout_margin="16dp"
+                                        app:color_checked="@android:color/transparent"
+                                        app:color_tick="@color/colorPrimaryDark"
+                                        app:color_unchecked_stroke="@color/endGrad"
+                                        app:small_tick="false"
+                                        android:layout_toLeftOf="@id/href4"
+                                        android:layout_centerVertical="true"
+                                        android:clickable="false"
+                                        />
+                                    <ImageView
+                                        android:id="@+id/href4"
+                                        android:layout_width="24dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_centerVertical="true"
+                                        android:src="@drawable/next_grad" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+                        </android.support.v7.widget.CardView>
+
+                        <android.support.v7.widget.CardView
+                            android:id="@+id/strength"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            app:cardCornerRadius="10dp"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:clickable="true"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="16dp">
+                            <ImageView
+                                android:id="@+id/card_back4"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:padding="16dp">
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:background="@drawable/grad_back"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/weight"/>
+
+                                <LinearLayout
+                                    android:id="@+id/title_block3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="left"
+                                        android:text="Сильно!"
+                                        android:layout_marginLeft="3dp"
+                                        android:textColor="?attr/textcolor"
+                                        android:fontFamily="@font/charter"
+                                        android:textSize="24dp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="як дуб"
+                                        android:layout_gravity="left"
+                                        android:layout_marginLeft="3dp"
+                                        android:fontFamily="@font/charter"
+                                        android:textColor="?attr/secondtext"
+                                        android:textSize="16dp" />
+                                </LinearLayout>
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <net.igenius.customcheckbox.CustomCheckBox
+                                        android:id="@+id/strength_check"
+                                        android:layout_width="24dp"
+                                        android:layout_height="24dp"
+                                        android:layout_margin="16dp"
+                                        app:color_checked="@android:color/transparent"
+                                        app:color_tick="@color/colorPrimaryDark"
+                                        app:color_unchecked_stroke="@color/endGrad"
+                                        android:layout_toLeftOf="@id/href3"
+                                        android:layout_centerVertical="true"
+                                        android:saveEnabled="false"
+                                        />
+                                    <ImageView
+                                        android:id="@+id/href3"
+                                        android:layout_width="24dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentRight="true"
+                                        android:layout_centerVertical="true"
+                                        android:src="@drawable/next_grad" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+                        </android.support.v7.widget.CardView>
+
+                    </LinearLayout>
+                </ScrollView>
+
+            </LinearLayout>
+        </RelativeLayout>
+        <com.mxn.soul.flowingdrawer_core.FlowingMenuLayout
+            android:id="@+id/menulayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:id="@+id/id_container_menu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </com.mxn.soul.flowingdrawer_core.FlowingMenuLayout>
+
+    </com.mxn.soul.flowingdrawer_core.FlowingDrawer>
+</android.support.constraint.ConstraintLayout>
