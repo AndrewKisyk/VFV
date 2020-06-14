@@ -4,6 +4,7 @@
     package="com.plstudio.a123.vfv">
 
     <application
+        android:name=".di.App"
         android:allowBackup="true"
         android:appComponentFactory="whateverString"
         android:icon="@mipmap/ic_launcher"
@@ -17,6 +18,7 @@
             android:name=".RecomendationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"></activity>
+
         <activity
             android:name=".RecomendationListActivity"
             android:screenOrientation="portrait"

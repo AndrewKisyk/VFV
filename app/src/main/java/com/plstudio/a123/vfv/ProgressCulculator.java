@@ -1,59 +1,51 @@
 package com.plstudio.a123.vfv;
 
-import android.content.Context;
-
-import com.plstudio.a123.vfv.datadriven.FileIO;
-import com.plstudio.a123.vfv.model.RequirementsLab;
 import com.plstudio.a123.vfv.model.User;
-
-import java.net.UnknownServiceException;
+import java.util.List;
 
 public class ProgressCulculator {
-    RequirementsLab requirementsLab;
-    Context mcontext;
+    PreferenceUtils preferences;
     User user;
 
-    public ProgressCulculator(Context context){
-        mcontext = context;
-        requirementsLab = RequirementsLab.get(mcontext);
-        user = User.getUser(mcontext);
+    public ProgressCulculator(PreferenceUtils preferenceUtils){
+        user = User.getUser(preferences);
     }
     //stepsView progress
-    public int getAllRes(){
-        int res = compoutTodoResult() + getRecomStatus()/5;
-        if(user.getSex().equals("f") && res == 98)
-            res+=2;
-        if(user.getSex().equals("m") && user.getMax() == 20  && res == 96)
-            res+=4;
-        return res;
+    public int computAllRes(int requirResult, int recomResult){
+        requirResult = compoutTodoResult(requirResult);
+        recomResult = getRecomStatus(recomResult)/5;
+        int allRes = requirResult + recomResult;
+        if(user.getSex().equals("f") && allRes == 98)
+            allRes+=2;
+        if(user.getSex().equals("m") && user.getMax() == 20  && allRes == 96)
+            allRes+=4;
+        return allRes;
     }
     //todos
-    public int getToDoRes(){
-        return getResult()*100/user.getMax();
+    public int getToDoRes(int res){
+        return res*100/user.getMax();
     }
+
     //recomendation
-    public int getRecomStatus(){
-        String ret = new FileIO(mcontext).readFromFile("reading.txt", true);
-        String[] temp =  ret.split(" ");
-        return temp.length * 25 - 25;
+    public int getRecomStatus(int recomendationResult){
+        return recomendationResult * 25 - 25;
     }
     //check if Vfv is done
-    public boolean compareAllVfvRes(){
-        if(getGroupResult("1") < 2)
+    public boolean compareAllVfvRes(List<Integer> groupsRes){
+        if(groupsRes.get(1) < 2)
             return false;
-        if(getGroupResult("2") < 2)
+        if(groupsRes.get(2) < 2)
             return false;
-        if(getGroupResult("3") < 2)
+        if(groupsRes.get(3) < 2)
             return false;
-        if(getGroupResult("4") < 3)
+        if(groupsRes.get(4) < 3)
             return false;
-        if(getGroupResult("5") < 3)
+        if(groupsRes.get(5) < 3)
             return false;
         return true;
     }
 
-    private int compoutTodoResult(){
-        int res = getResult();
+    private int compoutTodoResult(int res){
         if(res <= user.getMin()) {
             res *= Math.round(60 / user.getMin());
         } else {
@@ -62,14 +54,5 @@ public class ProgressCulculator {
         }
         return res;
     }
-    private int getResult(){
-        return  requirementsLab.getRequirements("1").size();
-    }
 
-    private int getGroupResult(String group){
-        if(group != null)
-            return requirementsLab.getRequirements(group, "1").size();
-        else
-            return requirementsLab.getRequirements("1").size();
-    }
 }

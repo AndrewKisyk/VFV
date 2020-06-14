@@ -24,66 +24,57 @@ import java.io.OutputStreamWriter;
 
 
 public class MenuListFragment extends Fragment {
-    public static final String APP_PREFERENCES = "mysettings";
-    public static final String APP_PREFERENCES_THEME = "theme";
     private NavigationView vNavigation;
-    private SharedPreferences mSettings;
-
+    private PreferenceUtils mSettings;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_menu_list, container, false);
 
-        mSettings = getActivity().getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-
+        mSettings = new PreferenceUtils(getContext());
         vNavigation = (NavigationView) view.findViewById(R.id.vNavigation);
 
         changeNameAppear();
-        vNavigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                int id = item.getItemId();
-                Intent intent = null;
-                switch (id) {
-                    case R.id.nav_home:
-                        makeUserDataEmpty(getContext());
-                        intent = new Intent(getActivity(), AutorizationActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.nav_progress:
-                        intent = new Intent(getActivity(), MainActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.nav_requirements:
-                        intent = new Intent(getActivity(), GroupsActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.nav_reсomendation:
-                        intent = new Intent(getActivity(), RecomendationListActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.dark_theme:
-                        changThemeSetting();
-                        reloadActivity();
-                        break;
-                }
-
-                return true;
+        vNavigation.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            Intent intent;
+            switch (id) {
+                case R.id.nav_home:
+                    makeUserDataEmpty(getContext());
+                    intent = new Intent(getActivity(), AutorizationActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.nav_progress:
+                    intent = new Intent(getActivity(), MainActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.nav_requirements:
+                    intent = new Intent(getActivity(), GroupsActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.nav_reсomendation:
+                    intent = new Intent(getActivity(), RecomendationListActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.dark_theme:
+                    changThemeSetting();
+                    reloadActivity();
+                    break;
             }
+
+            return true;
         }) ;
         return view;
     }
     private void changThemeSetting() {
-        SharedPreferences.Editor editor = mSettings.edit();
-        if (mSettings.getString(APP_PREFERENCES_THEME, "theme").equals("dark")) {
-            editor.putString(APP_PREFERENCES_THEME, "light");
-        } else {
-            editor.putString(APP_PREFERENCES_THEME, "dark");
-        }
-        editor.apply();
+        if (mSettings.getTheme().equals("dark"))
+            mSettings.setTheme("light");
+        else
+            mSettings.setTheme("dark");
+
     }
     private void changeNameAppear(){
-        if(mSettings.getString(APP_PREFERENCES_THEME, "theme").equals("dark")) {
+        if(mSettings.getTheme().equals("dark")) {
             vNavigation.setItemTextColor(ColorStateList.valueOf(getResources().getColor(R.color.white)));
             vNavigation.setItemIconTintList(ColorStateList.valueOf(getResources().getColor(R.color.second_white)));
             vNavigation.getMenu().getItem(4).setIcon(R.drawable.ic_sunny_black_24dp);

@@ -2,6 +2,7 @@ package com.plstudio.a123.vfv.model;
 
 import android.content.Context;
 
+import com.plstudio.a123.vfv.PreferenceUtils;
 import com.plstudio.a123.vfv.datadriven.FileIO;
 
 public class User {
@@ -9,17 +10,18 @@ public class User {
     private String sex;
     private String age;
     private int min, max = 1;
+    private PreferenceUtils preferences;
 
-    public static User getUser(Context context){
+    public static User getUser(PreferenceUtils preferences){
         if(user == null)
-            user = new User(context);
+            user = new User(preferences);
         return user;
     }
 
-    private User(Context context){
-        String s =  new FileIO(context).readFromFile("user.txt", false);
-        age = s.substring(0,2);
-        sex = s.substring(2);
+    private User(PreferenceUtils preferences){
+        this.preferences = preferences;
+        age = preferences.getUserAge();
+        sex = preferences.getUserSex();
 
         setMax();
         setMin();

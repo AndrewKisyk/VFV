@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.plstudio.a123.vfv.PreferenceUtils;
 import com.plstudio.a123.vfv.database.RequirementsBaseHelper;
 import com.plstudio.a123.vfv.database.RequirementsCursorWrapper;
 import com.plstudio.a123.vfv.database.RequirementsDbSchema;
@@ -30,7 +31,7 @@ public class RequirementsLab {
         if(sRequirementsLab == null) {
             sRequirementsLab = new RequirementsLab(context);
         }
-        user = User.getUser(context);
+        user = User.getUser(new PreferenceUtils(context));
         return sRequirementsLab;
     }
 
@@ -96,6 +97,7 @@ public class RequirementsLab {
         }
         return l_requirements;
     }
+
     public  void doRequirement(Requirement requirement, String status_to_set){
         ContentValues values = getContentValues(requirement, status_to_set);
 

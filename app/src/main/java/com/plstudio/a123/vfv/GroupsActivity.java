@@ -6,20 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.LayoutAnimationController;
+
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
+
 import android.widget.TextView;
 
 import com.plstudio.a123.vfv.model.RequirementsLab;
@@ -27,31 +22,20 @@ import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
 import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
 import com.plstudio.a123.vfv.model.User;
 
-import java.util.ArrayList;
 
-import static com.plstudio.a123.vfv.MainActivity.APP_PREFERENCES;
+
 
 public class GroupsActivity extends AppCompatActivity {
-    private ImageView back;
-    private ImageView setting;
+    private ImageView back, setting;
     private FlowingDrawer mDrawer;
     private CardView title_card;
 
-    private CardView g_1;
-    private CardView g_2;
-    private CardView g_3;
-    private CardView g_4;
-    private CardView g_5;
-    private TextView g1_counter;
-    private TextView g2_counter;
-    private TextView g3_counter;
-    private TextView g4_counter;
-    private TextView g5_counter;
-    private TextView all_counter;
+    private CardView g_1, g_2, g_3, g_4, g_5;
+    private TextView g1_counter, g2_counter, g3_counter, g4_counter, g5_counter, all_counter;
     private RelativeLayout background;
-    RequirementsLab requirementsLab;
+    private RequirementsLab requirementsLab;
     private SharedPreferences mSettings;
-    LinearLayout layout;
+    private LinearLayout layout;
 
     public static final String APP_PREFERENCES = "mysettings";
     public static final String APP_PREFERENCES_THEME = "theme";
@@ -211,7 +195,7 @@ public class GroupsActivity extends AppCompatActivity {
         g3_counter.setText(String.valueOf(getGroupResult("3"))+"/2");
         g4_counter.setText(String.valueOf(getGroupResult("4"))+"/3");
         g5_counter.setText(String.valueOf(getGroupResult("5"))+"/3");
-        all_counter.setText(String.valueOf("виконано: " + getGroupResult(null))+"/" + User.getUser(this).getMax());
+        all_counter.setText(String.valueOf("виконано: " + getGroupResult(null))+"/" + User.getUser(new PreferenceUtils(this)).getMax());
     }
 
     private int getGroupResult(String group){
