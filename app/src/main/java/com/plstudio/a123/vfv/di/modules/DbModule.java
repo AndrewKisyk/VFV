@@ -2,9 +2,8 @@ package com.plstudio.a123.vfv.di.modules;
 
 import android.content.Context;
 
-import com.plstudio.a123.vfv.database.RequirementsBaseHelper;
-import com.plstudio.a123.vfv.di.AppScope;
-import com.plstudio.a123.vfv.model.RequirementsLab;
+import com.plstudio.a123.vfv.helpers.RequirementsBaseHelper;
+import com.plstudio.a123.vfv.helpers.RequirementsLab;
 
 import javax.inject.Singleton;
 

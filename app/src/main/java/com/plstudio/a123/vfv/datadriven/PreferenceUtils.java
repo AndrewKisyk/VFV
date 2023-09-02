@@ -1,4 +1,4 @@
-package com.plstudio.a123.vfv;
+package com.plstudio.a123.vfv.datadriven;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -42,8 +42,12 @@ public class PreferenceUtils {
         return mSettings.getString(APP_PREFERENCES_THEME, "");
     }
 
+    public boolean checkDarkThem(){
+        if(getTheme().equals("dark"))
+            return true;
+        return false;
+    }
     public String getToken(){
-
         return getUserSex() +""+ getUserAge();
     }
 

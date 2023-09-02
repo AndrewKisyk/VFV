@@ -1,9 +1,6 @@
 package com.plstudio.a123.vfv.model;
 
-import android.content.Context;
-
-import com.plstudio.a123.vfv.PreferenceUtils;
-import com.plstudio.a123.vfv.datadriven.FileIO;
+import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
 
 public class User {
     private static User user;

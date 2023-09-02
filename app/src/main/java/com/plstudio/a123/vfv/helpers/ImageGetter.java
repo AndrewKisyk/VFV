@@ -1,4 +1,4 @@
-package com.plstudio.a123.vfv;
+package com.plstudio.a123.vfv.helpers;
 
 import android.content.Context;
 import android.content.res.Resources;

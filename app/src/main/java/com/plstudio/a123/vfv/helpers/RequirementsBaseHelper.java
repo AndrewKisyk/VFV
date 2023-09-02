@@ -1,4 +1,4 @@
-package com.plstudio.a123.vfv.database;
+package com.plstudio.a123.vfv.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.plstudio.a123.vfv.R;
+import com.plstudio.a123.vfv.database.RequirementsDbSchema;
 import com.plstudio.a123.vfv.model.Requirement;
 
 import java.io.BufferedReader;

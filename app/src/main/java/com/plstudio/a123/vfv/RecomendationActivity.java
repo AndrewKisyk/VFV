@@ -10,14 +10,10 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.plstudio.a123.vfv.datadriven.FileIO;
-
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import com.plstudio.a123.vfv.helpers.ImageGetter;
 
 public class RecomendationActivity extends AppCompatActivity {
     private final String DEBUG_TAG = "RECOMEND_LIST: ";

@@ -2,7 +2,6 @@ package com.plstudio.a123.vfv;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -12,16 +11,14 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.plstudio.a123.vfv.model.Requirement;
-import com.plstudio.a123.vfv.model.RequirementsLab;
+import com.plstudio.a123.vfv.helpers.RequirementsLab;
 import com.plstudio.a123.vfv.recyclerview.RecyclerViewListener;
 import com.plstudio.a123.vfv.recyclerview.RequirementsAdapter;
 

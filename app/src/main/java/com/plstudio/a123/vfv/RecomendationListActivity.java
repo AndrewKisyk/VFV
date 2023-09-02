@@ -1,7 +1,5 @@
 package com.plstudio.a123.vfv;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +17,7 @@ import android.widget.ScrollView;
 import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
 import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
 import com.plstudio.a123.vfv.datadriven.FileIO;
+import com.plstudio.a123.vfv.fragments.MenuListFragment;
 
 
 import net.igenius.customcheckbox.CustomCheckBox;
@@ -74,12 +73,9 @@ public class RecomendationListActivity extends AppCompatActivity {
         setTick();
     }
     private void animAllCards() {
-        CardAnimator c = new CardAnimator();
-        c.cardMainAnim(title);
-        c.cardAnim(strength, 0);
-        c.cardAnim(running, 100);
-        c.cardAnim(jump, 200);
-        c.cardAnim(warmup, 300);
+    /*    CardAnimator c = new CardAnimator(this);
+        c.cardMainAnim(title);*/
+
     }
 
     public void initListeners(){

@@ -1,7 +1,6 @@
 package com.plstudio.a123.vfv.fragments;
 
 import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 
@@ -15,70 +14,88 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.DecelerateInterpolator;
+
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
 
-import com.plstudio.a123.vfv.PreferenceUtils;
+import com.plstudio.a123.vfv.animation.AnimationVars;
+
+import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
 import com.plstudio.a123.vfv.R;
 
+import com.plstudio.a123.vfv.animation.CardAnimator;
+import com.plstudio.a123.vfv.animation.FragmentCloseAnimation;
 import com.plstudio.a123.vfv.darkthem.DarkThemeCreator;
 import com.plstudio.a123.vfv.datadriven.FileIO;
 import com.plstudio.a123.vfv.di.App;
+import com.plstudio.a123.vfv.interfaces.FragmentNavigator;
 import com.plstudio.a123.vfv.interfaces.MainContract;
 import com.plstudio.a123.vfv.interfaces.ThemeCreatable;
-import com.plstudio.a123.vfv.model.RequirementsLab;
-import com.plstudio.a123.vfv.model.User;
+import com.plstudio.a123.vfv.helpers.RequirementsLab;
 import com.plstudio.a123.vfv.presenters.MainActivityPresenter;
 import com.plstudio.a123.vfv.view.StepsView;
 
 import javax.inject.Inject;
 
 
-public class MainFragment extends Fragment implements ThemeCreatable, MainContract.View {
+public class MainFragment extends Fragment implements ThemeCreatable, MainContract.View, FragmentCloseAnimation {
     private RelativeLayout background;
     private StepsView stepsView;
     private ProgressBar todo_stepsView, recomendation_Prog;
     private TextView todo_counter, recomendation_counter, vfv_done;
-    private ImageView setting, title, card_back1, card_back2;
+    private ImageView setting, title, card_back1, card_back2, sunImageView;
     private FlowingDrawer mDrawer;
-    private CardView requirements, recomendation;
+    private CardView requirements, recomendation, title_card;;
     private static final String TAG = "MainActivity";
-    private static final long GAUGE_ANIMATION_DURATION = 5000;
-    private static final TimeInterpolator GAUGE_ANIMATION_INTERPOLATOR = new DecelerateInterpolator(2);
+    private MainActivityPresenter presenter;
+
     @Inject
     PreferenceUtils preferenceUtils;
     @Inject
-    User user;
-    private MainActivityPresenter presenter;
-    @Inject
     RequirementsLab requirementsLab;
+    @Inject
+    CardAnimator cardAnimation;
+    private boolean wasStoped = false;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        initView(view);
-
         App.getComponent().injectMainFragment(this);
+        initView(view);
+        setUpDarkTheme(preferenceUtils.checkDarkThem(), getContext());
+
         presenter = new MainActivityPresenter();
-        presenter.init(this,preferenceUtils, requirementsLab, new FileIO(getContext()));
+        presenter.init(this, preferenceUtils, requirementsLab, new FileIO(getContext()));
         presenter.showAllProgress();
 
         initListeners();
 
-        setUpDarkTheme(presenter.checkDarkThem(), getContext());
-
         animation(view);
+        cardAnimation.startCardFragment(title_card, getCards());
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+       // Log.d(TAG, "Start");
+
     }
 
     private void initView(View view){
         background = (RelativeLayout) view.findViewById(R.id.background);
-        mDrawer = (FlowingDrawer) view.findViewById(R.id.drawerlayout);
+        mDrawer = (FlowingDrawer) getActivity().findViewById(R.id.drawerlayout);
         stepsView = (StepsView) view.findViewById(R.id.steps);
         todo_stepsView = (ProgressBar) view.findViewById(R.id.todo_progressBar);
         recomendation_Prog = (ProgressBar) view.findViewById(R.id.recomendation_progressBar);
@@ -88,19 +105,18 @@ public class MainFragment extends Fragment implements ThemeCreatable, MainContra
         title = (ImageView) view.findViewById(R.id.title);
         card_back1 = (ImageView) view.findViewById(R.id.card_back1);
         card_back2 = (ImageView) view.findViewById(R.id.card_back2);
+        sunImageView = (ImageView) view.findViewById(R.id.sun);
 
+        title_card = (CardView) view.findViewById(R.id.card_view);
         requirements = (CardView) view.findViewById(R.id.nav_requirements);
-        requirements.setRadius(20);
-
         recomendation = (CardView) view.findViewById(R.id.nav_reсomendation);
-        recomendation.setRadius(20);
 
         vfv_done = (TextView) view.findViewById(R.id.vfv_done);
         initStepsView(stepsView);
 
     }
+
     private void animation(View view){
-        ImageView sunImageView = (ImageView) view.findViewById(R.id.sun);
         Animation sunRiseAnimation = AnimationUtils.loadAnimation(view.getContext(), R.anim.sun_rise);
         sunImageView.startAnimation(sunRiseAnimation);
 
@@ -112,27 +128,13 @@ public class MainFragment extends Fragment implements ThemeCreatable, MainContra
         gradient.setOneShot(true);
         gradient.start();
 
-
-        cardsAnimation(recomendation, 0);
-        cardsAnimation(requirements, 200);
-
     }
 
-    private void cardsAnimation(CardView card, int delay){
-        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.liear_layout_anim);
-        animation.setDuration(1000);
-        animation.setStartOffset(delay);
-        card.setAnimation(animation);
-        card.setVisibility(View.VISIBLE);
-        card.animate();
-
-        animation.start();
-    }
 
     private void progressBarAnim(ProgressBar view, int res){
         ObjectAnimator animator = ObjectAnimator.ofInt(view, "progress", 0, res);
-        animator.setInterpolator(GAUGE_ANIMATION_INTERPOLATOR);
-        animator.setDuration(GAUGE_ANIMATION_DURATION);
+        animator.setInterpolator(AnimationVars.GAUGE_ANIMATION_INTERPOLATOR);
+        animator.setDuration(AnimationVars.GAUGE_ANIMATION_DURATION);
         animator.start();
     }
 
@@ -140,8 +142,8 @@ public class MainFragment extends Fragment implements ThemeCreatable, MainContra
         ValueAnimator count_animator = new ValueAnimator();
         count_animator .setObjectValues(0, res);
         count_animator.addUpdateListener(animation -> count.setText(String.valueOf(animation.getAnimatedValue())));
-        count_animator.setInterpolator(GAUGE_ANIMATION_INTERPOLATOR);
-        count_animator.setDuration(GAUGE_ANIMATION_DURATION);;
+        count_animator.setInterpolator(AnimationVars.GAUGE_ANIMATION_INTERPOLATOR);
+        count_animator.setDuration(AnimationVars.GAUGE_ANIMATION_DURATION);;
         count_animator.start();
     }
 
@@ -169,9 +171,13 @@ public class MainFragment extends Fragment implements ThemeCreatable, MainContra
     }
 
     private void initListeners(){
+
         FragmentManager fm = getFragmentManager();
         requirements.setOnClickListener(view -> {
-
+                    cardAnimation.endCardFragment(title_card, getCards(), ()->fm.beginTransaction()
+                            .replace(R.id.fragment_holder, new GroupsFragment())
+                            .addToBackStack(MainFragment.class.getName())
+                            .commit());
         });
 
         recomendation.setOnClickListener(view -> {
@@ -179,9 +185,7 @@ public class MainFragment extends Fragment implements ThemeCreatable, MainContra
         });
 
         final Animation shakeAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
-        vfv_done.setOnClickListener(view -> {
-            vfv_done.startAnimation(shakeAnimation);
-        });
+        vfv_done.setOnClickListener(view -> vfv_done.startAnimation(shakeAnimation));
 
         setting.setOnClickListener(event -> mDrawer.toggleMenu());
 
@@ -209,7 +213,7 @@ public class MainFragment extends Fragment implements ThemeCreatable, MainContra
     }
 
     @Override
-    public CardView[] getCardCorners() {
+    public CardView[] getCards() {
         CardView cards[] = {requirements, recomendation};
         return cards;
     }
@@ -234,5 +238,11 @@ public class MainFragment extends Fragment implements ThemeCreatable, MainContra
     public void setRecomendationProgress(int res) {
         progressBarAnim(recomendation_Prog, res);
         countAnim(recomendation_counter, res);
+    }
+
+    @Override
+    public void EndAnimation(FragmentNavigator fragmentNavigator) {
+        cardAnimation.endCardFragment(title_card, getCards(), fragmentNavigator);
+
     }
 }

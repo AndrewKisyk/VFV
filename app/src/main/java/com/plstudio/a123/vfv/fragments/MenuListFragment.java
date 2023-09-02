@@ -1,23 +1,25 @@
-package com.plstudio.a123.vfv;
+package com.plstudio.a123.vfv.fragments;
 
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import android.support.design.widget.NavigationView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.support.v4.app.Fragment;
 
-import com.plstudio.a123.vfv.model.RequirementsLab;
-import com.plstudio.a123.vfv.model.User;
+import com.plstudio.a123.vfv.AutorizationActivity;
+import com.plstudio.a123.vfv.MainActivity;
+import com.plstudio.a123.vfv.R;
+import com.plstudio.a123.vfv.RecomendationListActivity;
+import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
+import com.plstudio.a123.vfv.helpers.RequirementsLab;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -49,8 +51,8 @@ public class MenuListFragment extends Fragment {
                     startActivity(intent);
                     break;
                 case R.id.nav_requirements:
-                    intent = new Intent(getActivity(), GroupsActivity.class);
-                    startActivity(intent);
+                    //intent = new Intent(getActivity(), GroupsActivity.class);
+                   // startActivity(intent);
                     break;
                 case R.id.nav_reсomendation:
                     intent = new Intent(getActivity(), RecomendationListActivity.class);

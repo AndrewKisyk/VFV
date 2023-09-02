@@ -2,7 +2,9 @@ package com.plstudio.a123.vfv.di.modules;
 
 import android.content.Context;
 
-import com.plstudio.a123.vfv.PreferenceUtils;
+
+import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
+import com.plstudio.a123.vfv.animation.CardAnimator;
 import com.plstudio.a123.vfv.di.AppScope;
 import com.plstudio.a123.vfv.model.User;
 
@@ -39,5 +41,6 @@ public class AppModule {
     Context provideContext() {
         return context;
     }
+
 
 }

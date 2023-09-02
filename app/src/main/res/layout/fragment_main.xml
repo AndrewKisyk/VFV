@@ -95,10 +95,7 @@
                             android:indeterminate="false"
                             android:max="100"
                             android:progressDrawable="@drawable/horizontalstep" />
-
-
                     </RelativeLayout>
-
                 </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.CardView
@@ -106,6 +103,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="10dp"
                     android:layout_marginTop="16dp">
                     <ImageView
                         android:id="@+id/card_back1"
@@ -191,6 +189,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="10dp"
                     android:layout_marginTop="16dp"
                     >
                     <ImageView
@@ -272,6 +271,7 @@
 
 
                 </android.support.v7.widget.CardView>
+
             </LinearLayout>
         </RelativeLayout>
 

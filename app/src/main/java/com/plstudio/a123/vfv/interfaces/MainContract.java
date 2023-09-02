@@ -3,12 +3,10 @@ package com.plstudio.a123.vfv.interfaces;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.plstudio.a123.vfv.PreferenceUtils;
+import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
 import com.plstudio.a123.vfv.datadriven.FileIO;
-import com.plstudio.a123.vfv.model.RequirementsLab;
+import com.plstudio.a123.vfv.helpers.RequirementsLab;
 
-import io.reactivex.rxjava3.core.Maybe;
-import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 
 public interface MainContract {
@@ -26,8 +24,6 @@ public interface MainContract {
                       @NonNull PreferenceUtils preferences,
                       @NonNull RequirementsLab requremntsLab,
                       @NonNull FileIO recomendations);
-
-            boolean checkDarkThem();
 
             //getting data
             Single<Integer> getDoneRequirements();

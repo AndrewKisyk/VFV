@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 
+import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
 import com.plstudio.a123.vfv.di.App;
 import com.plstudio.a123.vfv.interfaces.UserContract;
 
@@ -27,7 +28,8 @@ public class AutorizationActivity extends AppCompatActivity implements UserContr
     private ConstraintLayout container;
     private AnimationDrawable anim;
     private AutorizationPresenter presenter;
-    @Inject PreferenceUtils preferenceUtils;
+    @Inject
+    PreferenceUtils preferenceUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

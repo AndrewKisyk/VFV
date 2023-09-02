@@ -9,6 +9,6 @@ public interface ThemeCreatable {
     ImageView[] getCardsBackgrounds();
     ImageView getSettingIcon();
     ImageView getBackIcon();
-    CardView[] getCardCorners();
+    CardView[] getCards();
 
 }

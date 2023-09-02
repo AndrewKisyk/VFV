@@ -1,4 +1,4 @@
-package com.plstudio.a123.vfv.model;
+package com.plstudio.a123.vfv.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,16 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.plstudio.a123.vfv.PreferenceUtils;
-import com.plstudio.a123.vfv.database.RequirementsBaseHelper;
+import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
 import com.plstudio.a123.vfv.database.RequirementsCursorWrapper;
 import com.plstudio.a123.vfv.database.RequirementsDbSchema;
+import com.plstudio.a123.vfv.model.Requirement;
+import com.plstudio.a123.vfv.model.User;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +93,8 @@ public class RequirementsLab {
         }
         return l_requirements;
     }
+    public int getGroupResult(String group) { return getRequirements(group, "1").size(); }
+    public int getAllDoneResult(){ return getRequirements("1").size(); }
 
     public  void doRequirement(Requirement requirement, String status_to_set){
         ContentValues values = getContentValues(requirement, status_to_set);

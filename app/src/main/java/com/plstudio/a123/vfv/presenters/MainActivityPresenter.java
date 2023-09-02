@@ -1,18 +1,17 @@
 package com.plstudio.a123.vfv.presenters;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.plstudio.a123.vfv.PreferenceUtils;
-import com.plstudio.a123.vfv.ProgressCulculator;
+import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
+import com.plstudio.a123.vfv.helpers.ProgressCulculator;
 import com.plstudio.a123.vfv.datadriven.FileIO;
 import com.plstudio.a123.vfv.interfaces.MainContract;
-import com.plstudio.a123.vfv.model.RequirementsLab;
+import com.plstudio.a123.vfv.helpers.RequirementsLab;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -23,7 +22,7 @@ public class MainActivityPresenter extends PresenterBase<MainContract.View> impl
     ProgressCulculator calculator;
     RequirementsLab requirementsLab;
     FileIO recomendations;
-
+    private CompositeDisposable subscriptions;
 
     @Override
     public void init(@NonNull MainContract.View authView,
@@ -35,13 +34,7 @@ public class MainActivityPresenter extends PresenterBase<MainContract.View> impl
         this.recomendations = recomendations;
         mView = authView;
         calculator = new ProgressCulculator(preferences);
-    }
-
-    @Override
-    public boolean checkDarkThem() {
-        if(preferences.getTheme().equals("dark"))
-            return true;
-        return false;
+        this.subscriptions = new CompositeDisposable();
     }
 
     @Override
@@ -56,35 +49,38 @@ public class MainActivityPresenter extends PresenterBase<MainContract.View> impl
 
     @Override
     public void setUpRequirementsProgress() {
-       getDoneRequirements()
+      Disposable disposable =  getDoneRequirements()
                             .subscribeOn(Schedulers.newThread())
                             .map(el -> calculator.getToDoRes(el))
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(el -> mView.setRequirProgress(el));
+      subscriptions.add(disposable);
     }
 
     @Override
     public void setUpRecomendationProgress() {
-       getDoneRecomendation()
+        Disposable disposable = getDoneRecomendation()
                             .subscribeOn(Schedulers.newThread())
                             .map(el -> calculator.getRecomStatus(el))
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(el -> mView.setRecomendationProgress(el));
+        subscriptions.add(disposable);
     }
 
     @Override
     public void setUpMainProgress() {
-         getDoneRequirements()
+         Disposable disposable = getDoneRequirements()
                             .mergeWith(getDoneRecomendation())
                             .subscribeOn(Schedulers.newThread())
                             .reduce((rqu, reco)-> calculator.computAllRes(rqu, reco))
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(el -> mView.setMainProgress(el));
+         subscriptions.add(disposable);
     }
 
     @Override
     public Single<Integer> getDoneRequirements(){
-        return Single.just(requirementsLab.getRequirements("1").size());
+        return Single.just(requirementsLab.getAllDoneResult());
     }
 
     @Override
@@ -108,7 +104,12 @@ public class MainActivityPresenter extends PresenterBase<MainContract.View> impl
     @Override
     public void viewIsReady() {
 
-    }
 
+    }
+    @Override
+    public void destroy(){
+        subscriptions.dispose();
+        mView = null;
+    }
 
 }

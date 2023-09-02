@@ -5,7 +5,7 @@ import android.support.v7.widget.CardView;
 import android.widget.ImageView;
 
 import com.plstudio.a123.vfv.R;
-import com.plstudio.a123.vfv.interfaces.ProgressThemeCreatable;
+
 import com.plstudio.a123.vfv.interfaces.ThemeCreatable;
 
 public class DarkThemeCreator {
@@ -21,17 +21,13 @@ public class DarkThemeCreator {
         setCardCorners();
         setSettingsIcon();
         setCardBakgrounds();
-
-
-        if(!(view instanceof ProgressThemeCreatable)){
-            setBackIcon();
-        }
+        setBackIcon();
     }
     private void setBackground(){
         view.getMainBackground().setBackground(context.getResources().getDrawable(R.drawable.dt_gradient));
     }
     private void setCardCorners(){
-        for (CardView card: view.getCardCorners()) {
+        for (CardView card: view.getCards()) {
             card.setBackgroundResource(R.drawable.cardvieewcorners);
         }
     }

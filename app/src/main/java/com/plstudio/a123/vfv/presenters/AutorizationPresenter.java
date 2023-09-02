@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.plstudio.a123.vfv.PreferenceUtils;
+import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
 import com.plstudio.a123.vfv.interfaces.UserContract;
 
 public class AutorizationPresenter extends PresenterBase<UserContract.View> implements UserContract.Presenter {

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.RequirementsFragment">
+
+    <RelativeLayout
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradientmain">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="92dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="260dp"
+            android:src="@drawable/transparenttitle" />
+
+        <ImageView
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:src="@drawable/lileyka" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="132dp"
+            android:src="@drawable/smallnonefillcircle" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="44dp"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/smallnonefillcircle" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/bigfillcircle" />
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_chevron_left_black_24dp"
+            android:background="@drawable/icon_tuch_ripple"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentLeft="true"/>
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="мінімальна кількість для зарахування: "
+            android:fontFamily="@font/charter"
+            android:textColor="?attr/backgroundS"
+            android:textSize="16dp"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            />
+        <TextView
+            android:id="@+id/min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:fontFamily="@font/charter"
+            android:textColor="?attr/backgroundS"
+            android:textSize="16dp"
+            android:gravity="center"
+            android:layout_alignTop="@id/title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/requirements_recucler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@id/min"
+            android:layout_alignBottom="@id/req_counter"
+            android:padding="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/req_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="відмінно: "
+            android:fontFamily="@font/charter"
+            android:textColor="?attr/backgroundS"
+            android:textSize="16dp"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            />
+
+        <at.markushi.ui.CircleButton
+            android:id="@+id/pluss_requi"
+            android:layout_width="74dip"
+            android:layout_height="74dip"
+            android:src="@drawable/ic_add_black_24dp"
+            app:cb_color="?attr/backgroundS"
+            app:cb_pressedRingWidth="8dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="20dp"/>
+
+    </RelativeLayout>
+
+
+</FrameLayout>
