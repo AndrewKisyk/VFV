@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,7 +20,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
+
+import com.plstudio.a123.vfv.MainActivity;
+import com.plstudio.a123.vfv.RecomendationListActivity;
+import com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingDrawer;
 
 import com.plstudio.a123.vfv.animation.AnimationVars;
 
@@ -180,8 +184,10 @@ public class MainFragment extends Fragment implements ThemeCreatable, MainContra
                             .commit());
         });
 
-        recomendation.setOnClickListener(view -> {
 
+        recomendation.setOnClickListener(view -> {
+            Intent intent = new Intent(requireActivity(), RecomendationListActivity.class);
+            startActivity(intent);
         });
 
         final Animation shakeAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
@@ -241,7 +247,7 @@ public class MainFragment extends Fragment implements ThemeCreatable, MainContra
     }
 
     @Override
-    public void EndAnimation(FragmentNavigator fragmentNavigator) {
+    public void endAnimation(FragmentNavigator fragmentNavigator) {
         cardAnimation.endCardFragment(title_card, getCards(), fragmentNavigator);
 
     }

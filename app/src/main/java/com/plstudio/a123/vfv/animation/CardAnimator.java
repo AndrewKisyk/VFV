@@ -14,6 +14,8 @@ import com.plstudio.a123.vfv.interfaces.FragmentNavigator;
 public class CardAnimator {
     Context mcontext;
     ReverseInterpolator interpolator = new ReverseInterpolator();
+
+
     public CardAnimator(Context context){
         mcontext = context;
     }
@@ -41,7 +43,6 @@ public class CardAnimator {
             cardAnim(card, delay,animation);
             delay += 100;
         }
-
     }
     private void cardAnim(CardView card, int delay, Animation animation){
         animation.setDuration(500);
@@ -57,9 +58,8 @@ public class CardAnimator {
         card.setVisibility(View.VISIBLE);
         card.animate();
         animation.start();
-        AnimationVars.CARD_ANIMATION = 520;
     }
-    public void disableMainAnim(CardView card, FragmentNavigator action){
+    public void disableMainAnim(CardView card, FragmentNavigator action, int delay) {
         Animation animation = AnimationUtils.loadAnimation(mcontext, R.anim.list_item);
         animation.setDuration(AnimationVars.CARD_ANIMATION);
         animation.setInterpolator(new ReverseInterpolator());
@@ -67,22 +67,18 @@ public class CardAnimator {
         card.setVisibility(View.INVISIBLE);
         card.animate();
         animation.start();
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
 
-            }
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override public void onAnimationStart(Animation animation) {}
+            @Override public void onAnimationRepeat(Animation animation) {}
+
             @Override
             public void onAnimationEnd(Animation animation) {
-                 action.goToAnotherFragment();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
+                new android.os.Handler().postDelayed(() -> {
+                    action.goToAnotherFragment();
+                }, delay);
             }
         });
-        AnimationVars.CARD_ANIMATION = 520;
     }
 
     public void startCardFragment(CardView main, CardView carads[]){
@@ -91,8 +87,8 @@ public class CardAnimator {
     }
 
     public void endCardFragment(CardView main, CardView cards[], FragmentNavigator fragmentNavigator){
-        AnimationVars.CARD_ANIMATION +=(cards.length-1)*100;
-        disableMainAnim(main, fragmentNavigator);
+        int totalDelay = (cards.length - 1) * 100 + 500;
+        disableMainAnim(main, fragmentNavigator, totalDelay);
         animDisableCardList(cards);
     }
 }

@@ -5,17 +5,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Build;
-import android.os.Parcelable;
-import android.support.constraint.solver.widgets.WidgetContainer;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
-
-import com.google.auto.value.AutoValue;
 import com.plstudio.a123.vfv.interfaces.FragmentNavigator;
-import com.plstudio.a123.vfv.interfaces.GroupsContract;
-
-import java.util.function.Consumer;
 
 public class CircuarAnimator {
     Context mcontext;
@@ -40,6 +33,7 @@ public class CircuarAnimator {
     }
 
     public void setUpCircularAnimation(View viewToReveal){
+        if (viewToReveal == null) return;
         int animCoords[] = coordsOfStart(viewToReveal);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             ViewAnimationUtils.createCircularReveal(viewToReveal, animCoords[0], animCoords[1], 0, maxRadius).start();

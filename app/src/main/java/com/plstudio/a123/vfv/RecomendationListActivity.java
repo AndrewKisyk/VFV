@@ -14,13 +14,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
-import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
-import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
+
 import com.plstudio.a123.vfv.datadriven.FileIO;
 import com.plstudio.a123.vfv.fragments.MenuListFragment;
-
-
-import net.igenius.customcheckbox.CustomCheckBox;
+import com.plstudio.a123.vfv.view.custom_checkbox.CustomCheckBox;
+import com.plstudio.a123.vfv.view.flowingdrawer_core.ElasticDrawer;
+import com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingDrawer;
 
 import java.util.Arrays;
 import java.util.HashMap;

@@ -40,28 +40,21 @@ public class MenuListFragment extends Fragment {
         vNavigation.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             Intent intent;
-            switch (id) {
-                case R.id.nav_home:
-                    makeUserDataEmpty(getContext());
-                    intent = new Intent(getActivity(), AutorizationActivity.class);
-                    startActivity(intent);
-                    break;
-                case R.id.nav_progress:
-                    intent = new Intent(getActivity(), MainActivity.class);
-                    startActivity(intent);
-                    break;
-                case R.id.nav_requirements:
-                    //intent = new Intent(getActivity(), GroupsActivity.class);
-                   // startActivity(intent);
-                    break;
-                case R.id.nav_reсomendation:
-                    intent = new Intent(getActivity(), RecomendationListActivity.class);
-                    startActivity(intent);
-                    break;
-                case R.id.dark_theme:
-                    changThemeSetting();
-                    reloadActivity();
-                    break;
+            if (id == R.id.nav_home) {
+                makeUserDataEmpty(getContext());
+                intent = new Intent(getActivity(), AutorizationActivity.class);
+                startActivity(intent);
+            } else if (id == R.id.nav_progress) {
+                intent = new Intent(getActivity(), MainActivity.class);
+                startActivity(intent);
+            } else if (id == R.id.nav_requirements) {
+
+            } else if (id == R.id.nav_reсomendation) {
+                intent = new Intent(getActivity(), RecomendationListActivity.class);
+                startActivity(intent);
+            } else if (id == R.id.dark_theme) {
+                changThemeSetting();
+                reloadActivity();
             }
 
             return true;

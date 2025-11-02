@@ -8,16 +8,11 @@ import android.os.Bundle;
 import com.plstudio.a123.vfv.animation.FragmentCloseAnimation;
 import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
 import com.plstudio.a123.vfv.di.App;
-import com.plstudio.a123.vfv.fragments.GroupsFragment;
 import com.plstudio.a123.vfv.fragments.MainFragment;
-import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
-import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
-import com.plstudio.a123.vfv.fragments.MenuListFragment;
-import com.plstudio.a123.vfv.fragments.RequirementsFragment;
-import com.plstudio.a123.vfv.interfaces.FragmentNavigator;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.plstudio.a123.vfv.fragments.MenuListFragment;
+import com.plstudio.a123.vfv.view.flowingdrawer_core.ElasticDrawer;
+import com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingDrawer;
 
 import javax.inject.Inject;
 
@@ -58,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         }
         FragmentManager fm = getSupportFragmentManager();
         if (fm.getBackStackEntryCount() > 0) {
-            fanimation.EndAnimation(() -> fm.popBackStack());
+            fanimation.endAnimation(() -> fm.popBackStack());
             fm.executePendingTransactions();
         } else
             super.onBackPressed();

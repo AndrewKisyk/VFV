@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
-    <com.mxn.soul.flowingdrawer_core.FlowingDrawer
+    <com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingDrawer
         android:id="@+id/drawerlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,7 +20,7 @@
             android:layout_height="match_parent"/>
 
         <!--menu-->
-        <com.mxn.soul.flowingdrawer_core.FlowingMenuLayout
+        <com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingMenuLayout
             android:id="@+id/menulayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -32,8 +32,8 @@
 
                 />
 
-        </com.mxn.soul.flowingdrawer_core.FlowingMenuLayout>
+        </com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingMenuLayout>
 
-    </com.mxn.soul.flowingdrawer_core.FlowingDrawer>
+    </com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingDrawer>
 
 </android.support.constraint.ConstraintLayout>

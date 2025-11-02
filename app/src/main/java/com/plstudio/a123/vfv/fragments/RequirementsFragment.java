@@ -41,7 +41,7 @@ public class RequirementsFragment extends Fragment implements FragmentCloseAnima
     }
 
     @Override
-    public void EndAnimation(FragmentNavigator fragmentNavigator) {
+    public void endAnimation(FragmentNavigator fragmentNavigator) {
      circuarAnimator.closeFragmentAnimation(getView(), fragmentNavigator);
 
     }

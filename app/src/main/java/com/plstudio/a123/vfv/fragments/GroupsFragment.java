@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
+import com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingDrawer;
 import com.plstudio.a123.vfv.animation.AnimationVars;
 import com.plstudio.a123.vfv.animation.CircuarAnimator;
 import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
@@ -215,7 +215,7 @@ public class GroupsFragment extends Fragment implements ThemeCreatable, GroupsCo
     }
 
     @Override
-    public void EndAnimation(FragmentNavigator fragmentNavigator) {
+    public void endAnimation(FragmentNavigator fragmentNavigator) {
         cardAnimator.endCardFragment(title_card, getCards(), fragmentNavigator);
     }
 }

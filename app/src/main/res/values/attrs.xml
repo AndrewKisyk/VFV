@@ -7,4 +7,35 @@
         <attr name="textcolor" format="color"/>
         <attr name="secondtext" format="color"/>
     </declare-styleable>
+    <!-- Reference to a style for the menu drawer. -->
+    <attr name="elasticDrawerStyle" format="reference" />
+
+    <!-- Styleables used for styling the menu drawer. -->
+    <declare-styleable name="ElasticDrawer">
+
+        <!-- Drawable to use for the background of the menu. -->
+        <attr name="edMenuBackground" format="color" />
+
+        <!-- The size of the menu. -->
+        <attr name="edMenuSize" format="dimension" />
+
+        <!-- The touch bezel size. -->
+        <attr name="edTouchBezelSize" format="dimension" />
+
+        <!-- The maximum animation duration -->
+        <attr name="edMaxAnimationDuration" format="integer" />
+
+        <!-- The position of the drawer -->
+        <attr name="edPosition" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="CustomCheckBox">
+        <attr name="duration" format="integer" />
+        <attr name="stroke_width" format="dimension" />
+        <attr name="color_tick" format="color" />
+        <attr name="color_checked" format="color" />
+        <attr name="color_unchecked" format="color" />
+        <attr name="color_unchecked_stroke" format="color" />
+        <attr name="small_tick" format="boolean" />
+    </declare-styleable>
 </resources>
