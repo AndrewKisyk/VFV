@@ -3,9 +3,7 @@ package com.plstudio.a123.vfv.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.CardView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,22 +11,26 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingDrawer;
-import com.plstudio.a123.vfv.animation.AnimationVars;
-import com.plstudio.a123.vfv.animation.CircuarAnimator;
-import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.cardview.widget.CardView;
+
+
 import com.plstudio.a123.vfv.R;
 import com.plstudio.a123.vfv.RequirementsActivity;
 import com.plstudio.a123.vfv.animation.CardAnimator;
+import com.plstudio.a123.vfv.animation.CircuarAnimator;
 import com.plstudio.a123.vfv.animation.FragmentCloseAnimation;
 import com.plstudio.a123.vfv.darkthem.DarkThemeCreator;
+import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
 import com.plstudio.a123.vfv.di.App;
+import com.plstudio.a123.vfv.helpers.RequirementsLab;
 import com.plstudio.a123.vfv.interfaces.FragmentNavigator;
 import com.plstudio.a123.vfv.interfaces.GroupsContract;
 import com.plstudio.a123.vfv.interfaces.ThemeCreatable;
-import com.plstudio.a123.vfv.helpers.RequirementsLab;
 import com.plstudio.a123.vfv.model.User;
 import com.plstudio.a123.vfv.presenters.GroupsPresenter;
+import com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingDrawer;
 
 import java.util.List;
 
@@ -69,14 +71,14 @@ public class GroupsFragment extends Fragment implements ThemeCreatable, GroupsCo
 
         initListeners();
 
-        if(animStarter) cardAnimator.startCardFragment(title_card, getCards());
+        if (animStarter) cardAnimator.startCardFragment(title_card, getCards());
         return view;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState == null)
+        if (savedInstanceState == null)
             animStarter = true;
         else
             animStarter = savedInstanceState.getBoolean("anim");
@@ -130,25 +132,25 @@ public class GroupsFragment extends Fragment implements ThemeCreatable, GroupsCo
 
         Intent intent = new Intent(getContext(), RequirementsActivity.class);
         g1.setOnClickListener(event -> {
-            /*intent.putExtra("GROUP", "1");
+            intent.putExtra("GROUP", "1");
             intent.putExtra("MIN", "2");
-            startActivity(intent);*
-             */
-            AnimationVars.setAnimationVars(event);
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_holder, new RequirementsFragment())
-                    .addToBackStack(GroupsFragment.class.getName())
-                    .commit();
+            startActivity(intent);
+
+//            AnimationVars.setAnimationVars(event);
+//            getFragmentManager().beginTransaction()
+//                    .replace(R.id.fragment_holder, new RequirementsFragment())
+//                    .addToBackStack(GroupsFragment.class.getName())
+//                    .commit();
         });
         g2.setOnClickListener(event -> {
-            /*intent.putExtra("GROUP", "2");
+            intent.putExtra("GROUP", "2");
             intent.putExtra("MIN", "2");
-            startActivity(intent);*/
-            AnimationVars.setAnimationVars(event);
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_holder, new RequirementsFragment())
-                    .addToBackStack(GroupsFragment.class.getName())
-                    .commit();
+            startActivity(intent);
+//            AnimationVars.setAnimationVars(event);
+//            getFragmentManager().beginTransaction()
+//                    .replace(R.id.fragment_holder, new RequirementsFragment())
+//                    .addToBackStack(GroupsFragment.class.getName())
+//                    .commit();
         });
 
         g3.setOnClickListener(event -> {

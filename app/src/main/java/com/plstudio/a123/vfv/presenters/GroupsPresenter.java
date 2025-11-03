@@ -1,6 +1,6 @@
 package com.plstudio.a123.vfv.presenters;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.plstudio.a123.vfv.interfaces.GroupsContract;
 import com.plstudio.a123.vfv.helpers.RequirementsLab;

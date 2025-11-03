@@ -1,6 +1,6 @@
 package com.plstudio.a123.vfv.interfaces;
 
-import android.support.v7.widget.CardView;
+import androidx.cardview.widget.CardView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 

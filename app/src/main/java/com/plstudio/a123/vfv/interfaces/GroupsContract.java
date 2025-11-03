@@ -1,7 +1,7 @@
 package com.plstudio.a123.vfv.interfaces;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.plstudio.a123.vfv.helpers.RequirementsLab;
 
