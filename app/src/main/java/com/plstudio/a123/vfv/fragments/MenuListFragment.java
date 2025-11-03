@@ -94,6 +94,8 @@ public class MenuListFragment extends Fragment {
             }
         RequirementsLab requirementsLab = RequirementsLab.get(getContext());
         requirementsLab.undoAllRequirements();
+        mSettings.setSex("");
+        mSettings.setAge("");
     }
 
     private void reloadActivity(){
