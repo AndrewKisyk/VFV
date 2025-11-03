@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -55,6 +58,7 @@ public class RecomendationListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recomendation_list);
         initHash();
         initView();
+        setUpWindowInsets(background);
         readed = Arrays.asList(readStatys().split(" "));
         initListeners();
 
@@ -189,5 +193,16 @@ public class RecomendationListActivity extends AppCompatActivity {
         if(mSettings.getString(APP_PREFERENCES_THEME, "theme").equals("dark"))
             return true;
         return false;
+    }
+
+    private void setUpWindowInsets(View view) {
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
+            Insets bars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars()
+                            | WindowInsetsCompat.Type.displayCutout()
+            );
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
     }
 }
