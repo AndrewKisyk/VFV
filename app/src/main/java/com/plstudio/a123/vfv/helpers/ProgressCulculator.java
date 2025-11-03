@@ -33,15 +33,15 @@ public class ProgressCulculator {
     }
     //check if Vfv is done
     public boolean compareAllVfvRes(List<Integer> groupsRes){
+        if(groupsRes.get(0) < 2)
+            return false;
         if(groupsRes.get(1) < 2)
             return false;
         if(groupsRes.get(2) < 2)
             return false;
-        if(groupsRes.get(3) < 2)
+        if(groupsRes.get(3) < 3)
             return false;
         if(groupsRes.get(4) < 3)
-            return false;
-        if(groupsRes.get(5) < 3)
             return false;
         return true;
     }

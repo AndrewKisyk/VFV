@@ -6,7 +6,7 @@ import android.view.animation.DecelerateInterpolator;
 
 public class AnimationVars {
     public static final long GAUGE_ANIMATION_DURATION = 5000;
-    public static long CARD_ANIMATION = 520;
+    public static long CARD_ANIMATION = 300;
     public static final TimeInterpolator GAUGE_ANIMATION_INTERPOLATOR = new DecelerateInterpolator(2);
     public static final ReverseInterpolator REVERSE_INTERPOLATOR = new ReverseInterpolator();
     public static float CLICKX, CLICKY;

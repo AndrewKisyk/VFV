@@ -40,7 +40,7 @@ dependencies {
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.github.markushi:circlebutton:1.1'
     implementation "com.andkulikov:transitionseverywhere:1.8.1"
-
+    implementation 'androidx.core:core-ktx:1.17.0'
     //RxJava
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'

@@ -5,20 +5,26 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.plstudio.a123.vfv.model.Requirement;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.plstudio.a123.vfv.helpers.RequirementsLab;
+import com.plstudio.a123.vfv.model.Requirement;
 import com.plstudio.a123.vfv.recyclerview.RecyclerViewListener;
 import com.plstudio.a123.vfv.recyclerview.RequirementsAdapter;
 
@@ -41,6 +47,7 @@ public class RequirementsActivity extends AppCompatActivity {
     private RecyclerView done_requirements;
     private RequirementsLab requirementsLab;
     private ImageView back;
+    private ConstraintLayout constraintLayout;
 
     private TextView min;
     private TextView done_counter;
@@ -54,16 +61,22 @@ public class RequirementsActivity extends AppCompatActivity {
 
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
-        if(checkDarkTheme())
+        if (checkDarkTheme()) {
+            WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
+                    .setAppearanceLightStatusBars(true);
             setTheme(R.style.darktheme);
-        else
+        } else {
+            WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
+                    .setAppearanceLightStatusBars(false)
+            ;
             setTheme(R.style.AppTheme);
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_requirements);
 
         initView();
-
+        setUpWindowInsets(constraintLayout);
         initListeners();
         setupRequirements();
         ShowDoneRequirements();
@@ -71,20 +84,22 @@ public class RequirementsActivity extends AppCompatActivity {
         runLayoutAnimation(mrecyclerview);
     }
 
-    private void initView(){
+    private void initView() {
         dialog_done_requirements = new Dialog(this);
         add_requi = (CircleButton) findViewById(R.id.pluss_requi);
 
         group = getIntent().getStringExtra("GROUP");
 
         back = (ImageView) findViewById(R.id.back);
-        if(checkDarkTheme())
+        if (checkDarkTheme())
             back.setImageResource(R.drawable.ic_dchevron_left_black_24dp);
 
 
-        done_counter = (TextView)findViewById(R.id.req_counter);
-        min = (TextView)findViewById(R.id.min);
+        done_counter = (TextView) findViewById(R.id.req_counter);
+        min = (TextView) findViewById(R.id.min);
         min.setText(getIntent().getStringExtra("MIN"));
+
+        constraintLayout = findViewById(R.id.clContainer);
 
         mrecyclerview = findViewById(R.id.requirements_recucler);
         mrecyclerview.setLayoutManager(new LinearLayoutManager(this));
@@ -92,10 +107,10 @@ public class RequirementsActivity extends AppCompatActivity {
         requirementsLab = RequirementsLab.get(this);
     }
 
-    private void setupRequirements(){
+    private void setupRequirements() {
         requirementsLab = RequirementsLab.get(this);
         requirements = requirementsLab.getRequirements(group, "0");
-        if(mAdapter == null) {
+        if (mAdapter == null) {
             mAdapter = new RequirementsAdapter(this, requirements, recyclerlistener, "0");
             mrecyclerview.setAdapter(mAdapter);
         } else {
@@ -105,12 +120,12 @@ public class RequirementsActivity extends AppCompatActivity {
         setCurrentResult();
     }
 
-    public void ShowDoneRequirements(){
+    public void ShowDoneRequirements() {
         dialog_done_requirements.setContentView(R.layout.pop_done_requirements);
 
 
         dialog_done_requirements.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog_done_requirements.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+        dialog_done_requirements.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         dialog_done_requirements.setCancelable(true);
         dialog_done_requirements.setCanceledOnTouchOutside(true);
         dialog_done_requirements.getWindow().getAttributes().windowAnimations = R.style.PauseDialogAnimation;
@@ -126,10 +141,10 @@ public class RequirementsActivity extends AppCompatActivity {
 
     }
 
-    private void setupDoneRequirements(){
+    private void setupDoneRequirements() {
         requirementsLab = RequirementsLab.get(this);
         done_requirements_list = requirementsLab.getRequirements(group, "1");
-        if(done_adapter == null){
+        if (done_adapter == null) {
             done_adapter = new RequirementsAdapter(this, done_requirements_list, donerecyclerlistener, "1");
             done_requirements.setAdapter(done_adapter);
         } else {
@@ -140,13 +155,13 @@ public class RequirementsActivity extends AppCompatActivity {
         runLayoutAnimation(done_requirements);
     }
 
-    private void initRecyclerViewListener(int position, Requirement requirement){
+    private void initRecyclerViewListener(int position, Requirement requirement) {
         requirementsLab = RequirementsLab.get(this);
         requirementsLab.doRequirement(requirement, "1");
         try {
             requirements.remove(position);
             mAdapter.notifyItemRemoved(position);
-        } catch (ArrayIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException e) {
             Log.e("RequirementsActivity", e.toString());
         }
         requirement.setStatus("1");
@@ -165,14 +180,14 @@ public class RequirementsActivity extends AppCompatActivity {
         recyclerView.scheduleLayoutAnimation();
     }
 
-    private void initDoneRecyclerViewListener(int position, Requirement requirement){
+    private void initDoneRecyclerViewListener(int position, Requirement requirement) {
         requirementsLab = RequirementsLab.get(this);
         requirementsLab.doRequirement(requirement, "0");
 
         try {
             done_requirements_list.remove(position);
             done_adapter.notifyItemRemoved(position);
-        } catch (ArrayIndexOutOfBoundsException e){
+        } catch (ArrayIndexOutOfBoundsException e) {
             Log.e("RequirementsActivity", e.toString());
         }
         requirement.setStatus("0");
@@ -182,7 +197,7 @@ public class RequirementsActivity extends AppCompatActivity {
         setCurrentResult();
     }
 
-    private void initListeners(){
+    private void initListeners() {
         this.recyclerlistener = (position, requirement) -> {
             initRecyclerViewListener(position, requirement);
         };
@@ -201,27 +216,38 @@ public class RequirementsActivity extends AppCompatActivity {
         back.setOnClickListener(view -> onBackPressed());
     }
 
-    private void setCurrentResult(){
-        if(done_requirements_list != null)
+    private void setCurrentResult() {
+        if (done_requirements_list != null)
             done_counter.setText(String.valueOf(done_requirements_list.size()) + '/' + String.valueOf(allRequirementsSize()));
         else
             done_counter.setText("0" + '/' + String.valueOf(allRequirementsSize()));
     }
 
-    private int allRequirementsSize(){
-        if(done_requirements_list == null)
+    private int allRequirementsSize() {
+        if (done_requirements_list == null)
             return requirements.size();
-        if(requirements == null)
+        if (requirements == null)
             return done_requirements_list.size();
-        if(done_requirements_list != null && requirements != null)
+        if (done_requirements_list != null && requirements != null)
             return done_requirements_list.size() + requirements.size();
         return 0;
     }
 
-    private boolean checkDarkTheme(){
-        if(mSettings.getString(APP_PREFERENCES_THEME, "theme").equals("dark"))
+    private boolean checkDarkTheme() {
+        if (mSettings.getString(APP_PREFERENCES_THEME, "theme").equals("dark"))
             return true;
         return false;
+    }
+
+    private void setUpWindowInsets(View view) {
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
+            Insets bars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars()
+                            | WindowInsetsCompat.Type.displayCutout()
+            );
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
     }
 
 }

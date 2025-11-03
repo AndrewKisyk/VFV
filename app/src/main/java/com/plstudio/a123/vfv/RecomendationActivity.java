@@ -5,11 +5,17 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -40,6 +46,8 @@ public class RecomendationActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recomendation);
+        ConstraintLayout clContainer = findViewById(R.id.clContainer);
+        setUpWindowInsets(clContainer);
         initToolbar();
         file = new FileIO(this, Context.MODE_APPEND);
 
@@ -102,7 +110,7 @@ public class RecomendationActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         //backgrounds
-        RelativeLayout background = (RelativeLayout) findViewById(R.id.background);
+        FrameLayout background = (FrameLayout) findViewById(R.id.background);
         background.setBackground(getResources().getDrawable(R.drawable.dt_gradient));
     }
 
@@ -111,4 +119,15 @@ public class RecomendationActivity extends AppCompatActivity {
             return true;
         return false;
     }
+    private void setUpWindowInsets(View view) {
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
+            Insets bars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars()
+                            | WindowInsetsCompat.Type.displayCutout()
+            );
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            return WindowInsetsCompat.CONSUMED;
+        });
+    }
+
 }

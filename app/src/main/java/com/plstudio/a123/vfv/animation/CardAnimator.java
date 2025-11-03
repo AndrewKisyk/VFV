@@ -45,7 +45,7 @@ public class CardAnimator {
         }
     }
     private void cardAnim(CardView card, int delay, Animation animation){
-        animation.setDuration(500);
+        animation.setDuration(300);
         animation.setStartOffset(delay);
         card.startAnimation(animation);
         card.setVisibility(View.VISIBLE);
@@ -87,7 +87,7 @@ public class CardAnimator {
     }
 
     public void endCardFragment(CardView main, CardView cards[], FragmentNavigator fragmentNavigator){
-        int totalDelay = (cards.length - 1) * 100 + 500;
+        int totalDelay = (cards.length - 1) * 100;
         disableMainAnim(main, fragmentNavigator, totalDelay);
         animDisableCardList(cards);
     }
