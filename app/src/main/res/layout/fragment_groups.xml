@@ -16,7 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="8dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="8dp"
            >
 
             <androidx.cardview.widget.CardView
@@ -114,8 +115,10 @@
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:animateLayoutChanges="true">
+                android:animateLayoutChanges="true"
+                android:scrollIndicators="none">
                 <LinearLayout
+                    android:id="@+id/llGroups"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">

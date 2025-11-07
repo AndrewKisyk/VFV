@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -125,6 +126,8 @@ public class GroupsFragment extends Fragment implements ThemeCreatable, GroupsCo
 
         mDrawer = (FlowingDrawer) getActivity().findViewById(R.id.drawerlayout);
         ViewUtils.setUpWindowInsets(title_card);
+        LinearLayout container = (LinearLayout) view.findViewById(R.id.llGroups);
+        ViewUtils.setBottomWindowInsetPadding(container);
     }
 
     private void initListeners() {

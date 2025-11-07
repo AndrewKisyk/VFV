@@ -11,14 +11,17 @@
         <item
             android:id="@+id/nav_progress"
             android:title="Прогрес"
+            android:visible="false"
             android:icon="@drawable/ic_trending_up_black_24dp"/>
         <item
             android:id="@+id/nav_requirements"
             android:title="Вимоги"
+            android:visible="false"
             android:icon="@drawable/ic_check_black_24dp"/>
         <item
             android:id="@+id/nav_reсomendation"
             android:title="Рекомендації"
+            android:visible="false"
             android:icon="@drawable/muscle"/>
         <item
             android:id="@+id/dark_theme"

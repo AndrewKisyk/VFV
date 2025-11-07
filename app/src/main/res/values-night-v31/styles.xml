@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <style name="MainTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
@@ -10,6 +11,6 @@
         <item name="windowNoTitle">true</item>
         <item name="secondtext">#808080</item>
         <item name="colorPrimaryDark">@color/silver</item>
-        <item name="android:windowBackground">#2D324D</item>
+        <item name="android:windowSplashScreenBackground">#2D324D</item>
     </style>
 </resources>

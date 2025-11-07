@@ -39,7 +39,7 @@ public class PreferenceUtils {
     }
 
     public String getTheme(){
-        return mSettings.getString(APP_PREFERENCES_THEME, "");
+        return mSettings.getString(APP_PREFERENCES_THEME, "dark");
     }
 
     public boolean checkDarkThem(){

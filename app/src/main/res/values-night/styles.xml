@@ -1,0 +1,67 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <!--Light theme -->
+    <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="backgroundS">@color/white</item>
+        <item name="backgroundE">#F3F0D2</item>
+        <item name="cardbackground">@color/white</item>
+        <item name="textcolor">@color/black</item>
+        <item name="windowNoTitle">true</item>
+        <item name="secondtext">@color/silver</item>
+    </style>
+    <!--Dark theme -->
+    <style name="darktheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">#444A6D</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="backgroundS">#444A6D</item>
+        <item name="backgroundE">#2D324D</item>
+        <item name="secondtext">#D2D6EF</item>
+        <item name="cardbackground">#5F6791</item>
+        <item name="textcolor">@color/white</item>
+        <item name="windowNoTitle">true</item>
+
+    </style>
+
+    <style name="AppTheme.Recomendation" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowNoTitle">false</item>
+        <item name="colorPrimaryDark">@color/silver</item>
+
+    </style>
+
+
+
+    <style name="ToolbarColoredBackArrow" parent="AppTheme">
+        <item name="android:textColorSecondary">@color/white</item>
+
+    </style>
+
+    <style name="MainTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/white</item>
+        <item name="backgroundS">@color/white</item>
+        <item name="backgroundE">@color/white</item>
+        <item name="cardbackground">@color/white</item>
+        <item name="textcolor">@color/black</item>
+        <item name="windowNoTitle">true</item>
+        <item name="secondtext">#808080</item>
+        <item name="colorPrimaryDark">@color/silver</item>
+        <item name="android:windowSplashScreenBackground">#2D324D</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="PauseDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_anim_up</item>
+        <item name="android:windowExitAnimation">@anim/dialog_anim_down</item>
+    </style>
+
+</resources>

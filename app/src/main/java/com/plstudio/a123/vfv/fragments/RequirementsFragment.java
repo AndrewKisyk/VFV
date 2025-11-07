@@ -148,6 +148,7 @@ public class RequirementsFragment extends Fragment implements FragmentCloseAnima
         ViewUtils.setUpWindowInsets(back);
         ViewUtils.setUpWindowInsets(title);
         ViewUtils.setBottomWindowInsetMargin(done_counter);
+        ViewUtils.setBottomWindowInsetMargin(add_requi);
     }
 
     private void setupRequirements() {
