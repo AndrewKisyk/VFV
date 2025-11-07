@@ -19,6 +19,7 @@ import com.plstudio.a123.vfv.fragments.MainFragment;
 
 import com.plstudio.a123.vfv.fragments.MenuListFragment;
 import com.plstudio.a123.vfv.interfaces.MainActivityNavigationController;
+import com.plstudio.a123.vfv.view.ViewUtils;
 import com.plstudio.a123.vfv.view.flowingdrawer_core.ElasticDrawer;
 import com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingDrawer;
 
@@ -51,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityNavig
         setContentView(R.layout.activity_main);
         WindowCompat.enableEdgeToEdge(getWindow());
         background = findViewById(R.id.background);
-        setUpWindowInsets(background);
         initNawigationMenu();
         if(checkDarkTheme())
             setupDarkTheme();

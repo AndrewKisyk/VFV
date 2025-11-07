@@ -27,6 +27,7 @@ import com.plstudio.a123.vfv.di.App;
 import com.plstudio.a123.vfv.helpers.ImageGetter;
 import com.plstudio.a123.vfv.interfaces.FragmentNavigator;
 import com.plstudio.a123.vfv.interfaces.ThemeCreatable;
+import com.plstudio.a123.vfv.view.ViewUtils;
 
 import javax.inject.Inject;
 
@@ -125,6 +126,7 @@ public class RecomendationFragment extends Fragment implements ThemeCreatable, F
         if (toolbar != null) {
             toolbar.setNavigationIcon(R.drawable.ic_chevron_left_black_30dp);
             toolbar.setNavigationOnClickListener(event -> getActivity().onBackPressed());
+            ViewUtils.setUpWindowInsets(toolbar);
         }
     }
 

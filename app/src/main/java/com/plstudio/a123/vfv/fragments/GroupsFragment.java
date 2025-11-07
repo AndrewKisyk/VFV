@@ -29,6 +29,7 @@ import com.plstudio.a123.vfv.interfaces.GroupsContract;
 import com.plstudio.a123.vfv.interfaces.ThemeCreatable;
 import com.plstudio.a123.vfv.model.User;
 import com.plstudio.a123.vfv.presenters.GroupsPresenter;
+import com.plstudio.a123.vfv.view.ViewUtils;
 import com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingDrawer;
 
 import java.util.List;
@@ -123,6 +124,7 @@ public class GroupsFragment extends Fragment implements ThemeCreatable, GroupsCo
         all_counter = (TextView) view.findViewById(R.id.bottom);
 
         mDrawer = (FlowingDrawer) getActivity().findViewById(R.id.drawerlayout);
+        ViewUtils.setUpWindowInsets(title_card);
     }
 
     private void initListeners() {

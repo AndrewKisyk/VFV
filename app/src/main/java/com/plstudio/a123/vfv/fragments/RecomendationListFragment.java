@@ -25,6 +25,7 @@ import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
 import com.plstudio.a123.vfv.di.App;
 import com.plstudio.a123.vfv.interfaces.FragmentNavigator;
 import com.plstudio.a123.vfv.interfaces.ThemeCreatable;
+import com.plstudio.a123.vfv.view.ViewUtils;
 import com.plstudio.a123.vfv.view.custom_checkbox.CustomCheckBox;
 import com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingDrawer;
 
@@ -108,6 +109,7 @@ public class RecomendationListFragment extends Fragment implements ThemeCreatabl
 
         scroll = view.findViewById(R.id.motion);
         title_card = (CardView) view.findViewById(R.id.card_view);
+        ViewUtils.setUpWindowInsets(title_card);
         warmup = (CardView) view.findViewById(R.id.warm_up);
         jump = (CardView) view.findViewById(R.id.jump);
         running = (CardView) view.findViewById(R.id.run);

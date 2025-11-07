@@ -6,6 +6,10 @@ import android.content.Context;
 
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.cardview.widget.CardView;
@@ -21,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.plstudio.a123.vfv.MainActivity;
+import com.plstudio.a123.vfv.view.ViewUtils;
 import com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingDrawer;
 
 import com.plstudio.a123.vfv.animation.AnimationVars;
@@ -114,8 +119,8 @@ public class MainFragment extends Fragment implements ThemeCreatable, MainContra
         recomendation = (CardView) view.findViewById(R.id.nav_reсomendation);
 
         vfv_done = (TextView) view.findViewById(R.id.vfv_done);
+        ViewUtils.setUpWindowInsets(title_card);
         initStepsView(stepsView);
-
     }
 
     private void animation(View view){
@@ -249,6 +254,20 @@ public class MainFragment extends Fragment implements ThemeCreatable, MainContra
     @Override
     public void endAnimation(FragmentNavigator fragmentNavigator) {
         cardAnimation.endCardFragment(title_card, getCards(), fragmentNavigator);
+    }
 
+    private void setUpWindowInsets(CardView view) {
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
+            Insets systemBarsInsets = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars()
+                            | WindowInsetsCompat.Type.displayCutout()
+            );
+
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            params.topMargin = systemBarsInsets.top;
+            v.setLayoutParams(params);
+
+            return WindowInsetsCompat.CONSUMED;
+        });
     }
 }

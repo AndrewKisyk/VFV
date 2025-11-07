@@ -30,6 +30,7 @@ import com.plstudio.a123.vfv.interfaces.FragmentNavigator;
 import com.plstudio.a123.vfv.model.Requirement;
 import com.plstudio.a123.vfv.recyclerview.RecyclerViewListener;
 import com.plstudio.a123.vfv.recyclerview.RequirementsAdapter;
+import com.plstudio.a123.vfv.view.ViewUtils;
 
 import java.util.List;
 
@@ -142,6 +143,11 @@ public class RequirementsFragment extends Fragment implements FragmentCloseAnima
 
         mrecyclerview = view.findViewById(R.id.requirements_recucler);
         mrecyclerview.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        TextView title = (TextView) view.findViewById(R.id.title);
+        ViewUtils.setUpWindowInsets(back);
+        ViewUtils.setUpWindowInsets(title);
+        ViewUtils.setBottomWindowInsetMargin(done_counter);
     }
 
     private void setupRequirements() {
