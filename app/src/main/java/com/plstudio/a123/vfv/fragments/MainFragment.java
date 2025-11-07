@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 
-import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -22,7 +21,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.plstudio.a123.vfv.MainActivity;
-import com.plstudio.a123.vfv.RecomendationListActivity;
 import com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingDrawer;
 
 import com.plstudio.a123.vfv.animation.AnimationVars;
@@ -186,8 +184,10 @@ public class MainFragment extends Fragment implements ThemeCreatable, MainContra
 
 
         recomendation.setOnClickListener(view -> {
-            Intent intent = new Intent(requireActivity(), RecomendationListActivity.class);
-            startActivity(intent);
+            cardAnimation.endCardFragment(title_card, getCards(), () -> fm.beginTransaction()
+                    .replace(R.id.fragment_holder, new RecomendationListFragment())
+                    .addToBackStack(MainFragment.class.getName())
+                    .commit());
         });
 
         final Animation shakeAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.shake);

@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.plstudio.a123.vfv.animation.FragmentCloseAnimation;
 import com.plstudio.a123.vfv.datadriven.PreferenceUtils;
@@ -19,13 +18,14 @@ import com.plstudio.a123.vfv.di.App;
 import com.plstudio.a123.vfv.fragments.MainFragment;
 
 import com.plstudio.a123.vfv.fragments.MenuListFragment;
+import com.plstudio.a123.vfv.interfaces.MainActivityNavigationController;
 import com.plstudio.a123.vfv.view.flowingdrawer_core.ElasticDrawer;
 import com.plstudio.a123.vfv.view.flowingdrawer_core.FlowingDrawer;
 
 import javax.inject.Inject;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityNavigationController {
     private FlowingDrawer mDrawer;
     private static final String TAG = "MainActivity";
     @Inject
@@ -75,9 +75,8 @@ public class MainActivity extends AppCompatActivity {
                     fanimation.endAnimation(() -> fm.popBackStack());
                     fm.executePendingTransactions();
                 } else {
-                    // Викликаємо стандартну поведінку "назад"
-                    setEnabled(false); // тимчасово вимикаємо колбек
-                    getOnBackPressedDispatcher().onBackPressed(); // делегуємо системі
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
                     setEnabled(true);
                 }
             }
@@ -105,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
         mDrawer = (FlowingDrawer) findViewById(R.id.drawerlayout);
         mDrawer.setBackgroundColor(getResources().getColor(R.color.darkprog));
         mDrawer.setTouchMode(ElasticDrawer.TOUCH_MODE_BEZEL);
-//        setting.setOnClickListener(view -> mDrawer.toggleMenu());
         setupMenu();
     }
 
@@ -130,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupDarkTheme(){
-        //backgrounds
         background.setBackground(getResources().getDrawable(R.drawable.dt_gradient));
     }
 
@@ -146,4 +143,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void openRequirementsFragment() {
+
+    }
 }

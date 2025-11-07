@@ -1,0 +1,422 @@
+Index: .idea/runConfigurations.xml
+===================================================================
+diff --git a/.idea/runConfigurations.xml b/.idea/runConfigurations.xml
+deleted file mode 100644
+--- a/.idea/runConfigurations.xml	(revision b434fae3b323aea4a000270afa8d02bb1a263919)
++++ /dev/null	(revision b434fae3b323aea4a000270afa8d02bb1a263919)
+@@ -1,12 +0,0 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+-<project version="4">
+-  <component name="RunConfigurationProducerService">
+-    <option name="ignoredProducers">
+-      <set>
+-        <option value="org.jetbrains.plugins.gradle.execution.test.runner.AllInPackageGradleConfigurationProducer" />
+-        <option value="org.jetbrains.plugins.gradle.execution.test.runner.TestClassGradleConfigurationProducer" />
+-        <option value="org.jetbrains.plugins.gradle.execution.test.runner.TestMethodGradleConfigurationProducer" />
+-      </set>
+-    </option>
+-  </component>
+-</project>
+\ No newline at end of file
+Index: gradle/wrapper/gradle-wrapper.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#Mon Dec 09 18:48:57 EET 2019\ndistributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\nzipStoreBase=GRADLE_USER_HOME\nzipStorePath=wrapper/dists\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-5.4.1-all.zip\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/gradle/wrapper/gradle-wrapper.properties b/gradle/wrapper/gradle-wrapper.properties
+--- a/gradle/wrapper/gradle-wrapper.properties	(revision b434fae3b323aea4a000270afa8d02bb1a263919)
++++ b/gradle/wrapper/gradle-wrapper.properties	(date 1693660129636)
+@@ -3,4 +3,4 @@
+ distributionPath=wrapper/dists
+ zipStoreBase=GRADLE_USER_HOME
+ zipStorePath=wrapper/dists
+-distributionUrl=https\://services.gradle.org/distributions/gradle-5.4.1-all.zip
++distributionUrl=https\://services.gradle.org/distributions/gradle-8.1-bin.zip
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    package=\"com.plstudio.a123.vfv\">\n\n    <application\n        android:name=\".di.App\"\n        android:allowBackup=\"true\"\n        android:appComponentFactory=\"whateverString\"\n        android:icon=\"@mipmap/ic_launcher\"\n        android:label=\"@string/app_name\"\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\n        android:supportsRtl=\"true\"\n        android:theme=\"@style/AppTheme\"\n        android:screenOrientation=\"portrait\"\n        tools:replace=\"android:appComponentFactory\">\n        <activity\n            android:name=\".RecomendationActivity\"\n            android:screenOrientation=\"portrait\"\n            android:theme=\"@style/MainTheme\"></activity>\n\n        <activity\n            android:name=\".RecomendationListActivity\"\n            android:screenOrientation=\"portrait\"\n            android:theme=\"@style/MainTheme\" />\n        <activity\n            android:name=\".RequirementsActivity\"\n            android:screenOrientation=\"portrait\" />\n        <activity\n            android:name=\".GroupsActivity\"\n            android:configChanges=\"orientation\"\n            android:screenOrientation=\"portrait\"\n            android:theme=\"@style/MainTheme\" />\n        <activity\n            android:name=\".MainActivity\"\n            android:configChanges=\"orientation\"\n            android:label=\"@string/title_activity_main\"\n            android:screenOrientation=\"portrait\"\n            android:theme=\"@style/MainTheme\" />\n        <activity\n            android:name=\".AutorizationActivity\"\n            android:configChanges=\"orientation\"\n            android:screenOrientation=\"portrait\">\n            <intent-filter>\n                <action android:name=\"android.intent.action.MAIN\" />\n\n                <category android:name=\"android.intent.category.LAUNCHER\" />\n            </intent-filter>\n        </activity>\n    </application>\n\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision b434fae3b323aea4a000270afa8d02bb1a263919)
++++ b/app/src/main/AndroidManifest.xml	(date 1693660345335)
+@@ -17,30 +17,36 @@
+         <activity
+             android:name=".RecomendationActivity"
+             android:screenOrientation="portrait"
+-            android:theme="@style/MainTheme"></activity>
++            android:theme="@style/MainTheme"
++            android:exported="false"></activity>
+ 
+         <activity
+             android:name=".RecomendationListActivity"
+             android:screenOrientation="portrait"
+-            android:theme="@style/MainTheme" />
++            android:theme="@style/MainTheme"
++            android:exported="false"/>
+         <activity
+             android:name=".RequirementsActivity"
+-            android:screenOrientation="portrait" />
++            android:screenOrientation="portrait"
++            android:exported="false"/>
+         <activity
+             android:name=".GroupsActivity"
+             android:configChanges="orientation"
+             android:screenOrientation="portrait"
+-            android:theme="@style/MainTheme" />
++            android:theme="@style/MainTheme"
++            android:exported="false"/>
+         <activity
+             android:name=".MainActivity"
+             android:configChanges="orientation"
+             android:label="@string/title_activity_main"
+             android:screenOrientation="portrait"
++            android:exported="false"
+             android:theme="@style/MainTheme" />
+         <activity
+             android:name=".AutorizationActivity"
+             android:configChanges="orientation"
+-            android:screenOrientation="portrait">
++            android:screenOrientation="portrait"
++            android:exported="true">
+             <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+ 
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+new file mode 100644
+--- /dev/null	(date 1693660291883)
++++ b/.idea/compiler.xml	(date 1693660291883)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="CompilerConfiguration">
++    <bytecodeTargetLevel target="17" />
++  </component>
++</project>
+\ No newline at end of file
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>apply plugin: 'com.android.application'\n\nandroid {\n    compileSdkVersion 28\n    defaultConfig {\n        applicationId \"com.plstudio.a123.vfv\"\n        minSdkVersion 18\n        targetSdkVersion 28\n        versionCode 3\n        versionName '2.1'\n        testInstrumentationRunner \"android.support.test.runner.AndroidJUnitRunner\"\n    }\n    buildTypes {\n        release {\n            minifyEnabled false\n            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'\n        }\n    }\n    compileOptions {\n        sourceCompatibility = 1.8\n        targetCompatibility = 1.8\n    }\n    buildToolsVersion = '28.0.0'\n}\n\ndependencies {\n    implementation fileTree(dir: 'libs', include: ['*.jar'])\n    implementation 'com.android.support:appcompat-v7:28.0.0'\n    implementation 'com.android.support.constraint:constraint-layout:1.1.3'\n    implementation 'com.android.support:support-v4:28.0.0'\n    testImplementation 'junit:junit:4.12'\n    androidTestImplementation 'com.android.support.test:runner:1.0.2'\n    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'\n    implementation 'com.android.support:cardview-v7:28.0.0'\n    implementation 'com.android.support:design:28.0.0'\n    implementation 'com.mxn.soul:flowingdrawer-core:2.1.0'\n    implementation 'com.nineoldandroids:library:2.4.0'\n    implementation 'com.github.markushi:circlebutton:1.1'\n    implementation 'net.igenius:customcheckbox:1.3'\n    implementation \"com.andkulikov:transitionseverywhere:1.8.1\"\n\n    //loader\n    implementation 'ru.arturvasilov:rx-loader:0.1.4'\n\n    //RxJava\n    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'\n    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'\n\n    //dagger\n    def daggerVer = 2.27 // or latest version\n\n    implementation \"com.google.dagger:dagger:$daggerVer\"\n    annotationProcessor \"com.google.dagger:dagger-compiler:$daggerVer\"\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle b/app/build.gradle
+--- a/app/build.gradle	(revision b434fae3b323aea4a000270afa8d02bb1a263919)
++++ b/app/build.gradle	(date 1693660296226)
+@@ -1,11 +1,12 @@
+ apply plugin: 'com.android.application'
+ 
+ android {
+-    compileSdkVersion 28
++    namespace = "com.plstudio.a123.vfv"
++    compileSdkVersion 33
+     defaultConfig {
+         applicationId "com.plstudio.a123.vfv"
+         minSdkVersion 18
+-        targetSdkVersion 28
++        targetSdkVersion 33
+         versionCode 3
+         versionName '2.1'
+         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\n  <component name=\"GradleSettings\">\n    <option name=\"linkedExternalProjectsSettings\">\n      <GradleProjectSettings>\n        <option name=\"delegatedBuild\" value=\"false\" />\n        <option name=\"testRunner\" value=\"PLATFORM\" />\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\n        <option name=\"modules\">\n          <set>\n            <option value=\"$PROJECT_DIR$\" />\n            <option value=\"$PROJECT_DIR$/app\" />\n          </set>\n        </option>\n        <option name=\"resolveModulePerSourceSet\" value=\"false\" />\n      </GradleProjectSettings>\n    </option>\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/gradle.xml b/.idea/gradle.xml
+--- a/.idea/gradle.xml	(revision b434fae3b323aea4a000270afa8d02bb1a263919)
++++ b/.idea/gradle.xml	(date 1693660232898)
+@@ -4,17 +4,16 @@
+   <component name="GradleSettings">
+     <option name="linkedExternalProjectsSettings">
+       <GradleProjectSettings>
+-        <option name="delegatedBuild" value="false" />
+-        <option name="testRunner" value="PLATFORM" />
++        <option name="testRunner" value="GRADLE" />
+         <option name="distributionType" value="DEFAULT_WRAPPED" />
+         <option name="externalProjectPath" value="$PROJECT_DIR$" />
++        <option name="gradleJvm" value="jbr-17" />
+         <option name="modules">
+           <set>
+             <option value="$PROJECT_DIR$" />
+             <option value="$PROJECT_DIR$/app" />
+           </set>
+         </option>
+-        <option name="resolveModulePerSourceSet" value="false" />
+       </GradleProjectSettings>
+     </option>
+   </component>
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"NullableNotNullManager\">\n    <option name=\"myDefaultNullable\" value=\"android.support.annotation.Nullable\" />\n    <option name=\"myDefaultNotNull\" value=\"android.support.annotation.NonNull\" />\n    <option name=\"myNullables\">\n      <value>\n        <list size=\"12\">\n          <item index=\"0\" class=\"java.lang.String\" itemvalue=\"org.jetbrains.annotations.Nullable\" />\n          <item index=\"1\" class=\"java.lang.String\" itemvalue=\"javax.annotation.Nullable\" />\n          <item index=\"2\" class=\"java.lang.String\" itemvalue=\"javax.annotation.CheckForNull\" />\n          <item index=\"3\" class=\"java.lang.String\" itemvalue=\"edu.umd.cs.findbugs.annotations.Nullable\" />\n          <item index=\"4\" class=\"java.lang.String\" itemvalue=\"android.support.annotation.Nullable\" />\n          <item index=\"5\" class=\"java.lang.String\" itemvalue=\"androidx.annotation.Nullable\" />\n          <item index=\"6\" class=\"java.lang.String\" itemvalue=\"android.annotation.Nullable\" />\n          <item index=\"7\" class=\"java.lang.String\" itemvalue=\"androidx.annotation.RecentlyNullable\" />\n          <item index=\"8\" class=\"java.lang.String\" itemvalue=\"org.checkerframework.checker.nullness.qual.Nullable\" />\n          <item index=\"9\" class=\"java.lang.String\" itemvalue=\"org.checkerframework.checker.nullness.compatqual.NullableDecl\" />\n          <item index=\"10\" class=\"java.lang.String\" itemvalue=\"org.checkerframework.checker.nullness.compatqual.NullableType\" />\n          <item index=\"11\" class=\"java.lang.String\" itemvalue=\"com.android.annotations.Nullable\" />\n        </list>\n      </value>\n    </option>\n    <option name=\"myNotNulls\">\n      <value>\n        <list size=\"11\">\n          <item index=\"0\" class=\"java.lang.String\" itemvalue=\"org.jetbrains.annotations.NotNull\" />\n          <item index=\"1\" class=\"java.lang.String\" itemvalue=\"javax.annotation.Nonnull\" />\n          <item index=\"2\" class=\"java.lang.String\" itemvalue=\"edu.umd.cs.findbugs.annotations.NonNull\" />\n          <item index=\"3\" class=\"java.lang.String\" itemvalue=\"android.support.annotation.NonNull\" />\n          <item index=\"4\" class=\"java.lang.String\" itemvalue=\"androidx.annotation.NonNull\" />\n          <item index=\"5\" class=\"java.lang.String\" itemvalue=\"android.annotation.NonNull\" />\n          <item index=\"6\" class=\"java.lang.String\" itemvalue=\"androidx.annotation.RecentlyNonNull\" />\n          <item index=\"7\" class=\"java.lang.String\" itemvalue=\"org.checkerframework.checker.nullness.qual.NonNull\" />\n          <item index=\"8\" class=\"java.lang.String\" itemvalue=\"org.checkerframework.checker.nullness.compatqual.NonNullDecl\" />\n          <item index=\"9\" class=\"java.lang.String\" itemvalue=\"org.checkerframework.checker.nullness.compatqual.NonNullType\" />\n          <item index=\"10\" class=\"java.lang.String\" itemvalue=\"com.android.annotations.NonNull\" />\n        </list>\n      </value>\n    </option>\n  </component>\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_1_8\" project-jdk-name=\"1.8\" project-jdk-type=\"JavaSDK\">\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\n  </component>\n  <component name=\"ProjectType\">\n    <option name=\"id\" value=\"Android\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision b434fae3b323aea4a000270afa8d02bb1a263919)
++++ b/.idea/misc.xml	(date 1693669662503)
+@@ -5,7 +5,7 @@
+     <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />
+     <option name="myNullables">
+       <value>
+-        <list size="12">
++        <list size="14">
+           <item index="0" class="java.lang.String" itemvalue="org.jetbrains.annotations.Nullable" />
+           <item index="1" class="java.lang.String" itemvalue="javax.annotation.Nullable" />
+           <item index="2" class="java.lang.String" itemvalue="javax.annotation.CheckForNull" />
+@@ -18,12 +18,14 @@
+           <item index="9" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.compatqual.NullableDecl" />
+           <item index="10" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.compatqual.NullableType" />
+           <item index="11" class="java.lang.String" itemvalue="com.android.annotations.Nullable" />
++          <item index="12" class="java.lang.String" itemvalue="org.jspecify.nullness.Nullable" />
++          <item index="13" class="java.lang.String" itemvalue="org.eclipse.jdt.annotation.Nullable" />
+         </list>
+       </value>
+     </option>
+     <option name="myNotNulls">
+       <value>
+-        <list size="11">
++        <list size="13">
+           <item index="0" class="java.lang.String" itemvalue="org.jetbrains.annotations.NotNull" />
+           <item index="1" class="java.lang.String" itemvalue="javax.annotation.Nonnull" />
+           <item index="2" class="java.lang.String" itemvalue="edu.umd.cs.findbugs.annotations.NonNull" />
+@@ -35,11 +37,13 @@
+           <item index="8" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.compatqual.NonNullDecl" />
+           <item index="9" class="java.lang.String" itemvalue="org.checkerframework.checker.nullness.compatqual.NonNullType" />
+           <item index="10" class="java.lang.String" itemvalue="com.android.annotations.NonNull" />
++          <item index="11" class="java.lang.String" itemvalue="org.jspecify.nullness.NonNull" />
++          <item index="12" class="java.lang.String" itemvalue="org.eclipse.jdt.annotation.NonNull" />
+         </list>
+       </value>
+     </option>
+   </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+   <component name="ProjectType">
+Index: .idea/google-java-format.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/google-java-format.xml b/.idea/google-java-format.xml
+new file mode 100644
+--- /dev/null	(date 1693659971576)
++++ b/.idea/google-java-format.xml	(date 1693659971576)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="GoogleJavaFormatSettings">
++    <option name="enabled" value="false" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/jarRepositories.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/jarRepositories.xml b/.idea/jarRepositories.xml
+new file mode 100644
+--- /dev/null	(date 1693660034397)
++++ b/.idea/jarRepositories.xml	(date 1693660034397)
+@@ -0,0 +1,25 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="RemoteRepositoriesConfiguration">
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Maven Central repository" />
++      <option name="url" value="https://repo1.maven.org/maven2" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="jboss.community" />
++      <option name="name" value="JBoss Community repository" />
++      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="BintrayJCenter" />
++      <option name="name" value="BintrayJCenter" />
++      <option name="url" value="https://jcenter.bintray.com/" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="Google" />
++      <option name="name" value="Google" />
++      <option name="url" value="https://dl.google.com/dl/android/maven2/" />
++    </remote-repository>
++  </component>
++</project>
+\ No newline at end of file
+Index: build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// Top-level build file where you can add configuration options common to all sub-projects/modules.\n\nbuildscript {\n    \n    repositories {\n        google()\n        jcenter()\n\n    }\n    dependencies {\n        classpath 'com.android.tools.build:gradle:3.5.3'\n\n\n        // NOTE: Do not place your application dependencies here; they belong\n        // in the individual module build.gradle files\n    }\n}\n\nallprojects {\n    repositories {\n        google()\n        jcenter()\n    }\n}\n\ntask clean(type: Delete) {\n    delete rootProject.buildDir\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.gradle b/build.gradle
+--- a/build.gradle	(revision b434fae3b323aea4a000270afa8d02bb1a263919)
++++ b/build.gradle	(date 1693660129639)
+@@ -8,7 +8,7 @@
+ 
+     }
+     dependencies {
+-        classpath 'com.android.tools.build:gradle:3.5.3'
++        classpath 'com.android.tools.build:gradle:8.1.0'
+ 
+ 
+         // NOTE: Do not place your application dependencies here; they belong
+Index: app/src/main/java/com/plstudio/a123/vfv/MenuListFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.plstudio.a123.vfv;\n\n\nimport android.content.Context;\nimport android.content.Intent;\nimport android.content.SharedPreferences;\nimport android.content.res.ColorStateList;\nimport android.os.Bundle;\n\nimport android.support.design.widget.NavigationView;\nimport android.util.Log;\nimport android.view.LayoutInflater;\nimport android.view.MenuItem;\nimport android.view.View;\nimport android.view.ViewGroup;\n\nimport android.support.v4.app.Fragment;\n\nimport com.plstudio.a123.vfv.model.RequirementsLab;\nimport com.plstudio.a123.vfv.model.User;\n\nimport java.io.IOException;\nimport java.io.OutputStreamWriter;\n\n\npublic class MenuListFragment extends Fragment {\n    private NavigationView vNavigation;\n    private PreferenceUtils mSettings;\n    @Override\n    public View onCreateView(LayoutInflater inflater, ViewGroup container,\n                             Bundle savedInstanceState) {\n        View view = inflater.inflate(R.layout.fragment_menu_list, container, false);\n\n        mSettings = new PreferenceUtils(getContext());\n        vNavigation = (NavigationView) view.findViewById(R.id.vNavigation);\n\n        changeNameAppear();\n        vNavigation.setNavigationItemSelectedListener(item -> {\n            int id = item.getItemId();\n            Intent intent;\n            switch (id) {\n                case R.id.nav_home:\n                    makeUserDataEmpty(getContext());\n                    intent = new Intent(getActivity(), AutorizationActivity.class);\n                    startActivity(intent);\n                    break;\n                case R.id.nav_progress:\n                    intent = new Intent(getActivity(), MainActivity.class);\n                    startActivity(intent);\n                    break;\n                case R.id.nav_requirements:\n                    intent = new Intent(getActivity(), GroupsActivity.class);\n                    startActivity(intent);\n                    break;\n                case R.id.nav_reсomendation:\n                    intent = new Intent(getActivity(), RecomendationListActivity.class);\n                    startActivity(intent);\n                    break;\n                case R.id.dark_theme:\n                    changThemeSetting();\n                    reloadActivity();\n                    break;\n            }\n\n            return true;\n        }) ;\n        return view;\n    }\n    private void changThemeSetting() {\n        if (mSettings.getTheme().equals(\"dark\"))\n            mSettings.setTheme(\"light\");\n        else\n            mSettings.setTheme(\"dark\");\n\n    }\n    private void changeNameAppear(){\n        if(mSettings.getTheme().equals(\"dark\")) {\n            vNavigation.setItemTextColor(ColorStateList.valueOf(getResources().getColor(R.color.white)));\n            vNavigation.setItemIconTintList(ColorStateList.valueOf(getResources().getColor(R.color.second_white)));\n            vNavigation.getMenu().getItem(4).setIcon(R.drawable.ic_sunny_black_24dp);\n            vNavigation.getMenu().getItem(4).setTitle(R.string.ligh_theme);\n        } else {\n            vNavigation.setItemTextColor(ColorStateList.valueOf(getResources().getColor(R.color.black)));\n            vNavigation.setItemIconTintList(ColorStateList.valueOf(getResources().getColor(R.color.black)));\n            vNavigation.getMenu().getItem(4).setIcon(R.drawable.ic_brightness_2_black_24dp);\n            vNavigation.getMenu().getItem(4).setTitle(R.string.dark_theme);\n        }\n    }\n\n    private void makeUserDataEmpty(Context context){\n            try {\n                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(\"user.txt\", Context.MODE_PRIVATE));\n                outputStreamWriter.write(\"\");\n                outputStreamWriter.close();\n            }\n            catch (IOException e) {\n                Log.e(\"Exception\", \"File write failed: \" + e.toString());\n            }\n        RequirementsLab requirementsLab = RequirementsLab.get(getContext());\n        requirementsLab.undoAllRequirements();\n    }\n\n    private void reloadActivity(){\n        Intent intent = new Intent(getActivity(), MainActivity.class);\n        startActivity(intent);\n        getActivity().finish();\n    }\n    \n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/plstudio/a123/vfv/MenuListFragment.java b/app/src/main/java/com/plstudio/a123/vfv/MenuListFragment.java
+--- a/app/src/main/java/com/plstudio/a123/vfv/MenuListFragment.java	(revision b434fae3b323aea4a000270afa8d02bb1a263919)
++++ b/app/src/main/java/com/plstudio/a123/vfv/MenuListFragment.java	(date 1693660877488)
+@@ -3,21 +3,16 @@
+ 
+ import android.content.Context;
+ import android.content.Intent;
+-import android.content.SharedPreferences;
+ import android.content.res.ColorStateList;
+ import android.os.Bundle;
+-
+ import android.support.design.widget.NavigationView;
++import android.support.v4.app.Fragment;
+ import android.util.Log;
+ import android.view.LayoutInflater;
+-import android.view.MenuItem;
+ import android.view.View;
+ import android.view.ViewGroup;
+ 
+-import android.support.v4.app.Fragment;
+-
+ import com.plstudio.a123.vfv.model.RequirementsLab;
+-import com.plstudio.a123.vfv.model.User;
+ 
+ import java.io.IOException;
+ import java.io.OutputStreamWriter;
+@@ -26,6 +21,7 @@
+ public class MenuListFragment extends Fragment {
+     private NavigationView vNavigation;
+     private PreferenceUtils mSettings;
++
+     @Override
+     public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                              Bundle savedInstanceState) {
+@@ -38,34 +34,29 @@
+         vNavigation.setNavigationItemSelectedListener(item -> {
+             int id = item.getItemId();
+             Intent intent;
+-            switch (id) {
+-                case R.id.nav_home:
+-                    makeUserDataEmpty(getContext());
+-                    intent = new Intent(getActivity(), AutorizationActivity.class);
+-                    startActivity(intent);
+-                    break;
+-                case R.id.nav_progress:
+-                    intent = new Intent(getActivity(), MainActivity.class);
+-                    startActivity(intent);
+-                    break;
+-                case R.id.nav_requirements:
+-                    intent = new Intent(getActivity(), GroupsActivity.class);
+-                    startActivity(intent);
+-                    break;
+-                case R.id.nav_reсomendation:
+-                    intent = new Intent(getActivity(), RecomendationListActivity.class);
+-                    startActivity(intent);
+-                    break;
+-                case R.id.dark_theme:
+-                    changThemeSetting();
+-                    reloadActivity();
+-                    break;
++            if (id == R.id.nav_home) {
++                makeUserDataEmpty(getContext());
++                intent = new Intent(getActivity(), AutorizationActivity.class);
++                startActivity(intent);
++            } else if (id == R.id.nav_progress) {
++                intent = new Intent(getActivity(), MainActivity.class);
++                startActivity(intent);
++            } else if (id == R.id.nav_requirements) {
++                intent = new Intent(getActivity(), GroupsActivity.class);
++                startActivity(intent);
++            } else if (id == R.id.nav_reсomendation) {
++                intent = new Intent(getActivity(), RecomendationListActivity.class);
++                startActivity(intent);
++            } else if (id == R.id.dark_theme) {
++                changThemeSetting();
++                reloadActivity();
+             }
+ 
+             return true;
+-        }) ;
++        });
+         return view;
+     }
++
+     private void changThemeSetting() {
+         if (mSettings.getTheme().equals("dark"))
+             mSettings.setTheme("light");
+@@ -73,8 +64,9 @@
+             mSettings.setTheme("dark");
+ 
+     }
+-    private void changeNameAppear(){
+-        if(mSettings.getTheme().equals("dark")) {
++
++    private void changeNameAppear() {
++        if (mSettings.getTheme().equals("dark")) {
+             vNavigation.setItemTextColor(ColorStateList.valueOf(getResources().getColor(R.color.white)));
+             vNavigation.setItemIconTintList(ColorStateList.valueOf(getResources().getColor(R.color.second_white)));
+             vNavigation.getMenu().getItem(4).setIcon(R.drawable.ic_sunny_black_24dp);
+@@ -87,23 +79,22 @@
+         }
+     }
+ 
+-    private void makeUserDataEmpty(Context context){
+-            try {
+-                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
+-                outputStreamWriter.write("");
+-                outputStreamWriter.close();
+-            }
+-            catch (IOException e) {
+-                Log.e("Exception", "File write failed: " + e.toString());
+-            }
++    private void makeUserDataEmpty(Context context) {
++        try {
++            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("user.txt", Context.MODE_PRIVATE));
++            outputStreamWriter.write("");
++            outputStreamWriter.close();
++        } catch (IOException e) {
++            Log.e("Exception", "File write failed: " + e.toString());
++        }
+         RequirementsLab requirementsLab = RequirementsLab.get(getContext());
+         requirementsLab.undoAllRequirements();
+     }
+ 
+-    private void reloadActivity(){
++    private void reloadActivity() {
+         Intent intent = new Intent(getActivity(), MainActivity.class);
+         startActivity(intent);
+         getActivity().finish();
+     }
+-    
++
+ }

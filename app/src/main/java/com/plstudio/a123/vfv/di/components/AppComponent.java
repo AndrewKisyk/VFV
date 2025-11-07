@@ -8,6 +8,8 @@ import com.plstudio.a123.vfv.di.modules.AppModule;
 import com.plstudio.a123.vfv.di.modules.DbModule;
 import com.plstudio.a123.vfv.fragments.GroupsFragment;
 import com.plstudio.a123.vfv.fragments.MainFragment;
+import com.plstudio.a123.vfv.fragments.RecomendationFragment;
+import com.plstudio.a123.vfv.fragments.RecomendationListFragment;
 import com.plstudio.a123.vfv.fragments.RequirementsFragment;
 
 
@@ -24,5 +26,7 @@ public interface AppComponent {
     void injectMainActivity(MainActivity mainActivity);
     void injectMainFragment(MainFragment mainFragment);
     void injectGroupsFragment(GroupsFragment mainFragment);
+    void injectRecomendationFragment(RecomendationFragment recomendationFragment);
+    void injectRecomendationListFragment(RecomendationListFragment recomendationListFragment);
     void injectRequirementsFragment(RequirementsFragment requirementsFragment);
 }

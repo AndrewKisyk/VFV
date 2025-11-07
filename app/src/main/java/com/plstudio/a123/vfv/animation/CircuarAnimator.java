@@ -40,6 +40,13 @@ public class CircuarAnimator {
     }
 
     public void closeFragmentAnimation(View view, FragmentNavigator backEvent){
+        if (view == null) {
+            // If view is null, just navigate without animation
+            if (backEvent != null) {
+                backEvent.goToAnotherFragment();
+            }
+            return;
+        }
         int animCoords[] = coordsOfStart(view);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Animator animator = ViewAnimationUtils.createCircularReveal(view, animCoords[0], animCoords[1], 0, maxRadius);
@@ -52,8 +59,12 @@ public class CircuarAnimator {
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    view.setVisibility(View.INVISIBLE);
-                    backEvent.goToAnotherFragment();
+                    if (view != null) {
+                        view.setVisibility(View.INVISIBLE);
+                    }
+                    if (backEvent != null) {
+                        backEvent.goToAnotherFragment();
+                    }
 
                 }
 
@@ -68,6 +79,11 @@ public class CircuarAnimator {
                 }
             });
             animator.start();
+        } else {
+            // For versions below Lollipop, just navigate without animation
+            if (backEvent != null) {
+                backEvent.goToAnotherFragment();
+            }
         }
     }
 }

@@ -1,8 +1,8 @@
 package com.plstudio.a123.vfv.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +17,6 @@ import androidx.cardview.widget.CardView;
 
 
 import com.plstudio.a123.vfv.R;
-import com.plstudio.a123.vfv.RequirementsActivity;
 import com.plstudio.a123.vfv.animation.CardAnimator;
 import com.plstudio.a123.vfv.animation.CircuarAnimator;
 import com.plstudio.a123.vfv.animation.FragmentCloseAnimation;
@@ -127,48 +126,49 @@ public class GroupsFragment extends Fragment implements ThemeCreatable, GroupsCo
     }
 
     private void initListeners() {
+        FragmentManager fm = getFragmentManager();
         back.setOnClickListener(event -> getActivity().onBackPressed());
         setting.setOnClickListener(event -> mDrawer.toggleMenu());
 
-        Intent intent = new Intent(getContext(), RequirementsActivity.class);
-        g1.setOnClickListener(event -> {
-            intent.putExtra("GROUP", "1");
-            intent.putExtra("MIN", "2");
-            startActivity(intent);
-
-//            AnimationVars.setAnimationVars(event);
-//            getFragmentManager().beginTransaction()
-//                    .replace(R.id.fragment_holder, new RequirementsFragment())
-//                    .addToBackStack(GroupsFragment.class.getName())
-//                    .commit();
+        g1.setOnClickListener(view -> {
+            RequirementsFragment fragment = RequirementsFragment.newInstance("1", "2");
+            cardAnimator.endCardFragment(title_card, getCards(), () -> fm.beginTransaction()
+                    .replace(R.id.fragment_holder, fragment)
+                    .addToBackStack(GroupsFragment.class.getName())
+                    .commit());
         });
-        g2.setOnClickListener(event -> {
-            intent.putExtra("GROUP", "2");
-            intent.putExtra("MIN", "2");
-            startActivity(intent);
-//            AnimationVars.setAnimationVars(event);
-//            getFragmentManager().beginTransaction()
-//                    .replace(R.id.fragment_holder, new RequirementsFragment())
-//                    .addToBackStack(GroupsFragment.class.getName())
-//                    .commit();
+        
+        g2.setOnClickListener(view -> {
+            RequirementsFragment fragment = RequirementsFragment.newInstance("2", "2");
+            cardAnimator.endCardFragment(title_card, getCards(), () -> fm.beginTransaction()
+                    .replace(R.id.fragment_holder, fragment)
+                    .addToBackStack(GroupsFragment.class.getName())
+                    .commit());
         });
 
-        g3.setOnClickListener(event -> {
-            intent.putExtra("GROUP", "3");
-            intent.putExtra("MIN", "2");
-            startActivity(intent);
+        g3.setOnClickListener(view -> {
+            RequirementsFragment fragment = RequirementsFragment.newInstance("3", "2");
+            cardAnimator.endCardFragment(title_card, getCards(), () -> fm.beginTransaction()
+                    .replace(R.id.fragment_holder, fragment)
+                    .addToBackStack(GroupsFragment.class.getName())
+                    .commit());
         });
-        g4.setOnClickListener(event -> {
-            intent.putExtra("GROUP", "4");
-            intent.putExtra("MIN", "3");
-            startActivity(intent);
+        
+        g4.setOnClickListener(view -> {
+            RequirementsFragment fragment = RequirementsFragment.newInstance("4", "3");
+            cardAnimator.endCardFragment(title_card, getCards(), () -> fm.beginTransaction()
+                    .replace(R.id.fragment_holder, fragment)
+                    .addToBackStack(GroupsFragment.class.getName())
+                    .commit());
         });
-        g5.setOnClickListener(event -> {
-            intent.putExtra("GROUP", "5");
-            intent.putExtra("MIN", "3");
-            startActivity(intent);
+        
+        g5.setOnClickListener(view -> {
+            RequirementsFragment fragment = RequirementsFragment.newInstance("5", "3");
+            cardAnimator.endCardFragment(title_card, getCards(), () -> fm.beginTransaction()
+                    .replace(R.id.fragment_holder, fragment)
+                    .addToBackStack(GroupsFragment.class.getName())
+                    .commit());
         });
-
     }
 
     @Override
