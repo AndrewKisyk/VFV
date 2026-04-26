@@ -327,6 +327,9 @@ private object CommonMainDrawable0 {
   public val transparenttitle: DrawableResource by 
       lazy { init_transparenttitle() }
 
+  public val trash: DrawableResource by 
+      lazy { init_trash() }
+
   public val verticall_jump: DrawableResource by 
       lazy { init_verticall_jump() }
 
@@ -448,6 +451,7 @@ internal fun _collectCommonMainDrawable0Resources(map: MutableMap<String, Drawab
   map.put("tick", CommonMainDrawable0.tick)
   map.put("title", CommonMainDrawable0.title)
   map.put("transparenttitle", CommonMainDrawable0.transparenttitle)
+  map.put("trash", CommonMainDrawable0.trash)
   map.put("verticall_jump", CommonMainDrawable0.verticall_jump)
   map.put("vfvicon", CommonMainDrawable0.vfvicon)
   map.put("water_jump", CommonMainDrawable0.water_jump)
@@ -1669,6 +1673,17 @@ private fun init_transparenttitle(): DrawableResource =
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
     "composeResources/com.wrapper.composechat.resources/drawable/transparenttitle.png", -1, -1),
+    )
+)
+
+public val Res.drawable.trash: DrawableResource
+  get() = CommonMainDrawable0.trash
+
+private fun init_trash(): DrawableResource = org.jetbrains.compose.resources.DrawableResource(
+  "drawable:trash",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/trash.png", -1, -1),
     )
 )
 

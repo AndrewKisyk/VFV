@@ -18,4 +18,7 @@
     <string name="main_dashboard_recommendations_title">Рекомендації</string>
     <string name="main_dashboard_recommendations_subtitle">корисні посилання</string>
     <string name="nav_back">Back</string>
+    <string name="frosted_chats_title">Let\'s personalize your experience</string>
+    <string name="frosted_chats_body">Choose how you want to continue in the chat hub.</string>
+    <string name="frosted_chats_continue">Continue</string>
 </resources>

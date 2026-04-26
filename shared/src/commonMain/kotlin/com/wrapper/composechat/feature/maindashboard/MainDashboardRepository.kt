@@ -22,7 +22,7 @@ data class MainDashboardProgress(
 class DefaultMainDashboardRepository : MainDashboardRepository {
     override suspend fun loadProgress(): MainDashboardProgress = MainDashboardProgress(
         mainPercent = 35,
-        requirementsPercent = 42,
+        requirementsPercent = 43,
         recommendationsPercent = 18,
         vfvAllDone = false,
     )

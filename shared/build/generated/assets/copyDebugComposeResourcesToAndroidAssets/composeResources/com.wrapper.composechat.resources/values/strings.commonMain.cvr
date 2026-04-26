@@ -9,6 +9,9 @@ string|auth_sex_label|R2VuZGVy
 string|auth_sex_male|TWFsZQ==
 string|auth_swipe_to_continue|U3dpcGUgcmlnaHQgdG8gY29udGludWU=
 string|auth_title|UHJvZmlsZQ==
+string|frosted_chats_body|Q2hvb3NlIGhvdyB5b3Ugd2FudCB0byBjb250aW51ZSBpbiB0aGUgY2hhdCBodWIu
+string|frosted_chats_continue|Q29udGludWU=
+string|frosted_chats_title|TGV0XCdzIHBlcnNvbmFsaXplIHlvdXIgZXhwZXJpZW5jZQ==
 string|main_dashboard_chats|Q2hhdHM=
 string|main_dashboard_in_progress|0JLQmCDQkiDQn9Cg0J7QptCV0KHQhg==
 string|main_dashboard_recommendations_subtitle|0LrQvtGA0LjRgdC90ZYg0L/QvtGB0LjQu9Cw0L3QvdGP

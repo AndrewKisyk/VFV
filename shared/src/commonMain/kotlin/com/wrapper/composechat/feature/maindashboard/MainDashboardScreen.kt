@@ -21,12 +21,12 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -35,10 +35,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.contentDescription
@@ -52,7 +57,8 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import androidx.compose.runtime.collectAsState
-
+import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
+import com.wrapper.composechat.ui.components.VfvGlassFullScreenBottomSheet
 /**
  * VFV main dashboard: night sky, ring gauge, two nav cards. Callbacks and [MainDashboardViewModel] unchanged.
  */
@@ -80,6 +86,9 @@ fun MainDashboardScreen(
 
     val requirementsImage = painterResource(Res.drawable.main_dashboard_requirements)
     val recommendationsImage = painterResource(Res.drawable.main_dashboard_recommendations)
+    var showChatsAccessSheet by remember { mutableStateOf(false) }
+    var chatsSheetBackground: ImageBitmap? by remember { mutableStateOf(null) }
+    val captureForSheet = rememberComposeViewBitmapCapture()
 
     Box(Modifier.fillMaxSize()) {
         MainDashboardSkyBackdrop(Modifier.fillMaxSize())
@@ -92,7 +101,10 @@ fun MainDashboardScreen(
         ) {
             MainDashboardTopBar(
                 inProgressText = stringResource(Res.string.main_dashboard_in_progress),
-                onOpenChats = onOpenChats,
+                onOpenChats = {
+                    chatsSheetBackground = captureForSheet()
+                    showChatsAccessSheet = true
+                },
                 onOpenSettings = onOpenSettings,
                 chatsContentDescription = stringResource(Res.string.main_dashboard_chats),
                 settingsContentDescription = stringResource(Res.string.main_dashboard_settings),
@@ -147,6 +159,22 @@ fun MainDashboardScreen(
             )
             Spacer(Modifier.height(24.dp))
         }
+        VfvGlassFullScreenBottomSheet(
+            visible = showChatsAccessSheet,
+            onDismissRequest = {
+                showChatsAccessSheet = false
+                chatsSheetBackground = null
+            },
+            backgroundSnapshot = chatsSheetBackground,
+        ) {
+            ChatsAccessSheetContent(
+                onContinue = {
+                    showChatsAccessSheet = false
+                    chatsSheetBackground = null
+                    onOpenChats()
+                },
+            )
+        }
     }
 }
 
@@ -168,10 +196,10 @@ private fun MainDashboardTopBar(
             desc = chatsContentDescription,
         ) {
             Icon(
-                imageVector = Icons.Filled.KeyboardArrowDown,
+                imageVector = Icons.Rounded.KeyboardArrowDown,
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier.size(22.dp),
+                modifier = Modifier.size(16.dp),
             )
         }
         Text(
@@ -181,6 +209,7 @@ private fun MainDashboardTopBar(
                 .padding(horizontal = 12.dp),
             color = Color.White.copy(alpha = 0.88f),
             style = MaterialTheme.typography.labelLarge,
+            textAlign = TextAlign.Center,
             fontWeight = FontWeight.Normal,
             fontFamily = family,
         )
@@ -189,10 +218,10 @@ private fun MainDashboardTopBar(
             desc = settingsContentDescription,
         ) {
             Icon(
-                imageVector = Icons.Outlined.Delete,
+                painter = painterResource(Res.drawable.trash),
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier.size(16.dp),
             )
         }
     }
@@ -207,9 +236,9 @@ private fun RingIconButton(
     Box(
         modifier = Modifier
             .semantics { contentDescription = desc }
-            .size(44.dp)
-            .clip(CircleShape)
-            .border(1.dp, Color.White.copy(alpha = 0.4f), CircleShape)
+            .size(32.dp)
+            .clip(RoundedCornerShape(corner = CornerSize(12.dp)))
+            .border(1.dp, Color.White.copy(alpha = 0.4f), RoundedCornerShape(corner = CornerSize(12.dp)))
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
