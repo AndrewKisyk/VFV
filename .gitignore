@@ -1,6 +1,7 @@
 # === Gradle (all modules) ===
 .gradle/
 build/
+shared/build/
 
 # KMP / Kotlin
 .kotlin/
