@@ -60,6 +60,10 @@ private val SparkleLayout = listOf(
 fun SplashScreen(
     loadProgress: Float,
     modifier: Modifier = Modifier,
+    /** Applied after size (e.g. [androidx.compose.animation.SharedTransitionScope.sharedElement] for the title asset). */
+    titleImageModifier: Modifier = Modifier,
+    /** When true, hides the title/subtitle band (e.g. auth overlay shows its own title on top). */
+    hideBranding: Boolean = false,
 ) {
     val density = LocalDensity.current
     val inf = rememberInfiniteTransition(label = "splash")
@@ -152,37 +156,36 @@ fun SplashScreen(
 
         val subSize = (13f * (minD / 400f).coerceIn(0.9f, 1.05f)).sp
         val titleImageMaxH = with(density) { (minD * 0.16f).coerceAtLeast(64f).toDp() }
-        val aboveProgressPad = with(density) { (h * 0.19f).toDp() }
         val roadLayout = splashForegroundRoadLayout(h)
-        val textBandHeight =
-            with(density) { (h - roadLayout.roadBottomY).toDp() } - aboveProgressPad
-        Column(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .offset(y = with(density) { roadLayout.roadBottomY.toDp() })
-                .fillMaxHeight()
-                .background(
-                    Color(0xFF0C012B)
-                )
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Image(
-                painter = painterResource(Res.drawable.title),
-                contentDescription = null,
-                contentScale = ContentScale.Fit,
+        if (!hideBranding) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.88f)
-                    .height(titleImageMaxH),
-            )
-            Spacer(Modifier.height(6.dp))
-            Text(
-                text = stringResource(Res.string.splash_vfv_subtitle),
-                color = Color.White.copy(alpha = 0.88f),
-                fontSize = subSize,
-                fontWeight = FontWeight.Normal,
-                textAlign = TextAlign.Center,
-            )
+                    .align(Alignment.TopCenter)
+                    .offset(y = with(density) { roadLayout.roadBottomY.toDp() })
+                    .fillMaxHeight()
+                    .background(
+                        Color(0xFF0C012B)
+                    )
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Image(
+                    painter = painterResource(Res.drawable.title),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    modifier = titleImageModifier
+                        .fillMaxWidth(0.88f)
+                        .height(titleImageMaxH),
+                )
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = stringResource(Res.string.splash_vfv_subtitle),
+                    color = Color.White.copy(alpha = 0.88f),
+                    fontSize = subSize,
+                    fontWeight = FontWeight.Normal,
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
 
         val p = loadProgress.coerceIn(0f, 1f)

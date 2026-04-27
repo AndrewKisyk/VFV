@@ -53,7 +53,11 @@ private val ScrimBottomColor = Color(0xFF020725)
 /**
  * @param backgroundSnapshot A bitmap of the screen **before** this overlay (from [com.wrapper.composechat.platform.rememberComposeViewBitmapCapture]).
  *   If null, falls back to blur-only tint (e.g. iOS until a capture is wired).
+ * @param fullScreenBlurredSnapshot If true, draws [backgroundSnapshot] **full screen** (with blur) behind the sheet so the
+ *   entire area looks like a blurred underlay (e.g. post–splash auth). If false (default, e.g. main dashboard), only the
+ *   bottom “rising” strip uses the snapshot.
  * @param onOpenProgressChange 0f = closed, 1f = fully open; updates while animating and while dragging.
+ * @param swipeToDismissEnabled If false, vertical drag does not move or dismiss the sheet (e.g. required auth).
  */
 @Composable
 fun VfvGlassFullScreenBottomSheet(
@@ -61,8 +65,10 @@ fun VfvGlassFullScreenBottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     backgroundSnapshot: ImageBitmap? = null,
+    fullScreenBlurredSnapshot: Boolean = false,
     backdropBlurRadiusDp: Float = 20f,
     onOpenProgressChange: ((Float) -> Unit)? = null,
+    swipeToDismissEnabled: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     val dismissTap = remember { MutableInteractionSource() }
@@ -122,8 +128,46 @@ fun VfvGlassFullScreenBottomSheet(
             val visibleHeightPx = (maxHPx - dragY).coerceIn(0f, maxHPx)
             val visibleHeightDp = with(density) { visibleHeightPx.toDp() }
             val fullScreenH = maxHeight
+            val blurMod = if (isBackdropBlurAvailable()) {
+                Modifier.optionalBackdropBlur(backdropBlurRadiusDp)
+            } else {
+                Modifier
+            }
+            val fullScreenSnapshotGradient = Brush.verticalGradient(
+                0f to Color.Black.copy(alpha = 0.12f),
+                0.45f to Color.Transparent,
+                1f to ScrimBottomColor.copy(alpha = 0.75f),
+            )
 
             Box(Modifier.fillMaxSize()) {
+                if (fullScreenBlurredSnapshot) {
+                    if (backgroundSnapshot != null) {
+                        Image(
+                            bitmap = backgroundSnapshot,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            alignment = Alignment.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .zIndex(0f)
+                                .then(blurMod),
+                        )
+                    } else {
+                        Box(
+                            Modifier
+                                .fillMaxSize()
+                                .zIndex(0f)
+                                .then(blurMod)
+                                .background(ScrimBottomColor.copy(alpha = 0.85f)),
+                        )
+                    }
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .zIndex(0.5f)
+                            .background(brush = fullScreenSnapshotGradient),
+                    )
+                }
                 if (visibleHeightPx > 0.5f) {
                     val stripGradient = Brush.verticalGradient(
                         colorStops = arrayOf(0f to Color.Transparent, 1f to ScrimBottomColor),
@@ -136,9 +180,9 @@ fun VfvGlassFullScreenBottomSheet(
                             .fillMaxWidth()
                             .height(visibleHeightDp)
                             .clip(RectangleShape)
-                            .zIndex(0f),
+                            .zIndex(0.6f),
                     ) {
-                        if (backgroundSnapshot != null) {
+                        if (!fullScreenBlurredSnapshot && backgroundSnapshot != null) {
                             Image(
                                 bitmap = backgroundSnapshot,
                                 contentDescription = null,
@@ -148,28 +192,18 @@ fun VfvGlassFullScreenBottomSheet(
                                     .align(Alignment.BottomCenter)
                                     .fillMaxWidth()
                                     .height(fullScreenH)
-                                    .then(
-                                        if (isBackdropBlurAvailable()) {
-                                            Modifier.optionalBackdropBlur(backdropBlurRadiusDp)
-                                        } else {
-                                            Modifier
-                                        },
-                                    ),
+                                    .then(blurMod),
                             )
                             Box(Modifier.matchParentSize().background(brush = stripGradient))
-                        } else {
+                        } else if (!fullScreenBlurredSnapshot) {
                             Box(
                                 Modifier
                                     .matchParentSize()
-                                    .then(
-                                        if (isBackdropBlurAvailable()) {
-                                            Modifier.optionalBackdropBlur(backdropBlurRadiusDp)
-                                        } else {
-                                            Modifier
-                                        },
-                                    )
+                                    .then(blurMod)
                                     .background(brush = stripGradient),
                             )
+                        } else {
+                            Box(Modifier.matchParentSize().background(brush = stripGradient))
                         }
                     }
                 }
@@ -180,29 +214,35 @@ fun VfvGlassFullScreenBottomSheet(
                         .fillMaxSize()
                         .zIndex(1f)
                         .offset { IntOffset(0, dragY.roundToInt()) }
-                        .pointerInput(maxHPx, dismissDragThresholdPx) {
-                            detectVerticalDragGestures(
-                                onDragEnd = {
-                                    scope.launch {
-                                        if (dragY > dismissDragThresholdPx) {
-                                            onDismiss()
-                                        } else {
-                                            animate(
-                                                initialValue = dragY,
-                                                targetValue = 0f,
-                                                initialVelocity = 0f,
-                                                animationSpec = tween(220),
-                                            ) { v, _ ->
-                                                dragY = v
+                        .then(
+                            if (swipeToDismissEnabled) {
+                                Modifier.pointerInput(maxHPx, dismissDragThresholdPx) {
+                                    detectVerticalDragGestures(
+                                        onDragEnd = {
+                                            scope.launch {
+                                                if (dragY > dismissDragThresholdPx) {
+                                                    onDismiss()
+                                                } else {
+                                                    animate(
+                                                        initialValue = dragY,
+                                                        targetValue = 0f,
+                                                        initialVelocity = 0f,
+                                                        animationSpec = tween(220),
+                                                    ) { v, _ ->
+                                                        dragY = v
+                                                    }
+                                                }
                                             }
-                                        }
-                                    }
-                                },
-                                onVerticalDrag = { _, delta ->
-                                    dragY = (dragY + delta).coerceIn(0f, maxHPx)
-                                },
-                            )
-                        },
+                                        },
+                                        onVerticalDrag = { _, delta ->
+                                            dragY = (dragY + delta).coerceIn(0f, maxHPx)
+                                        },
+                                    )
+                                }
+                            } else {
+                                Modifier
+                            },
+                        ),
                 ) {
                     Column(
                         Modifier
