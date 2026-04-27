@@ -305,7 +305,7 @@ private fun DrawScope.drawSkyOrb(cx: Float, cy: Float, radius: Float, color: Col
  * Four-point cross sparkle with fade-to-transparent arms + a bright centre dot.
  * Replicates the `blend-mode:plus-lighter` cross specks from the reference SVG.
  */
-private fun DrawScope.drawCrossSparkle(center: Offset, size: Float, alpha: Float) {
+internal fun DrawScope.drawCrossSparkle(center: Offset, size: Float, alpha: Float) {
     if (alpha <= 0.02f) return
     val a  = alpha.coerceIn(0f, 1f)
     val sw = (size * 0.13f).coerceAtLeast(0.8f)

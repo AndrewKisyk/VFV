@@ -74,6 +74,12 @@ private object CommonMainString0 {
 
   public val nav_back: StringResource by 
       lazy { init_nav_back() }
+
+  public val splash_vfv_subtitle: StringResource by 
+      lazy { init_splash_vfv_subtitle() }
+
+  public val splash_vfv_title: StringResource by 
+      lazy { init_splash_vfv_title() }
 }
 
 @InternalResourceApi
@@ -103,6 +109,8 @@ internal fun _collectCommonMainString0Resources(map: MutableMap<String, StringRe
   map.put("main_dashboard_settings", CommonMainString0.main_dashboard_settings)
   map.put("main_dashboard_vfv_done", CommonMainString0.main_dashboard_vfv_done)
   map.put("nav_back", CommonMainString0.nav_back)
+  map.put("splash_vfv_subtitle", CommonMainString0.splash_vfv_subtitle)
+  map.put("splash_vfv_title", CommonMainString0.splash_vfv_title)
 }
 
 public val Res.string.app_name: StringResource
@@ -356,5 +364,29 @@ private fun init_nav_back(): StringResource = org.jetbrains.compose.resources.St
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
     "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1151, 24),
+    )
+)
+
+public val Res.string.splash_vfv_subtitle: StringResource
+  get() = CommonMainString0.splash_vfv_subtitle
+
+private fun init_splash_vfv_subtitle(): StringResource =
+    org.jetbrains.compose.resources.StringResource(
+  "string:splash_vfv_subtitle", "splash_vfv_subtitle",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1176, 155),
+    )
+)
+
+public val Res.string.splash_vfv_title: StringResource
+  get() = CommonMainString0.splash_vfv_title
+
+private fun init_splash_vfv_title(): StringResource =
+    org.jetbrains.compose.resources.StringResource(
+  "string:splash_vfv_title", "splash_vfv_title",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1332, 32),
     )
 )

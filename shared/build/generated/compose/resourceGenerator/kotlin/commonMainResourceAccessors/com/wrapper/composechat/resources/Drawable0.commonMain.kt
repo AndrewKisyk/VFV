@@ -291,6 +291,9 @@ private object CommonMainDrawable0 {
   public val run: DrawableResource by 
       lazy { init_run() }
 
+  public val seconadary_object: DrawableResource by 
+      lazy { init_seconadary_object() }
+
   public val side_nav_bar: DrawableResource by 
       lazy { init_side_nav_bar() }
 
@@ -305,6 +308,27 @@ private object CommonMainDrawable0 {
 
   public val smart: DrawableResource by 
       lazy { init_smart() }
+
+  public val splash_claude_left: DrawableResource by 
+      lazy { init_splash_claude_left() }
+
+  public val splash_claude_middle: DrawableResource by 
+      lazy { init_splash_claude_middle() }
+
+  public val splash_claude_right: DrawableResource by 
+      lazy { init_splash_claude_right() }
+
+  public val splash_foreground_road: DrawableResource by 
+      lazy { init_splash_foreground_road() }
+
+  public val splash_scout_body: DrawableResource by 
+      lazy { init_splash_scout_body() }
+
+  public val splash_scout_head: DrawableResource by 
+      lazy { init_splash_scout_head() }
+
+  public val splash_secondary_scene: DrawableResource by 
+      lazy { init_splash_secondary_scene() }
 
   public val stroke_requi: DrawableResource by 
       lazy { init_stroke_requi() }
@@ -439,11 +463,19 @@ internal fun _collectCommonMainDrawable0Resources(map: MutableMap<String, Drawab
   map.put("requirements_done", CommonMainDrawable0.requirements_done)
   map.put("requirements_progress_icon", CommonMainDrawable0.requirements_progress_icon)
   map.put("run", CommonMainDrawable0.run)
+  map.put("seconadary_object", CommonMainDrawable0.seconadary_object)
   map.put("side_nav_bar", CommonMainDrawable0.side_nav_bar)
   map.put("silver", CommonMainDrawable0.silver)
   map.put("single_leg", CommonMainDrawable0.single_leg)
   map.put("smallnonefillcircle", CommonMainDrawable0.smallnonefillcircle)
   map.put("smart", CommonMainDrawable0.smart)
+  map.put("splash_claude_left", CommonMainDrawable0.splash_claude_left)
+  map.put("splash_claude_middle", CommonMainDrawable0.splash_claude_middle)
+  map.put("splash_claude_right", CommonMainDrawable0.splash_claude_right)
+  map.put("splash_foreground_road", CommonMainDrawable0.splash_foreground_road)
+  map.put("splash_scout_body", CommonMainDrawable0.splash_scout_body)
+  map.put("splash_scout_head", CommonMainDrawable0.splash_scout_head)
+  map.put("splash_secondary_scene", CommonMainDrawable0.splash_secondary_scene)
   map.put("stroke_requi", CommonMainDrawable0.stroke_requi)
   map.put("stroke_requirement_done", CommonMainDrawable0.stroke_requirement_done)
   map.put("stroke_requirements_riple", CommonMainDrawable0.stroke_requirements_riple)
@@ -1538,6 +1570,18 @@ private fun init_run(): DrawableResource = org.jetbrains.compose.resources.Drawa
     )
 )
 
+public val Res.drawable.seconadary_object: DrawableResource
+  get() = CommonMainDrawable0.seconadary_object
+
+private fun init_seconadary_object(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:seconadary_object",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/seconadary_object.png", -1, -1),
+    )
+)
+
 public val Res.drawable.side_nav_bar: DrawableResource
   get() = CommonMainDrawable0.side_nav_bar
 
@@ -1592,6 +1636,90 @@ private fun init_smart(): DrawableResource = org.jetbrains.compose.resources.Dra
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
     "composeResources/com.wrapper.composechat.resources/drawable/smart.jpg", -1, -1),
+    )
+)
+
+public val Res.drawable.splash_claude_left: DrawableResource
+  get() = CommonMainDrawable0.splash_claude_left
+
+private fun init_splash_claude_left(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:splash_claude_left",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/splash_claude_left.png", -1, -1),
+    )
+)
+
+public val Res.drawable.splash_claude_middle: DrawableResource
+  get() = CommonMainDrawable0.splash_claude_middle
+
+private fun init_splash_claude_middle(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:splash_claude_middle",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/splash_claude_middle.png", -1, -1),
+    )
+)
+
+public val Res.drawable.splash_claude_right: DrawableResource
+  get() = CommonMainDrawable0.splash_claude_right
+
+private fun init_splash_claude_right(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:splash_claude_right",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/splash_claude_right.png", -1, -1),
+    )
+)
+
+public val Res.drawable.splash_foreground_road: DrawableResource
+  get() = CommonMainDrawable0.splash_foreground_road
+
+private fun init_splash_foreground_road(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:splash_foreground_road",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/splash_foreground_road.png", -1, -1),
+    )
+)
+
+public val Res.drawable.splash_scout_body: DrawableResource
+  get() = CommonMainDrawable0.splash_scout_body
+
+private fun init_splash_scout_body(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:splash_scout_body",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/splash_scout_body.png", -1, -1),
+    )
+)
+
+public val Res.drawable.splash_scout_head: DrawableResource
+  get() = CommonMainDrawable0.splash_scout_head
+
+private fun init_splash_scout_head(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:splash_scout_head",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/splash_scout_head.png", -1, -1),
+    )
+)
+
+public val Res.drawable.splash_secondary_scene: DrawableResource
+  get() = CommonMainDrawable0.splash_secondary_scene
+
+private fun init_splash_secondary_scene(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:splash_secondary_scene",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/splash_secondary_scene.png", -1, -1),
     )
 )
 

@@ -152,7 +152,7 @@ fun AlarmStyleVectorBackdrop(
  * Puffy, slowly morphing haze: several overlapping ovals (ellipses) with different aspect ratios,
  * rotations, and per-layer motion — no polygon corners or spline knots.
  */
-private fun DrawScope.drawSoftCloudWithOvals(
+internal fun DrawScope.drawSoftCloudWithOvals(
     center: Offset,
     baseSize: Float,
     phA: Float,

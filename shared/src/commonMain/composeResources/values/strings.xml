@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">VFV Multiplatform</string>
+    <string name="splash_vfv_title">ВФВ</string>
+    <string name="splash_vfv_subtitle">Вимоги для Відзнаки Фізичної Вправності твого віку</string>
     <string name="auth_title">Profile</string>
     <string name="auth_age_label">Age</string>
     <string name="auth_age_error">введіть число від 12 до 17</string>

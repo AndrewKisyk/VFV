@@ -18,6 +18,10 @@ import com.wrapper.composechat.feature.home.MainStackFlow
 import com.wrapper.composechat.feature.maindashboard.MainDashboardScreen
 import com.wrapper.composechat.feature.maindashboard.VfvGroupsPlaceholderScreen
 import com.wrapper.composechat.feature.maindashboard.VfvRecommendationsPlaceholderScreen
+import com.wrapper.composechat.feature.splash.SplashScreen
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 object AppDestinations {
@@ -38,52 +42,65 @@ fun RootNavHost(
     val authRepository = koinInject<AuthRepository>()
     var bootstrapped by remember { mutableStateOf(false) }
     var needAuth by remember { mutableStateOf(true) }
+    var splashProgress by remember { mutableStateOf(0f) }
 
     LaunchedEffect(authRepository) {
-        needAuth = !authRepository.hasSession()
+        coroutineScope {
+            val progressTick = async {
+                val steps = 52
+                repeat(steps) { i ->
+                    splashProgress = (i + 1) / steps.toFloat() * 0.92f
+                    delay(18)
+                }
+            }
+            needAuth = !authRepository.hasSession()
+            progressTick.await()
+        }
+        splashProgress = 1f
+        delay(100)
         bootstrapped = true
     }
-
-    when {
-        !bootstrapped -> Box(modifier.fillMaxSize())
-        else -> NavHost(
-            navController = navController,
-            startDestination = if (needAuth) {
-                AppDestinations.Auth
-            } else {
-                AppDestinations.MainDashboard
-            },
-            modifier = modifier,
-        ) {
-            composable(AppDestinations.Auth) {
-                AuthScreen(
-                    onNavigateToHome = {
-                        navController.navigate(AppDestinations.MainDashboard) {
-                            popUpTo(AppDestinations.Auth) { inclusive = true }
-                        }
-                    },
-                )
-            }
-            composable(AppDestinations.MainDashboard) {
-                MainDashboardScreen(
-                    onOpenChats = { navController.navigate(AppDestinations.Chats) },
-                    onOpenRequirements = { navController.navigate(AppDestinations.Groups) },
-                    onOpenRecommendations = { navController.navigate(AppDestinations.Recommendations) },
-                )
-            }
-            composable(AppDestinations.Chats) {
-                MainStackFlow()
-            }
-            composable(AppDestinations.Groups) {
-                VfvGroupsPlaceholderScreen(
-                    onBack = { navController.popBackStack() },
-                )
-            }
-            composable(AppDestinations.Recommendations) {
-                VfvRecommendationsPlaceholderScreen(
-                    onBack = { navController.popBackStack() },
-                )
-            }
-        }
-    }
+    SplashScreen(loadProgress = splashProgress, modifier = modifier.fillMaxSize())
+//    when {
+//        !bootstrapped -> SplashScreen(loadProgress = splashProgress, modifier = modifier.fillMaxSize())
+//        else -> NavHost(
+//            navController = navController,
+//            startDestination = if (needAuth) {
+//                AppDestinations.Auth
+//            } else {
+//                AppDestinations.MainDashboard
+//            },
+//            modifier = modifier,
+//        ) {
+//            composable(AppDestinations.Auth) {
+//                AuthScreen(
+//                    onNavigateToHome = {
+//                        navController.navigate(AppDestinations.MainDashboard) {
+//                            popUpTo(AppDestinations.Auth) { inclusive = true }
+//                        }
+//                    },
+//                )
+//            }
+//            composable(AppDestinations.MainDashboard) {
+//                MainDashboardScreen(
+//                    onOpenChats = { navController.navigate(AppDestinations.Chats) },
+//                    onOpenRequirements = { navController.navigate(AppDestinations.Groups) },
+//                    onOpenRecommendations = { navController.navigate(AppDestinations.Recommendations) },
+//                )
+//            }
+//            composable(AppDestinations.Chats) {
+//                MainStackFlow()
+//            }
+//            composable(AppDestinations.Groups) {
+//                VfvGroupsPlaceholderScreen(
+//                    onBack = { navController.popBackStack() },
+//                )
+//            }
+//            composable(AppDestinations.Recommendations) {
+//                VfvRecommendationsPlaceholderScreen(
+//                    onBack = { navController.popBackStack() },
+//                )
+//            }
+//        }
+//    }
 }
