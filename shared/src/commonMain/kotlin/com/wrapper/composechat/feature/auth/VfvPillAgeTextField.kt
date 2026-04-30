@@ -27,8 +27,6 @@ import androidx.compose.material.icons.filled.Check
 import com.wrapper.composechat.ui.theme.ChatColors
 import com.wrapper.composechat.ui.theme.ChatDimens
 
-private val VfvFieldViolet: Color = Color(0xFF8A4AD3)
-
 // Leading check: light top → dark bottom
 private val vfvAgeCheckGradient = Brush.verticalGradient(
     0f to Color(0xFF9B6AEC),
@@ -60,10 +58,10 @@ fun VfvPillAgeTextField(
         unfocusedTextColor = ChatColors.onContent,
         disabledTextColor = ChatColors.onContentMuted,
         errorTextColor = ChatColors.onContent,
-        focusedBorderColor = VfvFieldViolet,
+        focusedBorderColor = ChatColors.primary,
         unfocusedBorderColor = Color.White.copy(alpha = 0.2f),
         errorBorderColor = errorColor,
-        cursorColor = VfvFieldViolet,
+        cursorColor = ChatColors.primary,
         focusedLabelColor = ChatColors.onContentMuted,
         unfocusedLabelColor = ChatColors.onContentMuted,
         errorLabelColor = errorColor,

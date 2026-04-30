@@ -142,7 +142,7 @@ private fun init_auth_age_label(): StringResource = org.jetbrains.compose.resour
   "string:auth_age_label", "auth_age_label",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 134, 26),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 134, 30),
     )
 )
 
@@ -153,7 +153,7 @@ private fun init_auth_continue(): StringResource = org.jetbrains.compose.resourc
   "string:auth_continue", "auth_continue",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 161, 33),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 165, 49),
     )
 )
 
@@ -164,7 +164,7 @@ private fun init_auth_sex_error(): StringResource = org.jetbrains.compose.resour
   "string:auth_sex_error", "auth_sex_error",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 195, 58),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 215, 58),
     )
 )
 
@@ -175,7 +175,7 @@ private fun init_auth_sex_female(): StringResource = org.jetbrains.compose.resou
   "string:auth_sex_female", "auth_sex_female",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 254, 31),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 274, 43),
     )
 )
 
@@ -186,7 +186,7 @@ private fun init_auth_sex_label(): StringResource = org.jetbrains.compose.resour
   "string:auth_sex_label", "auth_sex_label",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 286, 30),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 318, 38),
     )
 )
 
@@ -197,7 +197,7 @@ private fun init_auth_sex_male(): StringResource = org.jetbrains.compose.resourc
   "string:auth_sex_male", "auth_sex_male",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 317, 29),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 357, 41),
     )
 )
 
@@ -209,7 +209,7 @@ private fun init_auth_swipe_to_continue(): StringResource =
   "string:auth_swipe_to_continue", "auth_swipe_to_continue",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 347, 62),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 399, 118),
     )
 )
 
@@ -220,7 +220,7 @@ private fun init_auth_title(): StringResource = org.jetbrains.compose.resources.
   "string:auth_title", "auth_title",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 410, 30),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 518, 38),
     )
 )
 
@@ -232,7 +232,7 @@ private fun init_frosted_chats_body(): StringResource =
   "string:frosted_chats_body", "frosted_chats_body",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 441, 90),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 557, 90),
     )
 )
 
@@ -244,7 +244,7 @@ private fun init_frosted_chats_continue(): StringResource =
   "string:frosted_chats_continue", "frosted_chats_continue",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 532, 42),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 648, 58),
     )
 )
 
@@ -256,7 +256,7 @@ private fun init_frosted_chats_title(): StringResource =
   "string:frosted_chats_title", "frosted_chats_title",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 575, 75),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 707, 75),
     )
 )
 
@@ -268,7 +268,7 @@ private fun init_main_dashboard_chats(): StringResource =
   "string:main_dashboard_chats", "main_dashboard_chats",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 651, 36),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 783, 36),
     )
 )
 
@@ -280,7 +280,7 @@ private fun init_main_dashboard_in_progress(): StringResource =
   "string:main_dashboard_in_progress", "main_dashboard_in_progress",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 688, 66),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 820, 66),
     )
 )
 
@@ -292,7 +292,7 @@ private fun init_main_dashboard_recommendations_subtitle(): StringResource =
   "string:main_dashboard_recommendations_subtitle", "main_dashboard_recommendations_subtitle",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 755, 91),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 887, 91),
     )
 )
 
@@ -304,7 +304,7 @@ private fun init_main_dashboard_recommendations_title(): StringResource =
   "string:main_dashboard_recommendations_title", "main_dashboard_recommendations_title",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 847, 76),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 979, 76),
     )
 )
 
@@ -316,7 +316,7 @@ private fun init_main_dashboard_requirements_subtitle(): StringResource =
   "string:main_dashboard_requirements_subtitle", "main_dashboard_requirements_subtitle",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 924, 76),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1056, 76),
     )
 )
 
@@ -328,7 +328,7 @@ private fun init_main_dashboard_requirements_title(): StringResource =
   "string:main_dashboard_requirements_title", "main_dashboard_requirements_title",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1001, 57),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1133, 57),
     )
 )
 
@@ -340,7 +340,7 @@ private fun init_main_dashboard_settings(): StringResource =
   "string:main_dashboard_settings", "main_dashboard_settings",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1059, 43),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1191, 43),
     )
 )
 
@@ -352,7 +352,7 @@ private fun init_main_dashboard_vfv_done(): StringResource =
   "string:main_dashboard_vfv_done", "main_dashboard_vfv_done",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1103, 47),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1235, 47),
     )
 )
 
@@ -363,7 +363,7 @@ private fun init_nav_back(): StringResource = org.jetbrains.compose.resources.St
   "string:nav_back", "nav_back",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1151, 24),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1283, 24),
     )
 )
 
@@ -375,7 +375,7 @@ private fun init_splash_vfv_subtitle(): StringResource =
   "string:splash_vfv_subtitle", "splash_vfv_subtitle",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1176, 155),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1308, 155),
     )
 )
 
@@ -387,6 +387,6 @@ private fun init_splash_vfv_title(): StringResource =
   "string:splash_vfv_title", "splash_vfv_title",
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
-    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1332, 32),
+    "composeResources/com.wrapper.composechat.resources/values/strings.commonMain.cvr", 1464, 32),
     )
 )

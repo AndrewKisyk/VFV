@@ -2,15 +2,15 @@
     <string name="app_name">VFV Multiplatform</string>
     <string name="splash_vfv_title">ВФВ</string>
     <string name="splash_vfv_subtitle">Вимоги для Відзнаки Фізичної Вправності твого віку</string>
-    <string name="auth_title">Profile</string>
-    <string name="auth_age_label">Age</string>
-    <string name="auth_age_error">введіть число від 12 до 17</string>
-    <string name="auth_sex_label">Gender</string>
-    <string name="auth_sex_male">Male</string>
-    <string name="auth_sex_female">Female</string>
-    <string name="auth_sex_error">виберіть стать</string>
-    <string name="auth_continue">Continue</string>
-    <string name="auth_swipe_to_continue">Swipe right to continue</string>
+    <string name="auth_title">Профіль</string>
+    <string name="auth_age_label">Вік</string>
+    <string name="auth_age_error">Введіть число від 12 до 17</string>
+    <string name="auth_sex_label">Стать</string>
+    <string name="auth_sex_male">Хлопець</string>
+    <string name="auth_sex_female">Дівчина</string>
+    <string name="auth_sex_error">Виберіть стать</string>
+    <string name="auth_continue">Продовжити</string>
+    <string name="auth_swipe_to_continue">Проведіть праворуч, щоб продовжити</string>
     <string name="main_dashboard_chats">Chats</string>
     <string name="main_dashboard_settings">Settings</string>
     <string name="main_dashboard_in_progress">ВИ В ПРОЦЕСІ</string>
@@ -22,5 +22,5 @@
     <string name="nav_back">Back</string>
     <string name="frosted_chats_title">Let\'s personalize your experience</string>
     <string name="frosted_chats_body">Choose how you want to continue in the chat hub.</string>
-    <string name="frosted_chats_continue">Continue</string>
+    <string name="frosted_chats_continue">Продовжити</string>
 </resources>
