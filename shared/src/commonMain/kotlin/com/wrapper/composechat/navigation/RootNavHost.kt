@@ -3,6 +3,8 @@ package com.wrapper.composechat.navigation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -55,6 +57,14 @@ fun RootNavHost(
     var bootstrapped by remember { mutableStateOf(false) }
     var needAuth by remember { mutableStateOf(true) }
     var splashProgress by remember { mutableStateOf(0f) }
+    val splashProgressAnimated by animateFloatAsState(
+        targetValue = splashProgress,
+        animationSpec = tween(
+            durationMillis = 220,
+            easing = FastOutSlowInEasing,
+        ),
+        label = "splashLoadProgress",
+    )
     var authFlowCompleted by remember { mutableStateOf(false) }
     var authSheetBackground: ImageBitmap? by remember { mutableStateOf(null) }
     val captureForAuthSheet = rememberComposeViewBitmapCapture()
@@ -62,7 +72,7 @@ fun RootNavHost(
     LaunchedEffect(authRepository) {
         coroutineScope {
             val progressTick = async {
-                val steps = 52
+                val steps = 82
                 repeat(steps) { i ->
                     splashProgress = (i + 1) / steps.toFloat() * 0.92f
                     delay(18)
@@ -72,7 +82,7 @@ fun RootNavHost(
             progressTick.await()
         }
         splashProgress = 1f
-        delay(3_000)
+        delay(1_500)
         if (needAuth) {
             authSheetBackground = captureForAuthSheet()
         }
@@ -88,8 +98,7 @@ fun RootNavHost(
                 val st = this@SharedTransitionLayout
                 Box(Modifier.fillMaxSize()) {
                     SplashScreen(
-                        loadProgress = splashProgress,
-                        hideBranding = authVisible,
+                        loadProgress = splashProgressAnimated,
                         modifier = Modifier
                             .fillMaxSize()
                             .zIndex(0f),
@@ -126,7 +135,7 @@ fun RootNavHost(
         }
         showBootstrapShell && !needAuth -> {
             SplashScreen(
-                loadProgress = splashProgress,
+                loadProgress = splashProgressAnimated,
                 modifier = modifier.fillMaxSize(),
             )
         }

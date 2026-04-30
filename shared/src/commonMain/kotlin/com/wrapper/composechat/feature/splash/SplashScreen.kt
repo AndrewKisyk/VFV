@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,13 +25,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.clipRect
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -62,8 +66,6 @@ fun SplashScreen(
     modifier: Modifier = Modifier,
     /** Applied after size (e.g. [androidx.compose.animation.SharedTransitionScope.sharedElement] for the title asset). */
     titleImageModifier: Modifier = Modifier,
-    /** When true, hides the title/subtitle band (e.g. auth overlay shows its own title on top). */
-    hideBranding: Boolean = false,
 ) {
     val density = LocalDensity.current
     val inf = rememberInfiniteTransition(label = "splash")
@@ -157,35 +159,33 @@ fun SplashScreen(
         val subSize = (13f * (minD / 400f).coerceIn(0.9f, 1.05f)).sp
         val titleImageMaxH = with(density) { (minD * 0.16f).coerceAtLeast(64f).toDp() }
         val roadLayout = splashForegroundRoadLayout(h)
-        if (!hideBranding) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(y = with(density) { roadLayout.roadBottomY.toDp() })
-                    .fillMaxHeight()
-                    .background(
-                        Color(0xFF0C012B)
-                    )
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Image(
-                    painter = painterResource(Res.drawable.title),
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = titleImageModifier
-                        .fillMaxWidth(0.88f)
-                        .height(titleImageMaxH),
+        Column(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = with(density) { roadLayout.roadBottomY.toDp() })
+                .fillMaxHeight()
+                .background(
+                    Color(0xFF0C012B)
                 )
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    text = stringResource(Res.string.splash_vfv_subtitle),
-                    color = Color.White.copy(alpha = 0.88f),
-                    fontSize = subSize,
-                    fontWeight = FontWeight.Normal,
-                    textAlign = TextAlign.Center,
-                )
-            }
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Image(
+                painter = painterResource(Res.drawable.title),
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                modifier = titleImageModifier
+                    .fillMaxWidth(0.88f)
+                    .height(titleImageMaxH),
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                text = stringResource(Res.string.splash_vfv_subtitle),
+                color = Color.White.copy(alpha = 0.88f),
+                fontSize = subSize,
+                fontWeight = FontWeight.Normal,
+                textAlign = TextAlign.Center,
+            )
         }
 
         val p = loadProgress.coerceIn(0f, 1f)
@@ -196,17 +196,18 @@ fun SplashScreen(
                 .height(8.dp)
                 .align(Alignment.BottomCenter),
         ) {
-            val trackH = size.height
+            val trackBackgroundH = size.height
+            val trackH = trackBackgroundH * 0.8f
             val trackW = size.width
-            val r = trackH * 0.5f
+            val r = trackBackgroundH * 0.5f
             drawRoundRect(
-                color = Color(0xFF2D1A4D).copy(alpha = 0.6f),
-                size = Size(trackW, trackH),
+                color = Color(0xFF28046B).copy(alpha = 0.6f),
+                size = Size(trackW, trackBackgroundH),
                 cornerRadius = CornerRadius(r, r),
             )
             drawRoundRect(
-                color = Color(0xFF4A2A6A).copy(alpha = 0.4f),
-                size = Size(trackW, trackH),
+                color = Color(0xFF28046B).copy(alpha = 0.4f),
+                size = Size(trackW, trackBackgroundH),
                 cornerRadius = CornerRadius(r, r),
                 style = Stroke(width = 1.5f),
             )
@@ -214,9 +215,9 @@ fun SplashScreen(
             if (fillW > 2.5f) {
                 drawRoundRect(
                     brush = Brush.horizontalGradient(
-                        0f to Color(0xFFFF3AF0),
-                        0.5f to Color(0xFFB94DFF),
-                        1f to Color(0xFF3D1A5C),
+                        0f to Color(0xFFDF18FF),
+                        0.38f to Color(0xFF8800DC),
+                        1f to Color(0xFF6400EC),
                     ),
                     size = Size(fillW, trackH),
                     cornerRadius = CornerRadius(r, r),

@@ -1,6 +1,7 @@
 package com.wrapper.composechat.feature.splash
 
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloat
@@ -37,6 +38,19 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
+import kotlin.math.sin
+
+/** One full sine cycle (ms) for cloud bob; each cloud uses a phase offset. */
+private const val SplashBobCycleMillis: Int = 7_800
+/** Vertical bob amplitude as fraction of [minOf] box width/height (px). */
+private const val SplashCloudLeftBobMinDFraction: Float = 0.013f
+private const val SplashCloudMidBobMinDFraction: Float = 0.015f
+private const val SplashCloudRightBobMinDFraction: Float = 0.012f
+private const val SplashCloudLeftBobPhase: Float = 1.15f
+private const val SplashCloudMidBobPhase: Float = 0.55f
+private const val SplashCloudRightBobPhase: Float = 2.05f
+/** Extra slide-in from the right for [splash_claude_right] (fraction of box width). */
+private const val SplashCloudRightEnterSlideFraction: Float = 0.40f
 
 /**
  * Centred splash block: sun on canvas, soft purple glow, secondary scene bitmap, and entering clouds.
@@ -55,7 +69,7 @@ object SplashSkyLayout {
     /** 0 = top of scene image, 1 = bottom; anchors cloud top to this band. */
     const val CloudLeftTopInSceneFraction: Float = 0.12f
     const val CloudMidTopInSceneFraction: Float = 0.21f
-    const val CloudRightTopInSceneFraction: Float = 0.20f
+    const val CloudRightTopInSceneFraction: Float = 0.05f
     /** Sun radius = min(box width, height) * this (matches original full-screen splash). */
     const val SunRMinDFraction: Float = 0.12f
     /** [drawSkyOrb]: horizontal center as fraction of box width. */
@@ -143,6 +157,16 @@ fun SplashSkyCenterpiece(
         ),
         label = "breath",
     )
+    val cloudBobLoop = rememberInfiniteTransition(label = "cloudBob")
+    val cloudBobPhase by cloudBobLoop.animateFloat(
+        initialValue = 0f,
+        targetValue = (kotlin.math.PI * 2.0).toFloat(),
+        animationSpec = infiniteRepeatable(
+            animation = tween(SplashBobCycleMillis, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "bob",
+    )
 
     LaunchedEffect(Unit) {
         coroutineScope {
@@ -159,8 +183,8 @@ fun SplashSkyCenterpiece(
                 async { sunRise.animateTo(1f, tween(2_500, easing = FastOutSlowInEasing)) },
                 async { leftEnter.animateTo(0f, tween(1_000, easing = FastOutSlowInEasing)) },
                 async {
-                    delay(60)
-                    rightEnter.animateTo(0f, tween(1_000, easing = FastOutSlowInEasing))
+                    delay(90)
+                    rightEnter.animateTo(0f, tween(1_180, easing = FastOutSlowInEasing))
                 },
                 async {
                     delay(100)
@@ -233,9 +257,13 @@ fun SplashSkyCenterpiece(
         }
 
         // Side clouds: same vertical band as [scene], behind it
-        val yLeft = (sceneTopY + sceneHpx * SplashSkyLayout.CloudLeftTopInSceneFraction).roundToInt()
-        val yMid = (sceneTopY + sceneHpx * SplashSkyLayout.CloudMidTopInSceneFraction).roundToInt()
-        val yRight = (sceneTopY + sceneHpx * SplashSkyLayout.CloudRightTopInSceneFraction).roundToInt()
+        val yLeftBase = sceneTopY + sceneHpx * SplashSkyLayout.CloudLeftTopInSceneFraction
+        val yMidBase = sceneTopY + sceneHpx * SplashSkyLayout.CloudMidTopInSceneFraction
+        val yRightBase = sceneTopY + sceneHpx * SplashSkyLayout.CloudRightTopInSceneFraction
+        val rightSlidePx = boxW * SplashCloudRightEnterSlideFraction
+        val yLeft = (yLeftBase + sin((cloudBobPhase + SplashCloudLeftBobPhase).toDouble()).toFloat() * minD * SplashCloudLeftBobMinDFraction).roundToInt()
+        val yMid = (yMidBase + sin((cloudBobPhase + SplashCloudMidBobPhase).toDouble()).toFloat() * minD * SplashCloudMidBobMinDFraction).roundToInt()
+        val yRight = (yRightBase + sin((cloudBobPhase + SplashCloudRightBobPhase).toDouble()).toFloat() * minD * SplashCloudRightBobMinDFraction).roundToInt()
         Image(
             painter = cloudLeft,
             contentDescription = null,
@@ -261,7 +289,7 @@ fun SplashSkyCenterpiece(
                 .size(with(density) { (minD * SplashSkyLayout.CloudRightSizeMinDFraction).toDp() })
                 .offset {
                     IntOffset(
-                        (slidePx * rightEnter.value).roundToInt(),
+                        (rightSlidePx * rightEnter.value).roundToInt(),
                         yRight,
                     )
                 }
