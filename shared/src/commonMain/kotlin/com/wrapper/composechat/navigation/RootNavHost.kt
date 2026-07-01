@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -31,7 +32,7 @@ import com.wrapper.composechat.feature.home.LocalSharedTransitionScope
 import com.wrapper.composechat.feature.home.MainStackFlow
 import com.wrapper.composechat.feature.home.playfulSpring
 import com.wrapper.composechat.feature.maindashboard.MainDashboardScreen
-import com.wrapper.composechat.feature.maindashboard.VfvGroupsPlaceholderScreen
+import com.wrapper.composechat.feature.maindashboard.VfvGroupsScreen
 import com.wrapper.composechat.feature.maindashboard.VfvRecommendationsPlaceholderScreen
 import com.wrapper.composechat.feature.splash.SplashScreen
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
@@ -140,30 +141,77 @@ fun RootNavHost(
             )
         }
         else -> {
-            NavHost(
-                navController = navController,
-                startDestination = AppDestinations.MainDashboard,
-                modifier = modifier,
-            ) {
-                composable(AppDestinations.MainDashboard) {
-                    MainDashboardScreen(
-                        onOpenChats = { navController.navigate(AppDestinations.Chats) },
-                        onOpenRequirements = { navController.navigate(AppDestinations.Groups) },
-                        onOpenRecommendations = { navController.navigate(AppDestinations.Recommendations) },
-                    )
-                }
-                composable(AppDestinations.Chats) {
-                    MainStackFlow()
-                }
-                composable(AppDestinations.Groups) {
-                    VfvGroupsPlaceholderScreen(
-                        onBack = { navController.popBackStack() },
-                    )
-                }
-                composable(AppDestinations.Recommendations) {
-                    VfvRecommendationsPlaceholderScreen(
-                        onBack = { navController.popBackStack() },
-                    )
+            SharedTransitionLayout(modifier) {
+                val sharedShell = this@SharedTransitionLayout
+                NavHost(
+                    navController = navController,
+                    startDestination = AppDestinations.MainDashboard,
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    composable(
+                        route = AppDestinations.MainDashboard,
+                        enterTransition = { fadeIn(animationSpec = tween(280)) },
+                        exitTransition = { fadeOut(animationSpec = tween(280)) },
+                        popEnterTransition = { fadeIn(animationSpec = tween(280)) },
+                        popExitTransition = { fadeOut(animationSpec = tween(280)) },
+                    ) { _: NavBackStackEntry ->
+                        CompositionLocalProvider(
+                            LocalSharedTransitionScope provides sharedShell,
+                            LocalAnimatedVisibilityScope provides this,
+                        ) {
+                            MainDashboardScreen(
+                                onOpenChats = { navController.navigate(AppDestinations.Chats) },
+                                onOpenRequirements = { navController.navigate(AppDestinations.Groups) },
+                                onOpenRecommendations = { navController.navigate(AppDestinations.Recommendations) },
+                            )
+                        }
+                    }
+                    composable(
+                        route = AppDestinations.Chats,
+                        enterTransition = { fadeIn(animationSpec = tween(280)) },
+                        exitTransition = { fadeOut(animationSpec = tween(280)) },
+                        popEnterTransition = { fadeIn(animationSpec = tween(280)) },
+                        popExitTransition = { fadeOut(animationSpec = tween(280)) },
+                    ) { _: NavBackStackEntry ->
+                        CompositionLocalProvider(
+                            LocalSharedTransitionScope provides sharedShell,
+                            LocalAnimatedVisibilityScope provides this,
+                        ) {
+                            MainStackFlow()
+                        }
+                    }
+                    composable(
+                        route = AppDestinations.Groups,
+                        enterTransition = { fadeIn(animationSpec = tween(280)) },
+                        exitTransition = { fadeOut(animationSpec = tween(280)) },
+                        popEnterTransition = { fadeIn(animationSpec = tween(280)) },
+                        popExitTransition = { fadeOut(animationSpec = tween(280)) },
+                    ) { _: NavBackStackEntry ->
+                        CompositionLocalProvider(
+                            LocalSharedTransitionScope provides sharedShell,
+                            LocalAnimatedVisibilityScope provides this,
+                        ) {
+                            VfvGroupsScreen(
+                                onBack = { navController.popBackStack() },
+                            )
+                        }
+                    }
+                    composable(
+                        route = AppDestinations.Recommendations,
+                        enterTransition = { fadeIn(animationSpec = tween(280)) },
+                        exitTransition = { fadeOut(animationSpec = tween(280)) },
+                        popEnterTransition = { fadeIn(animationSpec = tween(280)) },
+                        popExitTransition = { fadeOut(animationSpec = tween(280)) },
+                    ) { _: NavBackStackEntry ->
+                        CompositionLocalProvider(
+                            LocalSharedTransitionScope provides sharedShell,
+                            LocalAnimatedVisibilityScope provides this,
+                        ) {
+                            VfvRecommendationsPlaceholderScreen(
+                                onBack = { navController.popBackStack() },
+                            )
+                        }
+                    }
                 }
             }
         }

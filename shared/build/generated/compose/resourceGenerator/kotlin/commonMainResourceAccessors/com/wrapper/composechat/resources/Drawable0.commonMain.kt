@@ -153,6 +153,42 @@ private object CommonMainDrawable0 {
   public val gradienttitle: DrawableResource by 
       lazy { init_gradienttitle() }
 
+  public val groups_completed_label: DrawableResource by 
+      lazy { init_groups_completed_label() }
+
+  public val groups_g1_active: DrawableResource by 
+      lazy { init_groups_g1_active() }
+
+  public val groups_g1_inactive: DrawableResource by 
+      lazy { init_groups_g1_inactive() }
+
+  public val groups_g2_active: DrawableResource by 
+      lazy { init_groups_g2_active() }
+
+  public val groups_g2_inactive: DrawableResource by 
+      lazy { init_groups_g2_inactive() }
+
+  public val groups_g3_active: DrawableResource by 
+      lazy { init_groups_g3_active() }
+
+  public val groups_g3_inactive: DrawableResource by 
+      lazy { init_groups_g3_inactive() }
+
+  public val groups_g4_active: DrawableResource by 
+      lazy { init_groups_g4_active() }
+
+  public val groups_g4_inactive: DrawableResource by 
+      lazy { init_groups_g4_inactive() }
+
+  public val groups_g5_active: DrawableResource by 
+      lazy { init_groups_g5_active() }
+
+  public val groups_g5_inactive: DrawableResource by 
+      lazy { init_groups_g5_inactive() }
+
+  public val groups_row_complete_check: DrawableResource by 
+      lazy { init_groups_row_complete_check() }
+
   public val halfsmallcircle: DrawableResource by 
       lazy { init_halfsmallcircle() }
 
@@ -417,6 +453,18 @@ internal fun _collectCommonMainDrawable0Resources(map: MutableMap<String, Drawab
   map.put("gradient_animation", CommonMainDrawable0.gradient_animation)
   map.put("gradientmain", CommonMainDrawable0.gradientmain)
   map.put("gradienttitle", CommonMainDrawable0.gradienttitle)
+  map.put("groups_completed_label", CommonMainDrawable0.groups_completed_label)
+  map.put("groups_g1_active", CommonMainDrawable0.groups_g1_active)
+  map.put("groups_g1_inactive", CommonMainDrawable0.groups_g1_inactive)
+  map.put("groups_g2_active", CommonMainDrawable0.groups_g2_active)
+  map.put("groups_g2_inactive", CommonMainDrawable0.groups_g2_inactive)
+  map.put("groups_g3_active", CommonMainDrawable0.groups_g3_active)
+  map.put("groups_g3_inactive", CommonMainDrawable0.groups_g3_inactive)
+  map.put("groups_g4_active", CommonMainDrawable0.groups_g4_active)
+  map.put("groups_g4_inactive", CommonMainDrawable0.groups_g4_inactive)
+  map.put("groups_g5_active", CommonMainDrawable0.groups_g5_active)
+  map.put("groups_g5_inactive", CommonMainDrawable0.groups_g5_inactive)
+  map.put("groups_row_complete_check", CommonMainDrawable0.groups_row_complete_check)
   map.put("halfsmallcircle", CommonMainDrawable0.halfsmallcircle)
   map.put("heart", CommonMainDrawable0.heart)
   map.put("horizontalstep", CommonMainDrawable0.horizontalstep)
@@ -1033,6 +1081,150 @@ private fun init_gradienttitle(): DrawableResource =
     setOf(
       org.jetbrains.compose.resources.ResourceItem(setOf(),
     "composeResources/com.wrapper.composechat.resources/drawable/gradienttitle.xml", -1, -1),
+    )
+)
+
+public val Res.drawable.groups_completed_label: DrawableResource
+  get() = CommonMainDrawable0.groups_completed_label
+
+private fun init_groups_completed_label(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:groups_completed_label",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/groups_completed_label.png", -1, -1),
+    )
+)
+
+public val Res.drawable.groups_g1_active: DrawableResource
+  get() = CommonMainDrawable0.groups_g1_active
+
+private fun init_groups_g1_active(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:groups_g1_active",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/groups_g1_active.png", -1, -1),
+    )
+)
+
+public val Res.drawable.groups_g1_inactive: DrawableResource
+  get() = CommonMainDrawable0.groups_g1_inactive
+
+private fun init_groups_g1_inactive(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:groups_g1_inactive",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/groups_g1_inactive.png", -1, -1),
+    )
+)
+
+public val Res.drawable.groups_g2_active: DrawableResource
+  get() = CommonMainDrawable0.groups_g2_active
+
+private fun init_groups_g2_active(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:groups_g2_active",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/groups_g2_active.png", -1, -1),
+    )
+)
+
+public val Res.drawable.groups_g2_inactive: DrawableResource
+  get() = CommonMainDrawable0.groups_g2_inactive
+
+private fun init_groups_g2_inactive(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:groups_g2_inactive",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/groups_g2_inactive.png", -1, -1),
+    )
+)
+
+public val Res.drawable.groups_g3_active: DrawableResource
+  get() = CommonMainDrawable0.groups_g3_active
+
+private fun init_groups_g3_active(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:groups_g3_active",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/groups_g3_active.png", -1, -1),
+    )
+)
+
+public val Res.drawable.groups_g3_inactive: DrawableResource
+  get() = CommonMainDrawable0.groups_g3_inactive
+
+private fun init_groups_g3_inactive(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:groups_g3_inactive",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/groups_g3_inactive.png", -1, -1),
+    )
+)
+
+public val Res.drawable.groups_g4_active: DrawableResource
+  get() = CommonMainDrawable0.groups_g4_active
+
+private fun init_groups_g4_active(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:groups_g4_active",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/groups_g4_active.png", -1, -1),
+    )
+)
+
+public val Res.drawable.groups_g4_inactive: DrawableResource
+  get() = CommonMainDrawable0.groups_g4_inactive
+
+private fun init_groups_g4_inactive(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:groups_g4_inactive",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/groups_g4_inactive.png", -1, -1),
+    )
+)
+
+public val Res.drawable.groups_g5_active: DrawableResource
+  get() = CommonMainDrawable0.groups_g5_active
+
+private fun init_groups_g5_active(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:groups_g5_active",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/groups_g5_active.png", -1, -1),
+    )
+)
+
+public val Res.drawable.groups_g5_inactive: DrawableResource
+  get() = CommonMainDrawable0.groups_g5_inactive
+
+private fun init_groups_g5_inactive(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:groups_g5_inactive",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/groups_g5_inactive.png", -1, -1),
+    )
+)
+
+public val Res.drawable.groups_row_complete_check: DrawableResource
+  get() = CommonMainDrawable0.groups_row_complete_check
+
+private fun init_groups_row_complete_check(): DrawableResource =
+    org.jetbrains.compose.resources.DrawableResource(
+  "drawable:groups_row_complete_check",
+    setOf(
+      org.jetbrains.compose.resources.ResourceItem(setOf(),
+    "composeResources/com.wrapper.composechat.resources/drawable/groups_row_complete_check.png", -1, -1),
     )
 )
 

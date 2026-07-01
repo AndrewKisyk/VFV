@@ -57,11 +57,13 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import androidx.compose.runtime.collectAsState
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
 import com.wrapper.composechat.ui.components.VfvGlassFullScreenBottomSheet
 /**
  * VFV main dashboard: night sky, ring gauge, two nav cards. Callbacks and [MainDashboardViewModel] unchanged.
  */
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MainDashboardScreen(
     onOpenChats: () -> Unit,
@@ -147,6 +149,7 @@ fun MainDashboardScreen(
                 progress = reqAnimated,
                 leadingImage = requirementsImage,
                 cardBg = cardBg,
+                leadingImageModifier = Modifier.requirementsHeroSharedElement(),
             )
             Spacer(Modifier.height(12.dp))
             DashboardNavCardV2(
@@ -156,6 +159,7 @@ fun MainDashboardScreen(
                 progress = recAnimated,
                 leadingImage = recommendationsImage,
                 cardBg = cardBg,
+                leadingImageModifier = Modifier,
             )
             Spacer(Modifier.height(24.dp))
         }
@@ -254,6 +258,7 @@ private fun DashboardNavCardV2(
     progress: Float,
     leadingImage: Painter,
     cardBg: Color,
+    leadingImageModifier: Modifier = Modifier,
 ) {
     val family = LocalVfvDisplayFontFamily.current
     Card(
@@ -273,7 +278,7 @@ private fun DashboardNavCardV2(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
-                    modifier = Modifier
+                    modifier = leadingImageModifier
                         .size(width = 48.dp, height = 48.dp)
                         .clip(RoundedCornerShape(14.dp))
                         .border(
@@ -286,7 +291,7 @@ private fun DashboardNavCardV2(
                     Image(
                         painter = leadingImage,
                         contentDescription = null,
-                        modifier = Modifier.fillMaxHeight(),
+                        modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop,
                     )
                 }
