@@ -1,5 +1,6 @@
 # === Gradle (all modules) ===
 .gradle/
+**/build/
 build/
 shared/build/
 
