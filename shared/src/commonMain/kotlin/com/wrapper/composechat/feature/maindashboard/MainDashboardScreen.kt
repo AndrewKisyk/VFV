@@ -159,7 +159,7 @@ fun MainDashboardScreen(
                 progress = recAnimated,
                 leadingImage = recommendationsImage,
                 cardBg = cardBg,
-                leadingImageModifier = Modifier,
+                leadingImageModifier = Modifier.recommendationsHeroSharedElement(),
             )
             Spacer(Modifier.height(24.dp))
         }

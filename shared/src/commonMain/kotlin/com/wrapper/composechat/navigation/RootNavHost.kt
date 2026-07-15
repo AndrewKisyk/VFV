@@ -33,7 +33,7 @@ import com.wrapper.composechat.feature.home.MainStackFlow
 import com.wrapper.composechat.feature.home.playfulSpring
 import com.wrapper.composechat.feature.maindashboard.MainDashboardScreen
 import com.wrapper.composechat.feature.maindashboard.VfvGroupsScreen
-import com.wrapper.composechat.feature.maindashboard.VfvRecommendationsPlaceholderScreen
+import com.wrapper.composechat.feature.maindashboard.VfvRecommendationsScreen
 import com.wrapper.composechat.feature.splash.SplashScreen
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
 import kotlinx.coroutines.async
@@ -207,7 +207,7 @@ fun RootNavHost(
                             LocalSharedTransitionScope provides sharedShell,
                             LocalAnimatedVisibilityScope provides this,
                         ) {
-                            VfvRecommendationsPlaceholderScreen(
+                            VfvRecommendationsScreen(
                                 onBack = { navController.popBackStack() },
                             )
                         }

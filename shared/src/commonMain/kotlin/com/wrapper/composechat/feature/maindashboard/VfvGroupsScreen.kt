@@ -5,7 +5,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,14 +18,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -40,10 +35,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -84,8 +76,6 @@ private val requirementGroups = listOf(
     RequirementGroupRow(Res.string.groups_group5_title, Res.string.groups_group5_subtitle, 5),
 )
 
-private const val RequirementGroupCompleteBlurRadiusDp = 20f
-
 /** Same physical height as the load bar in [com.wrapper.composechat.feature.splash.SplashScreen] (`height(8.dp)`). */
 private val RequirementGroupProgressTrackHeight = 8.dp
 
@@ -116,35 +106,14 @@ fun VfvGroupsScreen(
     val shapeCard = RoundedCornerShape(20.dp)
 
     Box(modifier = modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(Res.drawable.main_dashboard_requirements),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .optionalBackdropBlur(38f),
-            contentScale = ContentScale.Crop,
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colorStops = arrayOf(
-                            0f to Color(0xFF3A0084).copy(alpha = 0.60f),
-                            0.4f to Color(0xFF09001F).copy(alpha = 0.80f),
-                            1f to Color(0xFF09001F).copy(alpha = 0.90f),
-                        ),
-                    ),
-                ),
-        )
-
+        VfvListScreenBackdrop(heroDrawable = Res.drawable.main_dashboard_requirements)
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
                 .padding(horizontal = 20.dp, vertical = 8.dp),
         ) {
-            GroupsChromeTopBar(
+            VfvListChromeTopBar(
                 title = stringResource(Res.string.main_dashboard_requirements_title).uppercase(),
                 onBack = onBack,
                 onTrash = onTrashClick,
@@ -226,75 +195,6 @@ fun VfvGroupsScreen(
 }
 
 @Composable
-private fun GroupsChromeTopBar(
-    title: String,
-    onBack: () -> Unit,
-    onTrash: () -> Unit,
-    family: androidx.compose.ui.text.font.FontFamily?,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        GroupsChromeIconButton(
-            onClick = onBack,
-            desc = stringResource(Res.string.nav_back),
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.KeyboardArrowDown,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(16.dp),
-            )
-        }
-        Text(
-            text = title,
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 12.dp),
-            color = Color.White.copy(alpha = 0.92f),
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Medium,
-            fontFamily = family,
-            letterSpacing = 1.2.sp,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-        GroupsChromeIconButton(
-            onClick = onTrash,
-            desc = stringResource(Res.string.main_dashboard_settings),
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.trash),
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(16.dp),
-            )
-        }
-    }
-}
-
-@Composable
-private fun GroupsChromeIconButton(
-    onClick: () -> Unit,
-    desc: String,
-    content: @Composable () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .semantics { contentDescription = desc }
-            .size(32.dp)
-            .clip(RoundedCornerShape(corner = CornerSize(12.dp)))
-            .border(1.dp, Color.White.copy(alpha = 0.4f), RoundedCornerShape(corner = CornerSize(12.dp)))
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center,
-    ) {
-        content()
-    }
-}
-
-@Composable
 private fun RequirementGroupRowCard(
     title: String,
     subtitle: String,
@@ -333,7 +233,7 @@ private fun RequirementGroupRowCard(
                     Modifier
                         .fillMaxSize()
                         .clip(shape)
-                        .optionalBackdropBlur(RequirementGroupCompleteBlurRadiusDp)
+                        .optionalBackdropBlur(VfvListCardCompleteBlurRadiusDp)
                         .background(Color.White.copy(alpha = 0.19f)),
                 )
             }

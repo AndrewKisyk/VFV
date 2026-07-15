@@ -33,6 +33,16 @@
     <string name="groups_group4_subtitle">метання снарядів</string>
     <string name="groups_group5_title">Мандрівки</string>
     <string name="groups_group5_subtitle">піша, водна</string>
+    <string name="recommendations_header_tagline">Щоб був прогрес в тренуваннях,\nперш за все потрібно тренуватися.</string>
+    <string name="recommendations_read_label">Прочитано:</string>
+    <string name="recommendations_topic1_title">Руханка?</string>
+    <string name="recommendations_topic1_subtitle">шлях до ВФВ</string>
+    <string name="recommendations_topic2_title">Стрибки</string>
+    <string name="recommendations_topic2_subtitle">як літати?</string>
+    <string name="recommendations_topic3_title">Біг</string>
+    <string name="recommendations_topic3_subtitle">без лабіринту</string>
+    <string name="recommendations_topic4_title">Сильно!</string>
+    <string name="recommendations_topic4_subtitle">як дуб</string>
     <string name="frosted_chats_title">Let\'s personalize your experience</string>
     <string name="frosted_chats_body">Choose how you want to continue in the chat hub.</string>
     <string name="frosted_chats_continue">Продовжити</string>
