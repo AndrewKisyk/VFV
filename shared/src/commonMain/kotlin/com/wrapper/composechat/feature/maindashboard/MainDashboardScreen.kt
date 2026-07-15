@@ -35,11 +35,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.graphics.Color
@@ -58,8 +60,12 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import androidx.compose.runtime.collectAsState
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import com.wrapper.composechat.platform.isBackdropBlurAvailable
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
+import com.wrapper.composechat.platform.withSnapshotBlur
 import com.wrapper.composechat.ui.components.VfvGlassFullScreenBottomSheet
+
+private const val ChatsSheetBackdropBlurRadiusDp = 20f
 /**
  * VFV main dashboard: night sky, ring gauge, two nav cards. Callbacks and [MainDashboardViewModel] unchanged.
  */
@@ -90,9 +96,23 @@ fun MainDashboardScreen(
     val recommendationsImage = painterResource(Res.drawable.main_dashboard_recommendations)
     var showChatsAccessSheet by remember { mutableStateOf(false) }
     var chatsSheetBackground: ImageBitmap? by remember { mutableStateOf(null) }
+    var chatsSheetOpenProgress by remember { mutableFloatStateOf(0f) }
     val captureForSheet = rememberComposeViewBitmapCapture()
+    val liveBackdropBlur = isBackdropBlurAvailable()
+    val dashboardBlurRadiusDp = chatsSheetOpenProgress * ChatsSheetBackdropBlurRadiusDp
 
     Box(Modifier.fillMaxSize()) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .then(
+                    if (liveBackdropBlur && chatsSheetOpenProgress > 0f) {
+                        Modifier.blur(dashboardBlurRadiusDp.dp)
+                    } else {
+                        Modifier
+                    },
+                ),
+        ) {
         MainDashboardSkyBackdrop(Modifier.fillMaxSize())
         Column(
             modifier = Modifier
@@ -104,7 +124,10 @@ fun MainDashboardScreen(
             MainDashboardTopBar(
                 inProgressText = stringResource(Res.string.main_dashboard_in_progress),
                 onOpenChats = {
-                    chatsSheetBackground = captureForSheet()
+                    if (!liveBackdropBlur) {
+                        chatsSheetBackground = captureForSheet()
+                            ?.withSnapshotBlur(ChatsSheetBackdropBlurRadiusDp)
+                    }
                     showChatsAccessSheet = true
                 },
                 onOpenSettings = onOpenSettings,
@@ -163,18 +186,25 @@ fun MainDashboardScreen(
             )
             Spacer(Modifier.height(24.dp))
         }
+        }
         VfvGlassFullScreenBottomSheet(
             visible = showChatsAccessSheet,
             onDismissRequest = {
                 showChatsAccessSheet = false
                 chatsSheetBackground = null
+                chatsSheetOpenProgress = 0f
             },
-            backgroundSnapshot = chatsSheetBackground,
+            backgroundSnapshot = if (liveBackdropBlur) null else chatsSheetBackground,
+            revealLiveBackdrop = liveBackdropBlur,
+            blurBackgroundSnapshot = false,
+            backdropBlurRadiusDp = ChatsSheetBackdropBlurRadiusDp,
+            onOpenProgressChange = { chatsSheetOpenProgress = it },
         ) {
             ChatsAccessSheetContent(
                 onContinue = {
                     showChatsAccessSheet = false
                     chatsSheetBackground = null
+                    chatsSheetOpenProgress = 0f
                     onOpenChats()
                 },
             )

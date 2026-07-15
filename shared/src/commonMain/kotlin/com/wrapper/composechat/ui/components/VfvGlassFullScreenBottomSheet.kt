@@ -31,6 +31,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -56,6 +57,8 @@ private val ScrimBottomColor = Color(0xFF020725)
  * @param fullScreenBlurredSnapshot If true, draws [backgroundSnapshot] **full screen** (with blur) behind the sheet so the
  *   entire area looks like a blurred underlay (e.g. post–splash auth). If false (default, e.g. main dashboard), only the
  *   bottom “rising” strip uses the snapshot.
+ * @param revealLiveBackdrop If true, the rising strip is a scrim only — blur the screen **behind** this overlay (e.g. live
+ *   [MainDashboardScreen] blur driven by [onOpenProgressChange]) instead of drawing a blurred snapshot inside the strip.
  * @param onOpenProgressChange 0f = closed, 1f = fully open; updates while animating and while dragging.
  * @param swipeToDismissEnabled If false, vertical drag does not move or dismiss the sheet (e.g. required auth).
  */
@@ -66,6 +69,8 @@ fun VfvGlassFullScreenBottomSheet(
     modifier: Modifier = Modifier,
     backgroundSnapshot: ImageBitmap? = null,
     fullScreenBlurredSnapshot: Boolean = false,
+    revealLiveBackdrop: Boolean = false,
+    blurBackgroundSnapshot: Boolean = true,
     backdropBlurRadiusDp: Float = 20f,
     onOpenProgressChange: ((Float) -> Unit)? = null,
     swipeToDismissEnabled: Boolean = true,
@@ -78,17 +83,6 @@ fun VfvGlassFullScreenBottomSheet(
     var dragY by remember { mutableFloatStateOf(0f) }
     val onProgressUpdated = rememberUpdatedState(onOpenProgressChange)
     val onDismissUpdated = rememberUpdatedState(onDismissRequest)
-
-    val onDismiss: () -> Unit = {
-        onDismissUpdated.value()
-        scope.launch { dragY = 0f }
-    }
-
-    LaunchedEffect(visible) {
-        if (!visible) {
-            dragY = 0f
-        }
-    }
 
     // Fade only: no slide on the whole overlay — the snapshot stays screen-fixed; only the dialog
     // moves via offset(dragY). SlideInVertically was moving the backdrop together with the sheet.
@@ -104,8 +98,23 @@ fun VfvGlassFullScreenBottomSheet(
         ) {
             val maxHPx = with(density) { maxHeight.toPx() }
             if (maxHPx > 0f) {
+            val onDismiss: () -> Unit = {
+                scope.launch {
+                    animate(
+                        initialValue = dragY,
+                        targetValue = maxHPx,
+                        initialVelocity = 0f,
+                        animationSpec = tween(280),
+                    ) { v, _ ->
+                        dragY = v
+                    }
+                    onDismissUpdated.value()
+                }
+            }
+
             // Dialog offset maxHPx → 0: same as strip height; snapshot does not use offset — only height grows.
-            LaunchedEffect(maxHPx) {
+            LaunchedEffect(visible, maxHPx) {
+                if (!visible) return@LaunchedEffect
                 dragY = maxHPx
                 animate(
                     initialValue = maxHPx,
@@ -128,7 +137,12 @@ fun VfvGlassFullScreenBottomSheet(
             val visibleHeightPx = (maxHPx - dragY).coerceIn(0f, maxHPx)
             val visibleHeightDp = with(density) { visibleHeightPx.toDp() }
             val fullScreenH = maxHeight
-            val blurMod = if (isBackdropBlurAvailable()) {
+            val snapshotBlurMod = if (blurBackgroundSnapshot) {
+                Modifier.blur(backdropBlurRadiusDp.dp)
+            } else {
+                Modifier
+            }
+            val frostedFallbackBlurMod = if (isBackdropBlurAvailable()) {
                 Modifier.optionalBackdropBlur(backdropBlurRadiusDp)
             } else {
                 Modifier
@@ -150,14 +164,14 @@ fun VfvGlassFullScreenBottomSheet(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .zIndex(0f)
-                                .then(blurMod),
+                                .then(snapshotBlurMod),
                         )
                     } else {
                         Box(
                             Modifier
                                 .fillMaxSize()
                                 .zIndex(0f)
-                                .then(blurMod)
+                                .then(frostedFallbackBlurMod)
                                 .background(ScrimBottomColor.copy(alpha = 0.85f)),
                         )
                     }
@@ -182,7 +196,9 @@ fun VfvGlassFullScreenBottomSheet(
                             .clip(RectangleShape)
                             .zIndex(0.6f),
                     ) {
-                        if (!fullScreenBlurredSnapshot && backgroundSnapshot != null) {
+                        if (!fullScreenBlurredSnapshot && revealLiveBackdrop) {
+                            Box(Modifier.matchParentSize().background(brush = stripGradient))
+                        } else if (!fullScreenBlurredSnapshot && backgroundSnapshot != null) {
                             Image(
                                 bitmap = backgroundSnapshot,
                                 contentDescription = null,
@@ -192,14 +208,14 @@ fun VfvGlassFullScreenBottomSheet(
                                     .align(Alignment.BottomCenter)
                                     .fillMaxWidth()
                                     .height(fullScreenH)
-                                    .then(blurMod),
+                                    .then(snapshotBlurMod),
                             )
                             Box(Modifier.matchParentSize().background(brush = stripGradient))
                         } else if (!fullScreenBlurredSnapshot) {
                             Box(
                                 Modifier
                                     .matchParentSize()
-                                    .then(blurMod)
+                                    .then(frostedFallbackBlurMod)
                                     .background(brush = stripGradient),
                             )
                         } else {
