@@ -1,27 +1,18 @@
 package com.wrapper.composechat.di
 
-import androidx.room.Room
-import com.wrapper.composechat.auth.AuthRepository
-import com.wrapper.composechat.data.AuthRepositoryImpl
-import com.wrapper.composechat.data.local.VfvDatabase
+import com.wrapper.composechat.data.DatabaseDriverFactory
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
-val androidDataModule = module {
-    single {
-        Room.databaseBuilder(
-            androidContext(),
-            VfvDatabase::class.java,
-            "vfv.db",
-        ).build()
-    }
-    single<AuthRepository> { AuthRepositoryImpl(get()) }
+val androidPlatformDataModule = module {
+    single { DatabaseDriverFactory(androidContext()) }
 }
 
 fun initKoinAndroid(context: android.content.Context) {
-    startKoin {
+    val koinApp = startKoin {
         androidContext(context)
-        modules(koinAppModule, androidDataModule)
+        modules(koinAppModule, commonDataModule, androidPlatformDataModule)
     }
+    koinApp.koin.seedDatabaseOnFirstLaunch()
 }

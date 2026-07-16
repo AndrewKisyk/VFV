@@ -4,10 +4,12 @@ import com.wrapper.composechat.feature.auth.AuthViewModel
 import com.wrapper.composechat.feature.maindashboard.DefaultMainDashboardRepository
 import com.wrapper.composechat.feature.maindashboard.MainDashboardRepository
 import com.wrapper.composechat.feature.maindashboard.MainDashboardViewModel
+import com.wrapper.composechat.feature.maindashboard.VfvGroupsViewModel
 import org.koin.dsl.module
 
 val koinAppModule = module {
     single { AuthViewModel(get()) }
     single<MainDashboardRepository> { DefaultMainDashboardRepository() }
     single { MainDashboardViewModel(get()) }
+    single { VfvGroupsViewModel(get(), get()) }
 }

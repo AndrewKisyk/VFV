@@ -43,6 +43,9 @@
     <string name="recommendations_topic3_subtitle">без лабіринту</string>
     <string name="recommendations_topic4_title">Сильно!</string>
     <string name="recommendations_topic4_subtitle">як дуб</string>
+    <string name="requirements_min_count">мінімальна кількість для зарахування: %1$d</string>
+    <string name="requirements_done_badge">виконано</string>
+    <string name="requirements_close">Закрити</string>
     <string name="frosted_chats_title">Let\'s personalize your experience</string>
     <string name="frosted_chats_body">Choose how you want to continue in the chat hub.</string>
     <string name="frosted_chats_continue">Продовжити</string>

@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -37,6 +37,8 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose.multiplatform)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.sqldelight.runtime)
+            implementation(libs.sqldelight.coroutines)
         }
         commonTest.dependencies {
             implementation(libs.kotlinx.coroutines.core)
@@ -47,10 +49,10 @@ kotlin {
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
-            implementation(libs.androidx.room.runtime)
-            implementation(libs.androidx.room.ktx)
+            implementation(libs.sqldelight.android)
         }
         iosMain.dependencies {
+            implementation(libs.sqldelight.native)
         }
     }
 }
@@ -70,8 +72,12 @@ android {
     }
 }
 
-dependencies {
-    add("kspAndroid", libs.androidx.room.compiler)
+sqldelight {
+    databases {
+        create("VfvSqlDatabase") {
+            packageName.set("com.wrapper.composechat.db")
+        }
+    }
 }
 
 compose {

@@ -25,14 +25,21 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -40,26 +47,22 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wrapper.composechat.data.requirements.minRequiredForGroup
+import com.wrapper.composechat.platform.isBackdropBlurAvailable
 import com.wrapper.composechat.platform.optionalBackdropBlur
+import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
+import com.wrapper.composechat.platform.withSnapshotBlur
+import com.wrapper.composechat.ui.components.VfvGlassFullScreenBottomSheet
 import com.wrapper.composechat.resources.*
 import com.wrapper.composechat.ui.theme.LocalVfvDisplayFontFamily
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 
-@Immutable
-data class VfvGroupsUiState(
-    /** Completed count per group (order matches [requirementGroups]). */
-    val donePerGroup: List<Int> = listOf(0, 0, 0, 0, 0),
-) {
-    init {
-        require(donePerGroup.size == 5)
-    }
+private const val RequirementsSheetBackdropBlurRadiusDp = 20f
 
-    val maxPerGroup: List<Int> = listOf(2, 2, 2, 3, 3)
-    val totalDone: Int get() = donePerGroup.zip(maxPerGroup).sumOf { (d, m) -> d.coerceIn(0, m) }
-    val totalMax: Int get() = maxPerGroup.sum()
-}
+private val GroupMaxPerGroup = listOf(2, 2, 2, 3, 3)
 
 @Immutable
 private data class RequirementGroupRow(
@@ -89,23 +92,50 @@ private fun groupBadgeDrawable(groupIndex: Int, activeAsset: Boolean): DrawableR
     }
 }
 
+private fun groupTitle(groupId: Int): org.jetbrains.compose.resources.StringResource = when (groupId) {
+    1 -> Res.string.groups_group1_title
+    2 -> Res.string.groups_group2_title
+    3 -> Res.string.groups_group3_title
+    4 -> Res.string.groups_group4_title
+    else -> Res.string.groups_group5_title
+}
+
 /**
  * VFV «Вимоги» — п’ять груп норм як у [com.plstudio.a123.vfv.fragments.GroupsFragment].
- * Прогрес: передай [state] після інтеграції з даними (аналог [RequirementsLab]); за замовчуванням нулі.
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun VfvGroupsScreen(
     onBack: () -> Unit,
-    onTrashClick: () -> Unit = {},
-    onGroupClick: (groupId: Int) -> Unit = {},
     modifier: Modifier = Modifier,
-    state: VfvGroupsUiState = remember { VfvGroupsUiState() },
+    viewModel: VfvGroupsViewModel = koinInject(),
 ) {
+    val vmState by viewModel.state.collectAsState()
     val family = LocalVfvDisplayFontFamily.current
     val shapeCard = RoundedCornerShape(20.dp)
 
+    var sheetBackground: ImageBitmap? by remember { mutableStateOf(null) }
+    var sheetOpenProgress by remember { mutableFloatStateOf(0f) }
+    val captureForSheet = rememberComposeViewBitmapCapture()
+    val liveBackdropBlur = isBackdropBlurAvailable()
+    val listBlurRadiusDp = sheetOpenProgress * RequirementsSheetBackdropBlurRadiusDp
+    val sheetVisible = vmState.selectedGroupId != null
+
+    val totalDone = vmState.donePerGroup.zip(GroupMaxPerGroup).sumOf { (d, m) -> d.coerceIn(0, m) }
+    val totalMax = GroupMaxPerGroup.sum()
+
     Box(modifier = modifier.fillMaxSize()) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .then(
+                    if (liveBackdropBlur && sheetOpenProgress > 0f) {
+                        Modifier.blur(listBlurRadiusDp.dp)
+                    } else {
+                        Modifier
+                    },
+                ),
+        ) {
         VfvListScreenBackdrop(heroDrawable = Res.drawable.main_dashboard_requirements)
         Column(
             modifier = Modifier
@@ -116,7 +146,7 @@ fun VfvGroupsScreen(
             VfvListChromeTopBar(
                 title = stringResource(Res.string.main_dashboard_requirements_title).uppercase(),
                 onBack = onBack,
-                onTrash = onTrashClick,
+                onTrash = { viewModel.resetAllRequirements() },
                 family = family,
             )
             Column(
@@ -164,7 +194,7 @@ fun VfvGroupsScreen(
                     )
                     Spacer(Modifier.weight(1f))
                     Text(
-                        text = "${state.totalDone}/${state.totalMax}",
+                        text = "$totalDone/$totalMax",
                         color = Color.White,
                         fontSize = 17.sp,
                         fontWeight = FontWeight.Medium,
@@ -173,8 +203,8 @@ fun VfvGroupsScreen(
                 }
                 Spacer(Modifier.height(18.dp))
                 requirementGroups.forEachIndexed { idx, group ->
-                    val done = state.donePerGroup[idx].coerceIn(0, state.maxPerGroup[idx])
-                    val max = state.maxPerGroup[idx]
+                    val done = vmState.donePerGroup.getOrElse(idx) { 0 }.coerceIn(0, GroupMaxPerGroup[idx])
+                    val max = GroupMaxPerGroup[idx]
                     val complete = done >= max
                     RequirementGroupRowCard(
                         title = stringResource(group.titleRes),
@@ -185,10 +215,46 @@ fun VfvGroupsScreen(
                         badgeDrawable = groupBadgeDrawable(idx, activeAsset = complete),
                         shape = shapeCard,
                         family = family,
-                        onClick = { onGroupClick(group.index1) },
+                        onClick = {
+                            if (!liveBackdropBlur) {
+                                sheetBackground = captureForSheet()
+                                    ?.withSnapshotBlur(RequirementsSheetBackdropBlurRadiusDp)
+                            }
+                            viewModel.openGroup(group.index1)
+                        },
                     )
                     Spacer(Modifier.height(14.dp))
                 }
+            }
+        }
+        }
+        val selectedGroupId = vmState.selectedGroupId
+        if (selectedGroupId != null) {
+            VfvGlassFullScreenBottomSheet(
+                visible = sheetVisible,
+                onDismissRequest = {
+                    viewModel.closeSheet()
+                    sheetBackground = null
+                    sheetOpenProgress = 0f
+                },
+                backgroundSnapshot = if (liveBackdropBlur) null else sheetBackground,
+                revealLiveBackdrop = liveBackdropBlur,
+                blurBackgroundSnapshot = false,
+                backdropBlurRadiusDp = RequirementsSheetBackdropBlurRadiusDp,
+                onOpenProgressChange = { sheetOpenProgress = it },
+            ) {
+                VfvRequirementsSheetContent(
+                    groupTitle = stringResource(groupTitle(selectedGroupId)),
+                    minRequired = minRequiredForGroup(selectedGroupId),
+                    doneCount = vmState.sheetDoneCount,
+                    requirements = vmState.sheetRequirements,
+                    onClose = {
+                        viewModel.closeSheet()
+                        sheetBackground = null
+                        sheetOpenProgress = 0f
+                    },
+                    onRequirementClick = viewModel::toggleRequirement,
+                )
             }
         }
     }

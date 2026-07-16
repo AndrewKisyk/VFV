@@ -1,0 +1,12 @@
+CREATE TABLE user_profile (
+  id INTEGER NOT NULL PRIMARY KEY,
+  age TEXT NOT NULL,
+  sex TEXT NOT NULL
+);
+
+selectProfile:
+SELECT * FROM user_profile WHERE id = 1;
+
+upsertProfile:
+INSERT OR REPLACE INTO user_profile(id, age, sex)
+VALUES (1, ?, ?);
