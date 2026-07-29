@@ -49,6 +49,7 @@ koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compos
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 # Compose Multiplatform — JetBrains androidx copies for common/ iOS
 jetbrains-navigation-compose = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "navigationComposeKmp" }
+jetbrains-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleKmp" }
 koin-compose-multiplatform = { group = "io.insert-koin", name = "koin-compose", version.ref = "koin-compose-mp" }
 kashif-backdrop = { group = "io.github.kashif-mehmood-km", name = "backdrop", version.ref = "kashifBackdrop" }
 

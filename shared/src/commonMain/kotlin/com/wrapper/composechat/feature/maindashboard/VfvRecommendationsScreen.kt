@@ -27,8 +27,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,15 +51,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-
-@Immutable
-data class VfvRecommendationsUiState(
-    /** Topic ids from legacy [com.plstudio.a123.vfv.fragments.RecomendationListFragment]. */
-    val readTopicIds: Set<String> = emptySet(),
-) {
-    val totalCount: Int get() = recommendationTopics.size
-    val totalRead: Int get() = readTopicIds.count { id -> recommendationTopics.any { it.id == id } }
-}
+import org.koin.compose.koinInject
 
 @Immutable
 private data class RecommendationTopicRow(
@@ -66,12 +61,14 @@ private data class RecommendationTopicRow(
     val iconDrawable: DrawableResource,
 )
 
-private val recommendationTopics = listOf(
-    RecommendationTopicRow("cardio", Res.string.recommendations_topic1_title, Res.string.recommendations_topic1_subtitle, Res.drawable.heart),
-    RecommendationTopicRow("jump", Res.string.recommendations_topic2_title, Res.string.recommendations_topic2_subtitle, Res.drawable.long_jump),
-    RecommendationTopicRow("running", Res.string.recommendations_topic3_title, Res.string.recommendations_topic3_subtitle, Res.drawable.run),
-    RecommendationTopicRow("strength", Res.string.recommendations_topic4_title, Res.string.recommendations_topic4_subtitle, Res.drawable.weight),
-)
+private val recommendationTopics = vfvRecommendationTopics.map { topic ->
+    RecommendationTopicRow(
+        id = topic.id,
+        titleRes = topic.titleRes,
+        subtitleRes = topic.subtitleRes,
+        iconDrawable = topic.iconDrawable,
+    )
+}
 
 /**
  * VFV «Рекомендації» — список тем як у [com.plstudio.a123.vfv.fragments.RecomendationListFragment].
@@ -80,14 +77,23 @@ private val recommendationTopics = listOf(
 @Composable
 fun VfvRecommendationsScreen(
     onBack: () -> Unit,
-    onTrashClick: () -> Unit = {},
     onTopicClick: (topicId: String) -> Unit = {},
     modifier: Modifier = Modifier,
-    state: VfvRecommendationsUiState = remember { VfvRecommendationsUiState() },
+    viewModel: VfvRecommendationsViewModel = koinInject(),
 ) {
+    val vmState by viewModel.state.collectAsState()
     val family = LocalVfvDisplayFontFamily.current
     val shapeCard = RoundedCornerShape(20.dp)
     val screenBackdrop = rememberVfvScreenBackdrop()
+
+    DisposableEffect(viewModel) {
+        onDispose { viewModel.onCleared() }
+    }
+
+    LifecycleResumeEffect(Unit) {
+        viewModel.refresh()
+        onPauseOrDispose { }
+    }
 
     CompositionLocalProvider(LocalVfvScreenBackdrop provides screenBackdrop) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -107,7 +113,7 @@ fun VfvRecommendationsScreen(
             VfvListChromeTopBar(
                 title = stringResource(Res.string.main_dashboard_recommendations_title).uppercase(),
                 onBack = onBack,
-                onTrash = onTrashClick,
+                onTrash = { viewModel.resetAllReads() },
                 family = family,
             )
             Column(
@@ -133,7 +139,7 @@ fun VfvRecommendationsScreen(
                         painter = painterResource(Res.drawable.main_dashboard_recommendations),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
+                        contentScale = ContentScale.FillWidth,
                     )
                 }
                 Spacer(Modifier.height(18.dp))
@@ -155,7 +161,7 @@ fun VfvRecommendationsScreen(
                     )
                     Spacer(Modifier.weight(1f))
                     Text(
-                        text = "${state.totalRead}/${state.totalCount}",
+                        text = "${vmState.totalRead}/${vmState.totalCount}",
                         color = Color.White,
                         fontSize = 17.sp,
                         fontWeight = FontWeight.Medium,
@@ -164,7 +170,7 @@ fun VfvRecommendationsScreen(
                 }
                 Spacer(Modifier.height(18.dp))
                 recommendationTopics.forEach { topic ->
-                    val read = topic.id in state.readTopicIds
+                    val read = topic.id in vmState.readTopicIds
                     RecommendationTopicRowCard(
                         title = stringResource(topic.titleRes),
                         subtitle = stringResource(topic.subtitleRes),

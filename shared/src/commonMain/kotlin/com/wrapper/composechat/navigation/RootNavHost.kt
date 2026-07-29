@@ -23,7 +23,9 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.wrapper.composechat.auth.AuthRepository
 import com.wrapper.composechat.feature.auth.AuthScreen
 import com.wrapper.composechat.feature.auth.VfvAuthTitleSharedElementKey
@@ -33,6 +35,7 @@ import com.wrapper.composechat.feature.home.MainStackFlow
 import com.wrapper.composechat.feature.home.playfulSpring
 import com.wrapper.composechat.feature.maindashboard.MainDashboardScreen
 import com.wrapper.composechat.feature.maindashboard.VfvGroupsScreen
+import com.wrapper.composechat.feature.maindashboard.VfvRecommendationDetailScreen
 import com.wrapper.composechat.feature.maindashboard.VfvRecommendationsScreen
 import com.wrapper.composechat.feature.splash.SplashScreen
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
@@ -46,6 +49,9 @@ object AppDestinations {
     const val Chats = "chats"
     const val Groups = "vfv_groups"
     const val Recommendations = "vfv_recommendations"
+    const val RecommendationDetail = "vfv_recommendation_detail/{topicId}"
+
+    fun recommendationDetail(topicId: String): String = "vfv_recommendation_detail/$topicId"
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -208,6 +214,30 @@ fun RootNavHost(
                             LocalAnimatedVisibilityScope provides this,
                         ) {
                             VfvRecommendationsScreen(
+                                onBack = { navController.popBackStack() },
+                                onTopicClick = { topicId ->
+                                    navController.navigate(AppDestinations.recommendationDetail(topicId))
+                                },
+                            )
+                        }
+                    }
+                    composable(
+                        route = AppDestinations.RecommendationDetail,
+                        arguments = listOf(
+                            navArgument("topicId") { type = NavType.StringType },
+                        ),
+                        enterTransition = { fadeIn(animationSpec = tween(280)) },
+                        exitTransition = { fadeOut(animationSpec = tween(280)) },
+                        popEnterTransition = { fadeIn(animationSpec = tween(280)) },
+                        popExitTransition = { fadeOut(animationSpec = tween(280)) },
+                    ) { backStackEntry ->
+                        val topicId = backStackEntry.arguments?.getString("topicId").orEmpty()
+                        CompositionLocalProvider(
+                            LocalSharedTransitionScope provides sharedShell,
+                            LocalAnimatedVisibilityScope provides this,
+                        ) {
+                            VfvRecommendationDetailScreen(
+                                topicId = topicId,
                                 onBack = { navController.popBackStack() },
                             )
                         }

@@ -1,0 +1,15 @@
+CREATE TABLE recommendation_read (
+  topic_id TEXT NOT NULL PRIMARY KEY
+);
+
+selectAllReadTopicIds:
+SELECT topic_id FROM recommendation_read;
+
+countReadTopics:
+SELECT COUNT(*) FROM recommendation_read;
+
+markTopicRead:
+INSERT OR IGNORE INTO recommendation_read(topic_id) VALUES (?);
+
+resetAllReads:
+DELETE FROM recommendation_read;

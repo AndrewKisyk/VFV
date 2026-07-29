@@ -10,6 +10,7 @@ object VfvDatabaseBootstrap {
     fun ensureSchema(driver: SqlDriver) {
         driver.execute(null, REQUIREMENTS_TABLE, 0)
         driver.execute(null, USER_PROFILE_TABLE, 0)
+        driver.execute(null, RECOMMENDATION_READ_TABLE, 0)
     }
 
     private const val REQUIREMENTS_TABLE = """
@@ -35,6 +36,12 @@ object VfvDatabaseBootstrap {
           id INTEGER NOT NULL PRIMARY KEY,
           age TEXT NOT NULL,
           sex TEXT NOT NULL
+        )
+    """
+
+    private const val RECOMMENDATION_READ_TABLE = """
+        CREATE TABLE IF NOT EXISTS recommendation_read (
+          topic_id TEXT NOT NULL PRIMARY KEY
         )
     """
 }

@@ -1,6 +1,7 @@
 package com.wrapper.composechat.feature.maindashboard
 
 import com.wrapper.composechat.auth.AuthRepository
+import com.wrapper.composechat.data.recommendations.RecommendationsRepository
 import com.wrapper.composechat.data.requirements.RequirementsRepository
 
 /**
@@ -25,6 +26,7 @@ private val GroupMaxPerGroup = listOf(2, 2, 2, 3, 3)
 
 class DefaultMainDashboardRepository(
     private val requirementsRepository: RequirementsRepository,
+    private val recommendationsRepository: RecommendationsRepository,
     private val authRepository: AuthRepository,
 ) : MainDashboardRepository {
     override suspend fun loadProgress(): MainDashboardProgress {
@@ -41,8 +43,7 @@ class DefaultMainDashboardRepository(
         val requirementsPercent =
             if (totalMax > 0) (totalDone * 100 / totalMax).coerceIn(0, 100) else 0
         val vfvAllDone = progress.zip(GroupMaxPerGroup).all { (p, max) -> p.done >= max }
-        // Recommendations progress is not persisted yet — keep placeholder until wired.
-        val recommendationsPercent = 0
+        val recommendationsPercent = recommendationsRepository.getReadPercent()
         val mainPercent = ((requirementsPercent + recommendationsPercent) / 2).coerceIn(0, 100)
         return MainDashboardProgress(
             mainPercent = mainPercent,

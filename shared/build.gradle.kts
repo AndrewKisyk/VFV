@@ -34,6 +34,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.materialIconsExtended)
             implementation(libs.jetbrains.navigation.compose)
+            implementation(libs.jetbrains.lifecycle.runtime.compose)
             implementation(libs.koin.core)
             implementation(libs.koin.compose.multiplatform)
             implementation(libs.kotlinx.coroutines.core)
