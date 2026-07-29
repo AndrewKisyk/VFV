@@ -3,6 +3,7 @@ package com.wrapper.composechat.feature.maindashboard
 import com.wrapper.composechat.auth.AuthRepository
 import com.wrapper.composechat.data.recommendations.RecommendationsRepository
 import com.wrapper.composechat.data.requirements.RequirementsRepository
+import com.wrapper.composechat.progress.VfvProgressCalculator
 
 /**
  * Loads progress for the VFV-style main screen (replaces [com.plstudio.a123.vfv.presenters.MainActivityPresenter] data).
@@ -22,8 +23,6 @@ data class MainDashboardProgress(
     val vfvAllDone: Boolean = false,
 )
 
-private val GroupMaxPerGroup = listOf(2, 2, 2, 3, 3)
-
 class DefaultMainDashboardRepository(
     private val requirementsRepository: RequirementsRepository,
     private val recommendationsRepository: RecommendationsRepository,
@@ -37,14 +36,26 @@ class DefaultMainDashboardRepository(
                 recommendationsPercent = 0,
             )
         requirementsRepository.ensureSeeded()
-        val progress = requirementsRepository.getAllGroupsProgress(profile.sex, profile.age)
-        val totalDone = progress.zip(GroupMaxPerGroup).sumOf { (p, max) -> p.done.coerceIn(0, max) }
-        val totalMax = GroupMaxPerGroup.sum()
-        val requirementsPercent =
-            if (totalMax > 0) (totalDone * 100 / totalMax).coerceIn(0, 100) else 0
-        val vfvAllDone = progress.zip(GroupMaxPerGroup).all { (p, max) -> p.done >= max }
-        val recommendationsPercent = recommendationsRepository.getReadPercent()
-        val mainPercent = ((requirementsPercent + recommendationsPercent) / 2).coerceIn(0, 100)
+        val groupProgress = requirementsRepository.getAllGroupsProgress(profile.sex, profile.age)
+        val totalDone = groupProgress.sumOf { it.done }
+        val legacyRecomCount = VfvProgressCalculator.legacyRecomCount(
+            recommendationsRepository.getReadTopicIds().size,
+        )
+        val requirementsPercent = VfvProgressCalculator.getToDoRes(
+            doneCount = totalDone,
+            sex = profile.sex,
+            age = profile.age,
+        )
+        val recommendationsPercent = VfvProgressCalculator.getRecomStatus(legacyRecomCount)
+        val mainPercent = VfvProgressCalculator.computeAllRes(
+            doneCount = totalDone,
+            legacyRecomCount = legacyRecomCount,
+            sex = profile.sex,
+            age = profile.age,
+        )
+        val vfvAllDone = VfvProgressCalculator.compareAllVfvRes(
+            groupProgress.map { it.done },
+        )
         return MainDashboardProgress(
             mainPercent = mainPercent,
             requirementsPercent = requirementsPercent,

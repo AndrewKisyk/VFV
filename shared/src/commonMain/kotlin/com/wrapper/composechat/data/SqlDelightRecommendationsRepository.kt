@@ -3,6 +3,7 @@ package com.wrapper.composechat.data
 import com.wrapper.composechat.data.recommendations.RecommendationsRepository
 import com.wrapper.composechat.data.recommendations.VfvRecommendationTopicIds
 import com.wrapper.composechat.db.VfvSqlDatabase
+import com.wrapper.composechat.progress.VfvProgressCalculator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -32,6 +33,6 @@ class SqlDelightRecommendationsRepository(
             .executeAsOne()
             .toInt()
             .coerceIn(0, VfvRecommendationTopicIds.size)
-        (readCount * 25).coerceIn(0, 100)
+        VfvProgressCalculator.getRecomStatus(VfvProgressCalculator.legacyRecomCount(readCount))
     }
 }

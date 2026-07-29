@@ -231,10 +231,7 @@ private fun parseRecommendationArticleHtml(rawHtml: String): List<ArticleBlock> 
             .substringBefore('\t')
             .lowercase()
         if (tagName == "img") {
-            val src = extractAttribute(tagContent, "src")?.let(::unwrapAttr)
-            if (!src.isNullOrBlank()) {
-                blocks += ArticleBlock.ImageBlock(src)
-            }
+            parseImageBlock(tagContent)?.let { blocks += it }
             index = tagEnd + 1
             continue
         }
@@ -257,14 +254,14 @@ private fun parseRecommendationArticleHtml(rawHtml: String): List<ArticleBlock> 
                 )
             }
             "p" -> {
-                blocks += ArticleBlock.Paragraph(parseInlineSpans(inner))
+                blocks += parseInnerContentBlocks(inner)
             }
             "li" -> {
                 blocks += ArticleBlock.BulletItem(parseInlineSpans(inner))
             }
             "div" -> {
                 val centered = tagContent.contains("text-align: center", ignoreCase = true)
-                blocks += ArticleBlock.Paragraph(parseInlineSpans(inner), centered = centered)
+                blocks += parseInnerContentBlocks(inner, centered = centered)
             }
             "ul" -> Unit
             else -> appendPlainParagraph(inner, blocks)
@@ -278,6 +275,44 @@ private fun parseRecommendationArticleHtml(rawHtml: String): List<ArticleBlock> 
             block.spans.firstOrNull()?.text.isNullOrBlank()
     }
 }
+
+private fun parseInnerContentBlocks(
+    inner: String,
+    centered: Boolean = false,
+): List<ArticleBlock> {
+    val blocks = mutableListOf<ArticleBlock>()
+    var index = 0
+    while (index < inner.length) {
+        val imgStart = inner.indexOf("<img", index, ignoreCase = true)
+        if (imgStart == -1) {
+            val spans = parseInlineSpans(inner.substring(index))
+            if (spans.isNotEmpty()) {
+                blocks += ArticleBlock.Paragraph(spans, centered = centered)
+            }
+            break
+        }
+        if (imgStart > index) {
+            val spans = parseInlineSpans(inner.substring(index, imgStart))
+            if (spans.isNotEmpty()) {
+                blocks += ArticleBlock.Paragraph(spans, centered = centered)
+            }
+        }
+        val tagEnd = inner.indexOf('>', imgStart)
+        if (tagEnd == -1) break
+        val tagContent = inner.substring(imgStart + 1, tagEnd).trim()
+        parseImageBlock(tagContent)?.let { blocks += it }
+        index = tagEnd + 1
+    }
+    return blocks
+}
+
+private fun parseImageBlock(tagContent: String): ArticleBlock.ImageBlock? {
+    val src = extractAttribute(tagContent, "src")?.let(::normalizeImageAsset)
+    return if (src.isNullOrBlank()) null else ArticleBlock.ImageBlock(src)
+}
+
+private fun normalizeImageAsset(value: String): String =
+    unwrapAttr(value).trim('\'', '"')
 
 private fun appendPlainParagraph(text: String, blocks: MutableList<ArticleBlock>) {
     val cleaned = decodeHtmlEntities(text).trim()
