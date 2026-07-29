@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,11 +35,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wrapper.composechat.data.requirements.VfvRequirement
-import com.wrapper.composechat.resources.Res
-import com.wrapper.composechat.resources.*
+import com.wrapper.composechat.ui.components.VfvChromeCloseIconButton
 import com.wrapper.composechat.ui.theme.LocalVfvDisplayFontFamily
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import com.wrapper.composechat.resources.Res
+import com.wrapper.composechat.resources.*
 
 private val SheetCardIdleBg = Color(0xFF09001F).copy(alpha = 0.72f)
 private val SheetCardDoneBg = Color(0xFF0F0524)
@@ -76,21 +76,7 @@ fun VfvRequirementsSheetContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Spacer(Modifier.weight(1f))
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.08f))
-                    .clickable(onClick = onClose),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Close,
-                    contentDescription = stringResource(Res.string.requirements_close),
-                    tint = Color.White.copy(alpha = 0.9f),
-                    modifier = Modifier.size(18.dp),
-                )
-            }
+            VfvChromeCloseIconButton(onClick = onClose)
         }
         Spacer(Modifier.height(8.dp))
         Text(

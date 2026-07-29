@@ -1,6 +1,9 @@
 package com.wrapper.composechat.feature.maindashboard
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,27 +16,27 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.wrapper.composechat.ui.liquidglass.LocalVfvScreenBackdrop
-import com.wrapper.composechat.ui.liquidglass.rememberVfvScreenBackdrop
-import com.wrapper.composechat.ui.liquidglass.vfvScreenLayerBackdrop
+import com.wrapper.composechat.ui.components.VfvChromeBackIconButton
 import com.wrapper.composechat.ui.theme.LocalVfvDisplayFontFamily
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,6 +50,9 @@ import com.wrapper.composechat.resources.Res
 import com.wrapper.composechat.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+
+private val VfvRecommendationDetailBackground = Color(0xFF020725)
+private val VfvRecommendationDetailTopBarScrolled = Color(0xFF09001F)
 
 /**
  * VFV recommendation article — port of [com.plstudio.a123.vfv.fragments.RecomendationFragment].
@@ -66,7 +72,6 @@ fun VfvRecommendationDetailScreen(
     val vmState by viewModel.state.collectAsState()
     val alreadyRead = topicId in vmState.readTopicIds
     val family = LocalVfvDisplayFontFamily.current
-    val screenBackdrop = rememberVfvScreenBackdrop()
     val articleHtml = stringResource(topic.articleRes)
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -94,86 +99,116 @@ fun VfvRecommendationDetailScreen(
         }
     }
 
-    CompositionLocalProvider(LocalVfvScreenBackdrop provides screenBackdrop) {
-        Box(modifier = modifier.fillMaxSize()) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .vfvScreenLayerBackdrop(screenBackdrop),
-            ) {
-                VfvListScreenBackdrop(heroDrawable = topic.iconDrawable)
-            }
+    val scrollState = rememberScrollState()
+    var topBarHeightPx by remember { mutableIntStateOf(0) }
+    val density = LocalDensity.current
+    val topBarScrollInset = with(density) { topBarHeightPx.toDp() }
+    val title = stringResource(topic.titleRes).uppercase()
+    val subtitle = stringResource(topic.subtitleRes)
+    val isTopBarScrolled by remember {
+        derivedStateOf { scrollState.value > 0 }
+    }
+    val topBarColor by animateColorAsState(
+        targetValue = if (isTopBarScrolled) {
+            VfvRecommendationDetailTopBarScrolled
+        } else {
+            VfvRecommendationDetailBackground
+        },
+        animationSpec = tween(durationMillis = 200),
+        label = "detailTopBarColor",
+    )
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(VfvRecommendationDetailBackground),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState),
+        ) {
+            Spacer(Modifier.height(topBarScrollInset))
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .statusBarsPadding()
-                    .padding(horizontal = 20.dp, vertical = 8.dp),
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .padding(bottom = 28.dp),
             ) {
-                VfvRecommendationDetailTopBar(
-                    title = stringResource(topic.titleRes).uppercase(),
-                    onBack = onBack,
+                VfvRecommendationArticleHtml(
+                    html = articleHtml,
                     family = family,
                 )
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .verticalScroll(rememberScrollState())
-                        .padding(bottom = 28.dp),
-                ) {
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        text = stringResource(topic.subtitleRes),
-                        color = Color.White.copy(alpha = 0.65f),
-                        fontSize = 14.sp,
-                        fontFamily = family,
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    VfvRecommendationArticleHtml(
-                        html = articleHtml,
-                        family = family,
-                    )
-                }
             }
         }
+        VfvRecommendationDetailTopBar(
+            title = title,
+            subtitle = subtitle,
+            onBack = onBack,
+            family = family,
+            backgroundColor = topBarColor,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .onSizeChanged { topBarHeightPx = it.height },
+        )
     }
 }
 
 @Composable
 private fun VfvRecommendationDetailTopBar(
     title: String,
+    subtitle: String,
     onBack: () -> Unit,
     family: androidx.compose.ui.text.font.FontFamily?,
+    backgroundColor: Color,
+    modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(backgroundColor)
+            .padding(bottom = 8.dp),
     ) {
-        VfvListChromeIconButton(
-            onClick = onBack,
-            desc = stringResource(Res.string.nav_back),
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .padding(horizontal = 20.dp, vertical = 8.dp),
         ) {
-            Icon(
-                imageVector = Icons.Rounded.KeyboardArrowDown,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(16.dp),
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                VfvChromeBackIconButton(onClick = onBack)
+                Text(
+                    text = title,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 12.dp),
+                    color = Color.White.copy(alpha = 0.92f),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Medium,
+                    fontFamily = family,
+                    letterSpacing = 1.2.sp,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Spacer(modifier = Modifier.size(32.dp))
+            }
+            Text(
+                text = subtitle,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp, start = 44.dp, end = 44.dp),
+                color = Color.White.copy(alpha = 0.65f),
+                fontSize = 14.sp,
+                fontFamily = family,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
         }
-        Text(
-            text = title,
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 12.dp),
-            color = Color.White.copy(alpha = 0.92f),
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Medium,
-            fontFamily = family,
-            letterSpacing = 1.2.sp,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-        Spacer(modifier = Modifier.size(32.dp))
     }
 }

@@ -25,7 +25,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -62,6 +61,8 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import com.wrapper.composechat.platform.isBackdropBlurAvailable
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
 import com.wrapper.composechat.platform.withSnapshotBlur
+import com.wrapper.composechat.ui.components.VfvChromeBackIconButton
+import com.wrapper.composechat.ui.components.VfvChromeTrashIconButton
 import com.wrapper.composechat.ui.components.VfvGlassFullScreenBottomSheet
 
 private const val ChatsSheetBackdropBlurRadiusDp = 20f
@@ -230,17 +231,10 @@ private fun MainDashboardTopBar(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        RingIconButton(
+        VfvChromeBackIconButton(
             onClick = onOpenChats,
-            desc = chatsContentDescription,
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.KeyboardArrowDown,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(16.dp),
-            )
-        }
+            contentDescription = chatsContentDescription,
+        )
         Text(
             text = inProgressText,
             modifier = Modifier
@@ -252,36 +246,10 @@ private fun MainDashboardTopBar(
             fontWeight = FontWeight.Normal,
             fontFamily = family,
         )
-        RingIconButton(
+        VfvChromeTrashIconButton(
             onClick = onOpenSettings,
-            desc = settingsContentDescription,
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.trash),
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(16.dp),
-            )
-        }
-    }
-}
-
-@Composable
-private fun RingIconButton(
-    onClick: () -> Unit,
-    desc: String,
-    content: @Composable () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .semantics { contentDescription = desc }
-            .size(32.dp)
-            .clip(RoundedCornerShape(corner = CornerSize(12.dp)))
-            .border(1.dp, Color.White.copy(alpha = 0.4f), RoundedCornerShape(corner = CornerSize(12.dp)))
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center,
-    ) {
-        content()
+            contentDescription = settingsContentDescription,
+        )
     }
 }
 
