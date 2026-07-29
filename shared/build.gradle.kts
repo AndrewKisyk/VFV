@@ -39,6 +39,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.sqldelight.runtime)
             implementation(libs.sqldelight.coroutines)
+            implementation(libs.kashif.backdrop)
         }
         commonTest.dependencies {
             implementation(libs.kotlinx.coroutines.core)
@@ -59,7 +60,7 @@ kotlin {
 
 android {
     namespace = "com.wrapper.composechat.shared"
-    compileSdk = 36
+    compileSdk = 37
     defaultConfig {
         minSdk = 30
     }

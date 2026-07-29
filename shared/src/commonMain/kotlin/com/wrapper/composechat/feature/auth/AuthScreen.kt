@@ -80,8 +80,9 @@ fun AuthScreen(
         visible = true,
         onDismissRequest = {},
         backgroundSnapshot = backgroundSnapshot,
+        fullScreenBlurredSnapshot = true,
         swipeToDismissEnabled = false,
-    ) {
+    ) { _ ->
         AuthFormContent(
             state = state,
             onAgeChange = { viewModel.onEvent(AuthEvent.AgeChanged(it)) },

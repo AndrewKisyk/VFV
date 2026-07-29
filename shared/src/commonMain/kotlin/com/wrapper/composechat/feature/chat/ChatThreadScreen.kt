@@ -105,7 +105,7 @@ fun ChatThreadScreen(
                     Box(
                         modifier = Modifier
                             .sharedElement(
-                                state = rememberSharedContentState(key = "avatar-${user.id}"),
+                                sharedContentState = rememberSharedContentState(key = "avatar-${user.id}"),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = { _, _ -> playfulSpring },
                             )
@@ -137,7 +137,7 @@ fun ChatThreadScreen(
                             sharedContentState = rememberSharedContentState(key = "name-${user.id}"),
                             animatedVisibilityScope = animatedVisibilityScope,
                             boundsTransform = { _, _ -> playfulSpring },
-                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(
+                            resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(
                                 contentScale = ContentScale.Fit,
                                 alignment = Alignment.CenterStart,
                             ),

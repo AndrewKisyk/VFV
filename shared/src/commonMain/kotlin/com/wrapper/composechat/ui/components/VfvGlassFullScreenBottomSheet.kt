@@ -53,14 +53,8 @@ private val ScrimBottomColor = Color(0xFF020725)
 
 /**
  * @param backgroundSnapshot A bitmap of the screen **before** this overlay (from [com.wrapper.composechat.platform.rememberComposeViewBitmapCapture]).
- *   If null, falls back to blur-only tint (e.g. iOS until a capture is wired).
- * @param fullScreenBlurredSnapshot If true, draws [backgroundSnapshot] **full screen** (with blur) behind the sheet so the
- *   entire area looks like a blurred underlay (e.g. post–splash auth). If false (default, e.g. main dashboard), only the
- *   bottom “rising” strip uses the snapshot.
- * @param revealLiveBackdrop If true, the rising strip is a scrim only — blur the screen **behind** this overlay (e.g. live
- *   [MainDashboardScreen] blur driven by [onOpenProgressChange]) instead of drawing a blurred snapshot inside the strip.
- * @param onOpenProgressChange 0f = closed, 1f = fully open; updates while animating and while dragging.
- * @param swipeToDismissEnabled If false, vertical drag does not move or dismiss the sheet (e.g. required auth).
+ * @param revealLiveBackdrop If true, blur the screen **behind** this overlay (live [Modifier.blur] on the underlay).
+ * @param onOpenProgressChange 0f = closed, 1f = fully open.
  */
 @Composable
 fun VfvGlassFullScreenBottomSheet(
@@ -74,7 +68,8 @@ fun VfvGlassFullScreenBottomSheet(
     backdropBlurRadiusDp: Float = 20f,
     onOpenProgressChange: ((Float) -> Unit)? = null,
     swipeToDismissEnabled: Boolean = true,
-    content: @Composable () -> Unit,
+    contentFullScreen: Boolean = false,
+    content: @Composable (onAnimatedDismiss: () -> Unit) -> Unit,
 ) {
     val dismissTap = remember { MutableInteractionSource() }
     val density = LocalDensity.current
@@ -84,8 +79,6 @@ fun VfvGlassFullScreenBottomSheet(
     val onProgressUpdated = rememberUpdatedState(onOpenProgressChange)
     val onDismissUpdated = rememberUpdatedState(onDismissRequest)
 
-    // Fade only: no slide on the whole overlay — the snapshot stays screen-fixed; only the dialog
-    // moves via offset(dragY). SlideInVertically was moving the backdrop together with the sheet.
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(tween(200)),
@@ -112,7 +105,6 @@ fun VfvGlassFullScreenBottomSheet(
                 }
             }
 
-            // Dialog offset maxHPx → 0: same as strip height; snapshot does not use offset — only height grows.
             LaunchedEffect(visible, maxHPx) {
                 if (!visible) return@LaunchedEffect
                 dragY = maxHPx
@@ -128,12 +120,10 @@ fun VfvGlassFullScreenBottomSheet(
 
             val openProgress = (1f - (dragY / maxHPx).coerceIn(0f, 1f))
             SideEffect {
-                onProgressUpdated.value?.invoke(openProgress)
+                val progress = if (visible) openProgress else 0f
+                onProgressUpdated.value?.invoke(progress)
             }
 
-            // Strip height = open amount. Snapshot is NOT in the offset(dragY) box — only content() rides the sheet.
-            // ContentScale.Crop defaults to center — use BottomCenter so the capture stays fixed to the screen bottom
-            // (like blurView + y in the XML sample, but without a third-party blur view).
             val visibleHeightPx = (maxHPx - dragY).coerceIn(0f, maxHPx)
             val visibleHeightDp = with(density) { visibleHeightPx.toDp() }
             val fullScreenH = maxHeight
@@ -186,7 +176,7 @@ fun VfvGlassFullScreenBottomSheet(
                     val stripGradient = Brush.verticalGradient(
                         colorStops = arrayOf(0f to Color.Transparent, 1f to ScrimBottomColor),
                         startY = 0f,
-                        endY = visibleHeightPx,
+                        endY = visibleHeightPx.coerceAtLeast(1f),
                     )
                     Box(
                         Modifier
@@ -224,7 +214,6 @@ fun VfvGlassFullScreenBottomSheet(
                     }
                 }
 
-                // Front: dialog follows finger; snapshot does not move with this box
                 Box(
                     Modifier
                         .fillMaxSize()
@@ -260,23 +249,34 @@ fun VfvGlassFullScreenBottomSheet(
                             },
                         ),
                 ) {
-                    Column(
-                        Modifier
-                            .fillMaxSize()
-                            .statusBarsPadding()
-                            .navigationBarsPadding(),
-                    ) {
-                        Spacer(
+                    if (contentFullScreen) {
+                        Box(
                             Modifier
-                                .weight(1f)
-                                .fillMaxWidth()
-                                .clickable(
-                                    interactionSource = dismissTap,
-                                    indication = null,
-                                    onClick = onDismiss,
-                                ),
-                        )
-                        content()
+                                .fillMaxSize()
+                                .statusBarsPadding()
+                                .navigationBarsPadding(),
+                        ) {
+                            content(onDismiss)
+                        }
+                    } else {
+                        Column(
+                            Modifier
+                                .fillMaxSize()
+                                .statusBarsPadding()
+                                .navigationBarsPadding(),
+                        ) {
+                            Spacer(
+                                Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .clickable(
+                                        interactionSource = dismissTap,
+                                        indication = null,
+                                        onClick = onDismiss,
+                                    ),
+                            )
+                            content(onDismiss)
+                        }
                     }
                 }
             }

@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -39,12 +42,17 @@ import com.wrapper.composechat.ui.theme.LocalVfvDisplayFontFamily
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-private val SheetPanelColor = Color(0xFF14082E)
-private val SheetCardIdleBg = Color(0xFF09001F).copy(alpha = 0.55f)
+private val SheetCardIdleBg = Color(0xFF09001F).copy(alpha = 0.72f)
+private val SheetCardDoneBg = Color(0xFF0F0524)
 private val SheetCardDoneBorder = Color(0xFF9B35FF)
+private val SheetCardIdleBorder = Color.White.copy(alpha = 0.16f)
+private val SheetValueText = Color(0xFFB0B0B0)
+private val SheetStatusIdleBg = Color(0xFF1C1C28)
+private val SheetStatusIdleIcon = Color.White.copy(alpha = 0.28f)
 private val SheetBadgeGradient = Brush.horizontalGradient(
     listOf(Color(0xFFDF18FF), Color(0xFF6400EC)),
 )
+private val RequirementCardCorner = 18.dp
 
 @Composable
 fun VfvRequirementsSheetContent(
@@ -57,13 +65,10 @@ fun VfvRequirementsSheetContent(
     modifier: Modifier = Modifier,
 ) {
     val family = LocalVfvDisplayFontFamily.current
-    val panelShape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .clip(panelShape)
-            .background(SheetPanelColor)
+            .fillMaxSize()
             .padding(horizontal = 20.dp, vertical = 16.dp),
     ) {
         Row(
@@ -103,30 +108,11 @@ fun VfvRequirementsSheetContent(
             fontFamily = family,
         )
         Spacer(Modifier.height(14.dp))
-        Row(
-            modifier = Modifier
-                .clip(RoundedCornerShape(50))
-                .background(Color.White.copy(alpha = 0.08f))
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Image(
-                painter = painterResource(Res.drawable.groups_completed_label),
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-            )
-            Spacer(Modifier.width(8.dp))
-            Text(
-                text = "$doneCount/$minRequired",
-                color = Color.White,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Medium,
-                fontFamily = family,
-            )
-        }
+        VfvRequirementsCounter(label = "$doneCount/$minRequired")
         Spacer(Modifier.height(18.dp))
         Column(
             modifier = Modifier
+                .weight(1f)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -149,31 +135,82 @@ private fun RequirementSheetRowCard(
     family: androidx.compose.ui.text.font.FontFamily?,
     onClick: () -> Unit,
 ) {
-    val shape = RoundedCornerShape(20.dp)
+    val shape = RoundedCornerShape(RequirementCardCorner)
     val done = requirement.isDone
-    val borderModifier = if (done) {
-        Modifier.border(1.5.dp, SheetCardDoneBorder, shape)
-    } else {
-        Modifier.border(1.dp, Color.White.copy(alpha = 0.14f), shape)
-    }
     val icon = requirementIconDrawable(requirement.imageKey)
+    val doneBadgeShape = RoundedCornerShape(
+        topStart = 0.dp,
+        topEnd = RequirementCardCorner,
+        bottomStart = 14.dp,
+        bottomEnd = 0.dp,
+    )
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .defaultMinSize(minHeight = 80.dp)
             .clip(shape)
-            .then(borderModifier)
-            .background(if (done) Color(0xFF1E0A3D).copy(alpha = 0.85f) else SheetCardIdleBg)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 14.dp),
+            .background(if (done) SheetCardDoneBg else SheetCardIdleBg)
+            .border(
+                width = if (done) 2.dp else 1.dp,
+                color = if (done) SheetCardDoneBorder else SheetCardIdleBorder,
+                shape = shape,
+            )
+            .clickable(onClick = onClick),
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier.size(48.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                if (icon != null) {
+                    Image(
+                        painter = painterResource(icon),
+                        contentDescription = null,
+                        modifier = Modifier.size(40.dp),
+                        contentScale = ContentScale.Fit,
+                    )
+                }
+            }
+            Spacer(Modifier.width(12.dp))
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    text = requirement.name,
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = family,
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = requirement.threshold,
+                    color = SheetValueText,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    fontFamily = family,
+                )
+            }
+            if (!done) {
+                Spacer(Modifier.width(10.dp))
+                RequirementStatusCircle(done = false)
+            }
+        }
+
         if (done) {
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .clip(RoundedCornerShape(50))
+                    .clip(doneBadgeShape)
                     .background(SheetBadgeGradient)
-                    .padding(horizontal = 10.dp, vertical = 4.dp),
+                    .padding(horizontal = 12.dp, vertical = 5.dp),
             ) {
                 Text(
                     text = stringResource(Res.string.requirements_done_badge),
@@ -184,43 +221,25 @@ private fun RequirementSheetRowCard(
                 )
             }
         }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(44.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(Color(0xFF2A0F52).copy(alpha = 0.7f)),
-                contentAlignment = Alignment.Center,
-            ) {
-                if (icon != null) {
-                    Image(
-                        painter = painterResource(icon),
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp),
-                        contentScale = ContentScale.Fit,
-                    )
-                }
-            }
-            Spacer(Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = requirement.name,
-                    color = Color.White,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = family,
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = requirement.threshold,
-                    color = Color.White.copy(alpha = 0.62f),
-                    fontSize = 13.sp,
-                    fontFamily = family,
-                )
-            }
-        }
+    }
+}
+
+@Composable
+private fun RequirementStatusCircle(done: Boolean) {
+    val circleBg = if (done) Color(0xFF1F7A3A) else SheetStatusIdleBg
+    val iconTint = if (done) Color.White else SheetStatusIdleIcon
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(circleBg),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.Check,
+            contentDescription = null,
+            tint = iconTint,
+            modifier = Modifier.size(22.dp),
+        )
     }
 }

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,10 +29,10 @@ import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -79,6 +78,11 @@ fun MainDashboardScreen(
     viewModel: MainDashboardViewModel = koinInject(),
 ) {
     val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.refresh()
+    }
+
     val reqAnimated by animateFloatAsState(
         targetValue = state.requirementsPercent / 100f,
         animationSpec = tween(800),
@@ -199,7 +203,7 @@ fun MainDashboardScreen(
             blurBackgroundSnapshot = false,
             backdropBlurRadiusDp = ChatsSheetBackdropBlurRadiusDp,
             onOpenProgressChange = { chatsSheetOpenProgress = it },
-        ) {
+        ) { _ ->
             ChatsAccessSheetContent(
                 onContinue = {
                     showChatsAccessSheet = false

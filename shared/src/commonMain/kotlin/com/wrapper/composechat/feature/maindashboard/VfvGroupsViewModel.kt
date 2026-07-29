@@ -70,6 +70,7 @@ class VfvGroupsViewModel(
             it.copy(
                 selectedGroupId = null,
                 sheetRequirements = emptyList(),
+                sheetDoneCount = 0,
             )
         }
     }

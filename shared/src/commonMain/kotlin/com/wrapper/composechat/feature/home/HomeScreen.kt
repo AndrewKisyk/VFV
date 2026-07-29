@@ -616,7 +616,7 @@ fun SharedRecentItemRow(
                     if (sharedTransitionScope != null && animatedVisibilityScope != null) {
                         with(sharedTransitionScope) {
                             Modifier.sharedElement(
-                                state = rememberSharedContentState(key = "avatar-${item.id}"),
+                                sharedContentState = rememberSharedContentState(key = "avatar-${item.id}"),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = { _, _ -> playfulSpring }
                             )
@@ -653,9 +653,9 @@ fun SharedRecentItemRow(
                                 sharedContentState = rememberSharedContentState(key = "name-${item.id}"),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = { _, _ -> playfulSpring },
-                                resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds(
-                                    ContentScale.Fit,
-                                    Alignment.CenterStart
+                                resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(
+                                    contentScale = ContentScale.Fit,
+                                    alignment = Alignment.CenterStart,
                                 )
                             )
                         }

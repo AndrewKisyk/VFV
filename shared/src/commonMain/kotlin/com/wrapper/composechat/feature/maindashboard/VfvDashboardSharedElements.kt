@@ -31,7 +31,7 @@ private fun Modifier.vfvDashboardHeroSharedElement(key: String): Modifier {
     return with(st) {
         then(
             Modifier.sharedElement(
-                state = rememberSharedContentState(key = key),
+                sharedContentState = rememberSharedContentState(key = key),
                 animatedVisibilityScope = av,
                 boundsTransform = { _, _ -> playfulSpring },
             ),

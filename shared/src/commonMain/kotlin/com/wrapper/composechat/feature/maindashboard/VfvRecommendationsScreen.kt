@@ -26,6 +26,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,7 +38,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.wrapper.composechat.platform.optionalBackdropBlur
+import com.wrapper.composechat.ui.liquidglass.LocalVfvScreenBackdrop
+import com.wrapper.composechat.ui.liquidglass.rememberVfvScreenBackdrop
+import com.wrapper.composechat.ui.liquidglass.vfvLiquidGlass
+import com.wrapper.composechat.ui.liquidglass.vfvScreenLayerBackdrop
 import com.wrapper.composechat.resources.*
 import com.wrapper.composechat.ui.theme.LocalVfvDisplayFontFamily
 import org.jetbrains.compose.resources.DrawableResource
@@ -83,9 +87,17 @@ fun VfvRecommendationsScreen(
 ) {
     val family = LocalVfvDisplayFontFamily.current
     val shapeCard = RoundedCornerShape(20.dp)
+    val screenBackdrop = rememberVfvScreenBackdrop()
 
+    CompositionLocalProvider(LocalVfvScreenBackdrop provides screenBackdrop) {
     Box(modifier = modifier.fillMaxSize()) {
-        VfvListScreenBackdrop(heroDrawable = Res.drawable.main_dashboard_recommendations)
+        Box(
+            Modifier
+                .fillMaxSize()
+                .vfvScreenLayerBackdrop(screenBackdrop),
+        ) {
+            VfvListScreenBackdrop(heroDrawable = Res.drawable.main_dashboard_recommendations)
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -167,6 +179,7 @@ fun VfvRecommendationsScreen(
             }
         }
     }
+    }
 }
 
 @Composable
@@ -206,8 +219,11 @@ private fun RecommendationTopicRowCard(
                     Modifier
                         .fillMaxSize()
                         .clip(shape)
-                        .optionalBackdropBlur(VfvListCardCompleteBlurRadiusDp)
-                        .background(Color.White.copy(alpha = 0.19f)),
+                        .vfvLiquidGlass(
+                            blurRadiusDp = VfvListCardCompleteBlurRadiusDp,
+                            shape = shape,
+                            surfaceColor = Color.White.copy(alpha = 0.19f),
+                        ),
                 )
             }
             Row(

@@ -24,6 +24,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,10 +51,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wrapper.composechat.data.requirements.minRequiredForGroup
 import com.wrapper.composechat.platform.isBackdropBlurAvailable
-import com.wrapper.composechat.platform.optionalBackdropBlur
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
 import com.wrapper.composechat.platform.withSnapshotBlur
 import com.wrapper.composechat.ui.components.VfvGlassFullScreenBottomSheet
+import com.wrapper.composechat.ui.liquidglass.LocalVfvScreenBackdrop
+import com.wrapper.composechat.ui.liquidglass.rememberVfvScreenBackdrop
+import com.wrapper.composechat.ui.liquidglass.vfvLiquidGlass
+import com.wrapper.composechat.ui.liquidglass.vfvScreenLayerBackdrop
 import com.wrapper.composechat.resources.*
 import com.wrapper.composechat.ui.theme.LocalVfvDisplayFontFamily
 import org.jetbrains.compose.resources.DrawableResource
@@ -119,12 +124,26 @@ fun VfvGroupsScreen(
     val captureForSheet = rememberComposeViewBitmapCapture()
     val liveBackdropBlur = isBackdropBlurAvailable()
     val listBlurRadiusDp = sheetOpenProgress * RequirementsSheetBackdropBlurRadiusDp
+    val screenBackdrop = rememberVfvScreenBackdrop()
     val sheetVisible = vmState.selectedGroupId != null
+    var sheetAnimatedDismiss by remember { mutableStateOf<(() -> Unit)?>(null) }
+
+    DisposableEffect(viewModel) {
+        onDispose { viewModel.onCleared() }
+    }
 
     val totalDone = vmState.donePerGroup.zip(GroupMaxPerGroup).sumOf { (d, m) -> d.coerceIn(0, m) }
     val totalMax = GroupMaxPerGroup.sum()
 
+    CompositionLocalProvider(LocalVfvScreenBackdrop provides screenBackdrop) {
     Box(modifier = modifier.fillMaxSize()) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .vfvScreenLayerBackdrop(screenBackdrop),
+        ) {
+            VfvListScreenBackdrop(heroDrawable = Res.drawable.main_dashboard_requirements)
+        }
         Box(
             Modifier
                 .fillMaxSize()
@@ -136,7 +155,6 @@ fun VfvGroupsScreen(
                     },
                 ),
         ) {
-        VfvListScreenBackdrop(heroDrawable = Res.drawable.main_dashboard_requirements)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -145,7 +163,17 @@ fun VfvGroupsScreen(
         ) {
             VfvListChromeTopBar(
                 title = stringResource(Res.string.main_dashboard_requirements_title).uppercase(),
-                onBack = onBack,
+                onBack = {
+                    if (vmState.selectedGroupId != null) {
+                        sheetAnimatedDismiss?.invoke() ?: run {
+                            viewModel.closeSheet()
+                            sheetBackground = null
+                            sheetOpenProgress = 0f
+                        }
+                    } else {
+                        onBack()
+                    }
+                },
                 onTrash = { viewModel.resetAllRequirements() },
                 family = family,
             )
@@ -228,35 +256,37 @@ fun VfvGroupsScreen(
             }
         }
         }
-        val selectedGroupId = vmState.selectedGroupId
-        if (selectedGroupId != null) {
-            VfvGlassFullScreenBottomSheet(
-                visible = sheetVisible,
-                onDismissRequest = {
-                    viewModel.closeSheet()
-                    sheetBackground = null
-                    sheetOpenProgress = 0f
-                },
-                backgroundSnapshot = if (liveBackdropBlur) null else sheetBackground,
-                revealLiveBackdrop = liveBackdropBlur,
-                blurBackgroundSnapshot = false,
-                backdropBlurRadiusDp = RequirementsSheetBackdropBlurRadiusDp,
-                onOpenProgressChange = { sheetOpenProgress = it },
-            ) {
+        VfvGlassFullScreenBottomSheet(
+            visible = sheetVisible,
+            onDismissRequest = {
+                viewModel.closeSheet()
+                sheetBackground = null
+                sheetOpenProgress = 0f
+            },
+            backgroundSnapshot = if (liveBackdropBlur) null else sheetBackground,
+            revealLiveBackdrop = liveBackdropBlur,
+            blurBackgroundSnapshot = false,
+            backdropBlurRadiusDp = RequirementsSheetBackdropBlurRadiusDp,
+            onOpenProgressChange = { sheetOpenProgress = it },
+            contentFullScreen = true,
+        ) { onAnimatedDismiss ->
+            DisposableEffect(onAnimatedDismiss) {
+                sheetAnimatedDismiss = onAnimatedDismiss
+                onDispose { sheetAnimatedDismiss = null }
+            }
+            val selectedGroupId = vmState.selectedGroupId
+            if (selectedGroupId != null) {
                 VfvRequirementsSheetContent(
                     groupTitle = stringResource(groupTitle(selectedGroupId)),
                     minRequired = minRequiredForGroup(selectedGroupId),
                     doneCount = vmState.sheetDoneCount,
                     requirements = vmState.sheetRequirements,
-                    onClose = {
-                        viewModel.closeSheet()
-                        sheetBackground = null
-                        sheetOpenProgress = 0f
-                    },
+                    onClose = onAnimatedDismiss,
                     onRequirementClick = viewModel::toggleRequirement,
                 )
             }
         }
+    }
     }
 }
 
@@ -299,8 +329,11 @@ private fun RequirementGroupRowCard(
                     Modifier
                         .fillMaxSize()
                         .clip(shape)
-                        .optionalBackdropBlur(VfvListCardCompleteBlurRadiusDp)
-                        .background(Color.White.copy(alpha = 0.19f)),
+                        .vfvLiquidGlass(
+                            blurRadiusDp = VfvListCardCompleteBlurRadiusDp,
+                            shape = shape,
+                            surfaceColor = Color.White.copy(alpha = 0.19f),
+                        ),
                 )
             }
             Row(

@@ -9,7 +9,7 @@ import org.koin.dsl.module
 
 val koinAppModule = module {
     single { AuthViewModel(get()) }
-    single<MainDashboardRepository> { DefaultMainDashboardRepository() }
+    single<MainDashboardRepository> { DefaultMainDashboardRepository(get(), get()) }
     single { MainDashboardViewModel(get()) }
-    single { VfvGroupsViewModel(get(), get()) }
+    factory { VfvGroupsViewModel(get(), get()) }
 }

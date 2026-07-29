@@ -119,7 +119,7 @@ fun RootNavHost(
                         ) {
                             val titleMod = with(st) {
                                 Modifier.sharedElement(
-                                    state = rememberSharedContentState(key = VfvAuthTitleSharedElementKey),
+                                    sharedContentState = rememberSharedContentState(key = VfvAuthTitleSharedElementKey),
                                     animatedVisibilityScope = av,
                                     boundsTransform = { _, _ -> playfulSpring },
                                 )

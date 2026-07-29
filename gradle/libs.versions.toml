@@ -1,10 +1,10 @@
 [versions]
 agp = "8.13.2"
-kotlin = "2.0.21"
-composeMultiplatform = "1.7.0"
+kotlin = "2.3.21"
+composeMultiplatform = "1.11.0"
 coroutines = "1.9.0"
-navigationComposeKmp = "2.8.0-alpha10"
-lifecycleKmp = "2.8.0"
+navigationComposeKmp = "2.9.0"
+lifecycleKmp = "2.9.0"
 koin-compose-mp = "1.1.5"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -17,6 +17,7 @@ koin = "3.5.6"
 koinCompose = "3.5.6"
 sqldelight = "2.0.2"
 navigationCompose = "2.8.0"
+kashifBackdrop = "0.0.1-alpha02"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,6 +50,7 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 # Compose Multiplatform — JetBrains androidx copies for common/ iOS
 jetbrains-navigation-compose = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "navigationComposeKmp" }
 koin-compose-multiplatform = { group = "io.insert-koin", name = "koin-compose", version.ref = "koin-compose-mp" }
+kashif-backdrop = { group = "io.github.kashif-mehmood-km", name = "backdrop", version.ref = "kashifBackdrop" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
