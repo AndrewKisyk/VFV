@@ -46,3 +46,5 @@ replay_pid*
 
 # iOS / CocoaPods (if used under this project)
 Pods/
+config.bat
+node_modules
