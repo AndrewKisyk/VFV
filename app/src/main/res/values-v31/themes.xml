@@ -3,6 +3,9 @@
 
     <style name="Theme.VfvMultiplatform" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/ic_launcher_background</item>
+        <item name="android:windowSplashScreenBackground">@color/ic_launcher_background</item>
+        <!-- No icon background: 288×288 dp canvas, 192 dp circle (see drawable-*dpi/ic_splash_screen_icon.png). -->
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_splash_screen_icon</item>
         <item name="android:statusBarColor">@color/ic_launcher_background</item>
         <item name="android:navigationBarColor">@color/ic_launcher_background</item>
     </style>
