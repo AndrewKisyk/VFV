@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.wrapper.composechat.progress.VfvProgressCalculator
 import com.wrapper.composechat.resources.*
 import org.jetbrains.compose.resources.painterResource
 import kotlin.math.PI
@@ -46,8 +47,8 @@ private val TrophySize = 124.dp
 /**
  * Dual-track circular progress gauge.
  *
- * * [requirementsProgress] — sweeps **clockwise** from 12 oʼclock
- * * [recommendationsProgress] — sweeps **counter-clockwise** from 12 oʼclock
+ * * [requirementsProgress] — fraction of the **full** ring (0…0.75) swept **clockwise** from 12 oʼclock
+ * * [recommendationsProgress] — fraction of the **full** ring (0…0.25) swept **counter-clockwise** from 12 oʼclock
  * * Sweep gradient on active arcs: #42098F → #B53FFE
  *
  * Layers (back → front):
@@ -61,16 +62,19 @@ fun MainDashboardRingGauge(
     vfvAllDone: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val reqSweepMax = VfvProgressCalculator.REQUIREMENTS_RING_MAX / 100f
+    val recSweepMax = VfvProgressCalculator.RECOMMENDATIONS_RING_MAX / 100f
     val recP by animateFloatAsState(
-        targetValue = recommendationsProgress.coerceIn(0f, 1f),
+        targetValue = recommendationsProgress.coerceIn(0f, recSweepMax),
         animationSpec = tween(800),
         label = "recRing",
     )
     val reqP by animateFloatAsState(
-        targetValue = requirementsProgress.coerceIn(0f, 1f),
+        targetValue = requirementsProgress.coerceIn(0f, reqSweepMax),
         animationSpec = tween(800),
         label = "reqRing",
     )
+    val ringComplete = reqP >= reqSweepMax - 0.002f && recP >= recSweepMax - 0.002f
     val reqIconPainter = painterResource(Res.drawable.requirements_progress_icon)
     val recIconPainter = painterResource(Res.drawable.recommendations_progress_icon)
     val cupIdle = painterResource(Res.drawable.cup_medal)
@@ -155,24 +159,25 @@ fun MainDashboardRingGauge(
         }
         // 3) Dashed double ring + labels (replaces small_marks / large_marks SVGs + numerals).
         ProgressScaleDial(modifier = Modifier.size(ScaleSize))
-        // 4) Thumbs on the stroke centreline (same as the active arc’s tip; small icons so they fit
-        //    in the band).
-        Image(
-            painter = recIconPainter,
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .size(ProgressThumbSize)
-                .offset { IntOffset(recDX.roundToInt(), recDY.roundToInt()) },
-        )
-        Image(
-            painter = reqIconPainter,
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .size(ProgressThumbSize)
-                .offset { IntOffset(reqDX.roundToInt(), reqDY.roundToInt()) },
-        )
+        // 4) Thumbs on the stroke centreline — hidden when both arcs close the ring (75 + 25).
+        if (!ringComplete) {
+            Image(
+                painter = recIconPainter,
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .size(ProgressThumbSize)
+                    .offset { IntOffset(recDX.roundToInt(), recDY.roundToInt()) },
+            )
+            Image(
+                painter = reqIconPainter,
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .size(ProgressThumbSize)
+                    .offset { IntOffset(reqDX.roundToInt(), reqDY.roundToInt()) },
+            )
+        }
         // 5) Center trophy.
         Image(
             painter = cupPainter,

@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wrapper.composechat.ui.components.VfvListItemEntrance
 import com.wrapper.composechat.ui.liquidglass.LocalVfvScreenBackdrop
 import com.wrapper.composechat.ui.liquidglass.rememberVfvScreenBackdrop
 import com.wrapper.composechat.ui.liquidglass.vfvLiquidGlass
@@ -169,17 +170,19 @@ fun VfvRecommendationsScreen(
                     )
                 }
                 Spacer(Modifier.height(18.dp))
-                recommendationTopics.forEach { topic ->
+                recommendationTopics.forEachIndexed { index, topic ->
                     val read = topic.id in vmState.readTopicIds
-                    RecommendationTopicRowCard(
-                        title = stringResource(topic.titleRes),
-                        subtitle = stringResource(topic.subtitleRes),
-                        read = read,
-                        iconDrawable = topic.iconDrawable,
-                        shape = shapeCard,
-                        family = family,
-                        onClick = { onTopicClick(topic.id) },
-                    )
+                    VfvListItemEntrance(index = index) {
+                        RecommendationTopicRowCard(
+                            title = stringResource(topic.titleRes),
+                            subtitle = stringResource(topic.subtitleRes),
+                            read = read,
+                            iconDrawable = topic.iconDrawable,
+                            shape = shapeCard,
+                            family = family,
+                            onClick = { onTopicClick(topic.id) },
+                        )
+                    }
                     Spacer(Modifier.height(14.dp))
                 }
             }

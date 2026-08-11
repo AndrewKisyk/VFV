@@ -49,4 +49,12 @@
     <string name="frosted_chats_title">Let\'s personalize your experience</string>
     <string name="frosted_chats_body">Choose how you want to continue in the chat hub.</string>
     <string name="frosted_chats_continue">Продовжити</string>
+    <string name="info_dialog_change_age">Змінити вік</string>
+    <string name="info_dialog_terms">Privacy Policy &amp; Terms of Use</string>
+    <string name="info_dialog_feature_age_norms">Норми для твого віку</string>
+    <string name="info_dialog_feature_five_groups">Усі 5 груп вимог</string>
+    <string name="info_dialog_feature_tips">Тренувальні поради</string>
+    <string name="info_dialog_feature_tracker">Живий трекер прогресу</string>
+    <string name="info_dialog_feature_offline">Працює без інтернету</string>
+    <string name="info_dialog_feature_no_ads">Без реклами</string>
 </resources>

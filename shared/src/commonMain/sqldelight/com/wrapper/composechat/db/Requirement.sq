@@ -22,10 +22,11 @@ INSERT OR IGNORE INTO requirements(
   sex, vfv_group, name, a12, a13, a14, a15, a16, a17, image_key, is_done
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0);
 
+-- Seed order, so toggling a requirement never reorders the list under the user's finger.
 selectByGroup:
 SELECT * FROM requirements
 WHERE sex = ? AND vfv_group = ?
-ORDER BY is_done ASC, name ASC;
+ORDER BY id ASC;
 
 updateDone:
 UPDATE requirements SET is_done = ? WHERE id = ?;

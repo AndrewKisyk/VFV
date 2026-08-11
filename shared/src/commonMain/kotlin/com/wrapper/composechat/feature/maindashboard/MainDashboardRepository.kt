@@ -15,10 +15,10 @@ interface MainDashboardRepository {
 data class MainDashboardProgress(
     /** Overall steps bar 0–100 (was [com.plstudio.a123.vfv.interfaces.MainContract.View.setMainProgress]). */
     val mainPercent: Int,
-    /** Requirements (todo) circular gauge 0–100. */
-    val requirementsPercent: Int,
-    /** Recommendations circular gauge 0–100. */
-    val recommendationsPercent: Int,
+    /** Home ring CW arc: 0–75 points (75% of the track when complete). */
+    val requirementsRingPoints: Int,
+    /** Home ring CCW arc: 0–25 points (25% of the track when complete). */
+    val recommendationsRingPoints: Int,
     /** "здано" label when [com.plstudio.a123.vfv.helpers.ProgressCulculator] deems VFV complete. */
     val vfvAllDone: Boolean = false,
 )
@@ -32,21 +32,23 @@ class DefaultMainDashboardRepository(
         val profile = authRepository.getProfile()
             ?: return MainDashboardProgress(
                 mainPercent = 0,
-                requirementsPercent = 0,
-                recommendationsPercent = 0,
+                requirementsRingPoints = 0,
+                recommendationsRingPoints = 0,
             )
         requirementsRepository.ensureSeeded()
         val groupProgress = requirementsRepository.getAllGroupsProgress(profile.sex, profile.age)
         val totalDone = groupProgress.sumOf { it.done }
-        val legacyRecomCount = VfvProgressCalculator.legacyRecomCount(
-            recommendationsRepository.getReadTopicIds().size,
-        )
-        val requirementsPercent = VfvProgressCalculator.getToDoRes(
+        val readTopicCount = recommendationsRepository.getReadTopicIds().size
+        val legacyRecomCount = VfvProgressCalculator.legacyRecomCount(readTopicCount)
+        val requirementsRingPoints = VfvProgressCalculator.requirementsRingPoints(
             doneCount = totalDone,
             sex = profile.sex,
             age = profile.age,
         )
-        val recommendationsPercent = VfvProgressCalculator.getRecomStatus(legacyRecomCount)
+        val recommendationsRingPoints = VfvProgressCalculator.recommendationsRingPoints(
+            readTopicCount = readTopicCount,
+            totalTopics = vfvRecommendationTopics.size,
+        )
         val mainPercent = VfvProgressCalculator.computeAllRes(
             doneCount = totalDone,
             legacyRecomCount = legacyRecomCount,
@@ -58,8 +60,8 @@ class DefaultMainDashboardRepository(
         )
         return MainDashboardProgress(
             mainPercent = mainPercent,
-            requirementsPercent = requirementsPercent,
-            recommendationsPercent = recommendationsPercent,
+            requirementsRingPoints = requirementsRingPoints,
+            recommendationsRingPoints = recommendationsRingPoints,
             vfvAllDone = vfvAllDone,
         )
     }

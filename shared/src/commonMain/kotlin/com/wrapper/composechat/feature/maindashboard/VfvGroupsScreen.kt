@@ -3,7 +3,6 @@ package com.wrapper.composechat.feature.maindashboard
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,14 +34,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,15 +48,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wrapper.composechat.data.requirements.minRequiredForGroup
-import com.wrapper.composechat.platform.isBackdropBlurAvailable
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
-import com.wrapper.composechat.platform.withSnapshotBlur
 import com.wrapper.composechat.ui.components.VfvGlassFullScreenBottomSheet
+import com.wrapper.composechat.ui.components.VfvListItemEntrance
+import com.wrapper.composechat.resources.*
 import com.wrapper.composechat.ui.liquidglass.LocalVfvScreenBackdrop
 import com.wrapper.composechat.ui.liquidglass.rememberVfvScreenBackdrop
 import com.wrapper.composechat.ui.liquidglass.vfvLiquidGlass
 import com.wrapper.composechat.ui.liquidglass.vfvScreenLayerBackdrop
-import com.wrapper.composechat.resources.*
 import com.wrapper.composechat.ui.theme.LocalVfvDisplayFontFamily
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -66,6 +63,12 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
 private const val RequirementsSheetBackdropBlurRadiusDp = 20f
+private const val RequirementGroupCardBlurRadiusDp = 8f
+
+private val RequirementGroupSecondaryText = Color.White.copy(alpha = 0.60f)
+private val RequirementGroupCardIdleBg = Color(0xFF09001F).copy(alpha = 0.40f)
+private val RequirementGroupCardCompleteBg = Color.White.copy(alpha = 0.10f)
+private val RequirementGroupCardBorder = Color.White.copy(alpha = 0.20f)
 
 private val GroupMaxPerGroup = listOf(2, 2, 2, 3, 3)
 
@@ -84,8 +87,10 @@ private val requirementGroups = listOf(
     RequirementGroupRow(Res.string.groups_group5_title, Res.string.groups_group5_subtitle, 5),
 )
 
-/** Same physical height as the load bar in [com.wrapper.composechat.feature.splash.SplashScreen] (`height(8.dp)`). */
+/** Figma `Progress Bar` (`323:5138`): 6dp fill inside a 1dp inset (`p-px`). */
 private val RequirementGroupProgressTrackHeight = 8.dp
+private val RequirementGroupProgressInset = 1.dp
+private val RequirementGroupProgressTrackColor = Color(0xFF28046B)
 
 private fun groupBadgeDrawable(groupIndex: Int, activeAsset: Boolean): DrawableResource {
     return when (groupIndex) {
@@ -122,8 +127,6 @@ fun VfvGroupsScreen(
     var sheetBackground: ImageBitmap? by remember { mutableStateOf(null) }
     var sheetOpenProgress by remember { mutableFloatStateOf(0f) }
     val captureForSheet = rememberComposeViewBitmapCapture()
-    val liveBackdropBlur = isBackdropBlurAvailable()
-    val listBlurRadiusDp = sheetOpenProgress * RequirementsSheetBackdropBlurRadiusDp
     val screenBackdrop = rememberVfvScreenBackdrop()
     val sheetVisible = vmState.selectedGroupId != null
     var sheetAnimatedDismiss by remember { mutableStateOf<(() -> Unit)?>(null) }
@@ -142,24 +145,16 @@ fun VfvGroupsScreen(
                 .fillMaxSize()
                 .vfvScreenLayerBackdrop(screenBackdrop),
         ) {
-            VfvListScreenBackdrop(heroDrawable = Res.drawable.main_dashboard_requirements)
+            VfvGroupsScreenBackdrop(
+                heroDrawable = Res.drawable.main_dashboard_requirements,
+            )
         }
-        Box(
-            Modifier
-                .fillMaxSize()
-                .then(
-                    if (liveBackdropBlur && sheetOpenProgress > 0f) {
-                        Modifier.blur(listBlurRadiusDp.dp)
-                    } else {
-                        Modifier
-                    },
-                ),
-        ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .vfvGroupsContentGradient()
                 .statusBarsPadding()
-                .padding(horizontal = 20.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp),
         ) {
             VfvListChromeTopBar(
                 title = stringResource(Res.string.main_dashboard_requirements_title).uppercase(),
@@ -176,6 +171,10 @@ fun VfvGroupsScreen(
                 },
                 onTrash = { viewModel.resetAllRequirements() },
                 family = family,
+                titleFontSize = 11.sp,
+                titleFontWeight = FontWeight.Light,
+                titleColor = Color.White.copy(alpha = 0.60f),
+                titleLetterSpacing = 0.sp,
             )
             Column(
                 modifier = Modifier
@@ -183,7 +182,7 @@ fun VfvGroupsScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(bottom = 28.dp),
             ) {
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(16.dp))
                 Box(
                     modifier = Modifier
                         .size(220.dp)
@@ -192,7 +191,7 @@ fun VfvGroupsScreen(
                         .clip(shapeCard)
                         .border(
                             width = 1.dp,
-                            color = Color.White.copy(alpha = 0.14f),
+                            color = Color.White.copy(alpha = 0.10f),
                             shape = shapeCard,
                         ),
                 ) {
@@ -203,7 +202,7 @@ fun VfvGroupsScreen(
                         contentScale = ContentScale.FillWidth,
                     )
                 }
-                Spacer(Modifier.height(18.dp))
+                Spacer(Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
@@ -211,47 +210,50 @@ fun VfvGroupsScreen(
                     Image(
                         painter = painterResource(Res.drawable.groups_completed_label),
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(9.dp),
                     )
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(Modifier.width(4.dp))
                     Text(
                         text = stringResource(Res.string.groups_completed_label),
-                        color = Color.White.copy(alpha = 0.82f),
-                        fontSize = 16.sp,
+                        color = RequirementGroupSecondaryText,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Normal,
                         fontFamily = family,
                     )
                     Spacer(Modifier.weight(1f))
                     Text(
                         text = "$totalDone/$totalMax",
-                        color = Color.White,
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.Medium,
+                        color = RequirementGroupSecondaryText,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Light,
                         fontFamily = family,
                     )
                 }
-                Spacer(Modifier.height(18.dp))
+                Spacer(Modifier.height(16.dp))
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
                 requirementGroups.forEachIndexed { idx, group ->
                     val done = vmState.donePerGroup.getOrElse(idx) { 0 }.coerceIn(0, GroupMaxPerGroup[idx])
                     val max = GroupMaxPerGroup[idx]
                     val complete = done >= max
-                    RequirementGroupRowCard(
-                        title = stringResource(group.titleRes),
-                        subtitle = stringResource(group.subtitleRes),
-                        progress = done.toFloat() / max.coerceAtLeast(1),
-                        progressLabel = "$done/$max",
-                        complete = complete,
-                        badgeDrawable = groupBadgeDrawable(idx, activeAsset = complete),
-                        shape = shapeCard,
-                        family = family,
-                        onClick = {
-                            if (!liveBackdropBlur) {
+                    VfvListItemEntrance(index = idx) {
+                        RequirementGroupRowCard(
+                            title = stringResource(group.titleRes),
+                            subtitle = stringResource(group.subtitleRes),
+                            progress = done.toFloat() / max.coerceAtLeast(1),
+                            progressLabel = "$done/$max",
+                            complete = complete,
+                            badgeDrawable = groupBadgeDrawable(idx, activeAsset = complete),
+                            shape = shapeCard,
+                            family = family,
+                            onClick = {
                                 sheetBackground = captureForSheet()
-                                    ?.withSnapshotBlur(RequirementsSheetBackdropBlurRadiusDp)
-                            }
-                            viewModel.openGroup(group.index1)
-                        },
-                    )
-                    Spacer(Modifier.height(14.dp))
+                                viewModel.openGroup(group.index1)
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -263,9 +265,9 @@ fun VfvGroupsScreen(
                 sheetBackground = null
                 sheetOpenProgress = 0f
             },
-            backgroundSnapshot = if (liveBackdropBlur) null else sheetBackground,
-            revealLiveBackdrop = liveBackdropBlur,
-            blurBackgroundSnapshot = false,
+            backgroundSnapshot = sheetBackground,
+            revealLiveBackdrop = false,
+            blurBackgroundSnapshot = true,
             backdropBlurRadiusDp = RequirementsSheetBackdropBlurRadiusDp,
             onOpenProgressChange = { sheetOpenProgress = it },
             contentFullScreen = true,
@@ -302,99 +304,93 @@ private fun RequirementGroupRowCard(
     family: androidx.compose.ui.text.font.FontFamily?,
     onClick: () -> Unit,
 ) {
-    val cardBg = Color(0xFF09001F).copy(alpha = 0.4f)
-    val strokeDefault = Color.White.copy(alpha = 0.2f)
-    val secondaryText = Color.White.copy(alpha = 0.6f)
-    val strokeModifier =
-        if (!complete) {
-            Modifier.border(width = 1.dp, color = strokeDefault, shape = shape)
-        } else {
-            Modifier
-        }
+    val cardBg = if (complete) RequirementGroupCardCompleteBg else RequirementGroupCardIdleBg
 
     Card(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(96.dp),
+            .height(72.dp),
         shape = shape,
-        colors = CardDefaults.cardColors(
-            containerColor = if (complete) Color.Transparent else cardBg,
-        ),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
-        Box(Modifier.fillMaxSize()) {
-            if (complete) {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .clip(shape)
-                        .vfvLiquidGlass(
-                            blurRadiusDp = VfvListCardCompleteBlurRadiusDp,
-                            shape = shape,
-                            surfaceColor = Color.White.copy(alpha = 0.19f),
-                        ),
+        Box(
+            Modifier
+                .fillMaxSize()
+                .clip(shape)
+                .vfvLiquidGlass(
+                    blurRadiusDp = RequirementGroupCardBlurRadiusDp,
+                    shape = shape,
+                    surfaceColor = cardBg,
                 )
-            }
+                .then(
+                    if (!complete) {
+                        Modifier.border(0.5.dp, RequirementGroupCardBorder, shape)
+                    } else {
+                        Modifier
+                    },
+                ),
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .then(strokeModifier)
-                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                    .padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
                     painter = painterResource(badgeDrawable),
                     contentDescription = null,
-                    modifier = Modifier.size(40.dp),
+                    modifier = Modifier.size(48.dp),
                     contentScale = ContentScale.Fit,
                 )
-                Spacer(Modifier.width(10.dp))
+                Spacer(Modifier.width(12.dp))
                 Column(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.Center,
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
                         text = title,
                         color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 13.sp,
+                        lineHeight = 18.sp,
+                        fontWeight = FontWeight.Bold,
                         fontFamily = family,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
                     Text(
                         text = subtitle,
-                        color = secondaryText,
-                        fontSize = 13.sp,
+                        color = RequirementGroupSecondaryText,
+                        fontSize = 11.sp,
+                        lineHeight = 14.sp,
                         fontWeight = FontWeight.Normal,
                         fontFamily = family,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
                     if (!complete) {
-                        Spacer(Modifier.height(8.dp))
-                        SplashStyleGradientProgress(
+                        RequirementGroupProgressBar(
                             progress = progress,
                             modifier = Modifier.fillMaxWidth(),
-                            trackHeight = RequirementGroupProgressTrackHeight,
                         )
                     }
                 }
-                Spacer(Modifier.width(8.dp))
+                Spacer(Modifier.width(4.dp))
                 if (complete) {
                     Image(
                         painter = painterResource(Res.drawable.groups_row_complete_check),
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(18.dp),
                         contentScale = ContentScale.Fit,
                     )
                 } else {
                     Text(
                         text = progressLabel,
-                        color = secondaryText,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
+                        color = RequirementGroupSecondaryText,
+                        fontSize = 13.sp,
+                        lineHeight = 18.sp,
+                        fontWeight = FontWeight.Light,
                         fontFamily = family,
                     )
                 }
@@ -403,9 +399,9 @@ private fun RequirementGroupRowCard(
     }
 }
 
-/** Pixel-aligned copy of the load bar in [com.wrapper.composechat.feature.splash.SplashScreen]. */
+/** Figma `Groups/…/Progress Bar` (`323:5138`): `#28046b` pill with a gradient `Active` fill. */
 @Composable
-private fun SplashStyleGradientProgress(
+private fun RequirementGroupProgressBar(
     progress: Float,
     modifier: Modifier = Modifier,
     trackHeight: Dp = RequirementGroupProgressTrackHeight,
@@ -416,32 +412,29 @@ private fun SplashStyleGradientProgress(
             .fillMaxWidth()
             .height(trackHeight),
     ) {
-        val trackBackgroundH = size.height
-        val trackH = trackBackgroundH * 0.8f
         val trackW = size.width
-        val r = trackBackgroundH * 0.5f
+        val trackH = size.height
         drawRoundRect(
-            color = Color(0xFF28046B).copy(alpha = 0.6f),
-            size = Size(trackW, trackBackgroundH),
-            cornerRadius = CornerRadius(r, r),
+            color = RequirementGroupProgressTrackColor,
+            size = Size(trackW, trackH),
+            cornerRadius = CornerRadius(trackH * 0.5f, trackH * 0.5f),
         )
+        val inset = RequirementGroupProgressInset.toPx()
+        val fillH = (trackH - inset * 2f).coerceAtLeast(0f)
+        val fillW = (trackW - inset * 2f).coerceAtLeast(0f) * p
+        if (fillW <= 0f || fillH <= 0f) return@Canvas
         drawRoundRect(
-            color = Color(0xFF28046B).copy(alpha = 0.4f),
-            size = Size(trackW, trackBackgroundH),
-            cornerRadius = CornerRadius(r, r),
-            style = Stroke(width = 1.5f),
+            // Figma paints the gradient on `Active` itself, so it spans the filled width only.
+            brush = Brush.horizontalGradient(
+                0.12979f to Color(0xFFDF18FF),
+                0.41497f to Color(0xFF8800DC),
+                0.87208f to Color(0xFF6400EC),
+                startX = inset,
+                endX = inset + fillW,
+            ),
+            topLeft = Offset(inset, inset),
+            size = Size(fillW, fillH),
+            cornerRadius = CornerRadius(fillH * 0.5f, fillH * 0.5f),
         )
-        val fillW = trackW * p
-        if (fillW > 2.5f) {
-            drawRoundRect(
-                brush = Brush.horizontalGradient(
-                    0f to Color(0xFFDF18FF),
-                    0.38f to Color(0xFF8800DC),
-                    1f to Color(0xFF6400EC),
-                ),
-                size = Size(fillW, trackH),
-                cornerRadius = CornerRadius(r, r),
-            )
-        }
     }
 }

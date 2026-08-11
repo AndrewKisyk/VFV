@@ -1,11 +1,15 @@
 package com.wrapper.composechat.progress
 
-import kotlin.math.roundToInt
-
 /**
  * Port of legacy [com.plstudio.a123.vfv.helpers.ProgressCulculator] + [com.plstudio.a123.vfv.model.User].
  */
 object VfvProgressCalculator {
+
+    /** Home ring: requirements arc sweeps up to 75% of the circle (0–75 points). */
+    const val REQUIREMENTS_RING_MAX = 75
+
+    /** Home ring: recommendations arc sweeps up to 25% of the circle (0–25 points). */
+    const val RECOMMENDATIONS_RING_MAX = 25
 
     fun userMin(sex: String): Int = if (sex == "m") 12 else 10
 
@@ -18,7 +22,26 @@ object VfvProgressCalculator {
         }
     }
 
-    /** Requirements ring gauge — legacy [ProgressCulculator.getToDoRes]. */
+    /**
+     * Points for the home dual-ring gauge (CW arc). Scales legacy main-bar todo math to [REQUIREMENTS_RING_MAX].
+     */
+    fun requirementsRingPoints(doneCount: Int, sex: String, age: String): Int {
+        val min = userMin(sex)
+        val max = userMax(sex, age)
+        val current = computeTodoResultForMainBar(doneCount, min, max)
+        val atFull = computeTodoResultForMainBar(max, min, max)
+        if (atFull <= 0) return 0
+        return (current * REQUIREMENTS_RING_MAX / atFull).coerceIn(0, REQUIREMENTS_RING_MAX)
+    }
+
+    /** Points for the home dual-ring gauge (CCW arc), spread evenly across [totalTopics] articles. */
+    fun recommendationsRingPoints(readTopicCount: Int, totalTopics: Int): Int {
+        if (totalTopics <= 0) return 0
+        return (readTopicCount * RECOMMENDATIONS_RING_MAX / totalTopics)
+            .coerceIn(0, RECOMMENDATIONS_RING_MAX)
+    }
+
+    /** Legacy circular progress on requirement nav card — [ProgressCulculator.getToDoRes]. */
     fun getToDoRes(doneCount: Int, sex: String, age: String): Int {
         val max = userMax(sex, age).coerceAtLeast(1)
         return doneCount * 100 / max
@@ -64,11 +87,13 @@ object VfvProgressCalculator {
 
     private fun computeTodoResultForMainBar(doneCount: Int, min: Int, max: Int): Int {
         var res = doneCount
+        // Legacy divides ints, so the multipliers truncate (m/max=20 → 20/8 = 2, not 2.5).
+        // The `allRes == 96` / `allRes == 98` top-ups below only line up with that truncation.
         if (res <= min) {
-            res *= (60f / min).roundToInt()
+            res *= 60 / min.coerceAtLeast(1)
         } else {
             val span = (max - min).coerceAtLeast(1)
-            res = (res - min) * (20f / span).roundToInt()
+            res = (res - min) * (20 / span)
             res += 60
         }
         return res

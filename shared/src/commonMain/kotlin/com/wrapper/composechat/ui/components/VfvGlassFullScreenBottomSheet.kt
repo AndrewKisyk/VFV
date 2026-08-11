@@ -55,6 +55,7 @@ private val ScrimBottomColor = Color(0xFF020725)
  * @param backgroundSnapshot A bitmap of the screen **before** this overlay (from [com.wrapper.composechat.platform.rememberComposeViewBitmapCapture]).
  * @param revealLiveBackdrop If true, blur the screen **behind** this overlay (live [Modifier.blur] on the underlay).
  * @param onOpenProgressChange 0f = closed, 1f = fully open.
+ * @param contentFullScreen If true, [content] is laid out edge to edge and owns its window insets.
  */
 @Composable
 fun VfvGlassFullScreenBottomSheet(
@@ -250,12 +251,7 @@ fun VfvGlassFullScreenBottomSheet(
                         ),
                 ) {
                     if (contentFullScreen) {
-                        Box(
-                            Modifier
-                                .fillMaxSize()
-                                .statusBarsPadding()
-                                .navigationBarsPadding(),
-                        ) {
+                        Box(Modifier.fillMaxSize()) {
                             content(onDismiss)
                         }
                     } else {

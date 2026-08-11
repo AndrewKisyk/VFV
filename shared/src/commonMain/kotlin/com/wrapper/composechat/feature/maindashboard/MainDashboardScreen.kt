@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,8 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -46,8 +43,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,6 +59,7 @@ import com.wrapper.composechat.platform.withSnapshotBlur
 import com.wrapper.composechat.ui.components.VfvChromeBackIconButton
 import com.wrapper.composechat.ui.components.VfvChromeTrashIconButton
 import com.wrapper.composechat.ui.components.VfvGlassFullScreenBottomSheet
+import com.wrapper.composechat.ui.components.VfvListItemEntrance
 
 private const val ChatsSheetBackdropBlurRadiusDp = 20f
 /**
@@ -85,13 +81,14 @@ fun MainDashboardScreen(
         onPauseOrDispose { }
     }
 
+    // Ring sweep: each point = 1% of the full track (75 req + 25 rec = closed circle).
     val reqAnimated by animateFloatAsState(
-        targetValue = state.requirementsPercent / 100f,
+        targetValue = state.requirementsRingPoints / 100f,
         animationSpec = tween(800),
         label = "req",
     )
     val recAnimated by animateFloatAsState(
-        targetValue = state.recommendationsPercent / 100f,
+        targetValue = state.recommendationsRingPoints / 100f,
         animationSpec = tween(800),
         label = "rec",
     )
@@ -148,8 +145,8 @@ fun MainDashboardScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 MainDashboardRingGauge(
-                    recommendationsProgress = state.recommendationsPercent / 100f,
-                    requirementsProgress = state.requirementsPercent / 100f,
+                    recommendationsProgress = recAnimated,
+                    requirementsProgress = reqAnimated,
                     vfvAllDone = state.vfvAllDone,
                 )
                 if (state.vfvAllDone) {
@@ -171,25 +168,29 @@ fun MainDashboardScreen(
                 }
             }
             Spacer(Modifier.height(12.dp))
-            DashboardNavCardV2(
-                onClick = onOpenRequirements,
-                title = stringResource(Res.string.main_dashboard_requirements_title),
-                subtitle = stringResource(Res.string.main_dashboard_requirements_subtitle),
-                progress = reqAnimated,
-                leadingImage = requirementsImage,
-                cardBg = cardBg,
-                leadingImageModifier = Modifier.requirementsHeroSharedElement(),
-            )
+            VfvListItemEntrance(index = 0) {
+                DashboardNavCardV2(
+                    onClick = onOpenRequirements,
+                    title = stringResource(Res.string.main_dashboard_requirements_title),
+                    subtitle = stringResource(Res.string.main_dashboard_requirements_subtitle),
+                    progress = reqAnimated,
+                    leadingImage = requirementsImage,
+                    cardBg = cardBg,
+                    leadingImageModifier = Modifier.requirementsHeroSharedElement(),
+                )
+            }
             Spacer(Modifier.height(12.dp))
-            DashboardNavCardV2(
-                onClick = onOpenRecommendations,
-                title = stringResource(Res.string.main_dashboard_recommendations_title),
-                subtitle = stringResource(Res.string.main_dashboard_recommendations_subtitle),
-                progress = recAnimated,
-                leadingImage = recommendationsImage,
-                cardBg = cardBg,
-                leadingImageModifier = Modifier.recommendationsHeroSharedElement(),
-            )
+            VfvListItemEntrance(index = 1) {
+                DashboardNavCardV2(
+                    onClick = onOpenRecommendations,
+                    title = stringResource(Res.string.main_dashboard_recommendations_title),
+                    subtitle = stringResource(Res.string.main_dashboard_recommendations_subtitle),
+                    progress = recAnimated,
+                    leadingImage = recommendationsImage,
+                    cardBg = cardBg,
+                    leadingImageModifier = Modifier.recommendationsHeroSharedElement(),
+                )
+            }
             Spacer(Modifier.height(24.dp))
         }
         }
@@ -205,13 +206,15 @@ fun MainDashboardScreen(
             blurBackgroundSnapshot = false,
             backdropBlurRadiusDp = ChatsSheetBackdropBlurRadiusDp,
             onOpenProgressChange = { chatsSheetOpenProgress = it },
-        ) { _ ->
-            ChatsAccessSheetContent(
-                onContinue = {
+            contentFullScreen = true,
+        ) { onAnimatedDismiss ->
+            InfoDialogSheetContent(
+                onClose = onAnimatedDismiss,
+                onChangeAge = {
                     showChatsAccessSheet = false
                     chatsSheetBackground = null
                     chatsSheetOpenProgress = 0f
-                    onOpenChats()
+                    onOpenSettings()
                 },
             )
         }

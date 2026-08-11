@@ -14,9 +14,7 @@ import com.kashif_e.backdrop.backdrops.layerBackdrop
 import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
 import com.kashif_e.backdrop.drawBackdrop
 import com.kashif_e.backdrop.effects.blur
-import com.wrapper.composechat.platform.isBackdropBlurAvailable
 import com.wrapper.composechat.platform.isLiquidGlassAvailable
-import com.wrapper.composechat.platform.optionalBackdropBlur
 
 /** Screen-level backdrop for liquid-glass list row cards on groups / recommendations screens. */
 val LocalVfvScreenBackdrop = staticCompositionLocalOf<LayerBackdrop?> { null }
@@ -36,11 +34,9 @@ fun Modifier.vfvLiquidGlass(
 ): Modifier {
     val screenBackdrop = backdrop ?: LocalVfvScreenBackdrop.current
     if (screenBackdrop == null || !isLiquidGlassAvailable()) {
-        return if (isBackdropBlurAvailable()) {
-            background(surfaceColor, shape).optionalBackdropBlur(blurRadiusDp)
-        } else {
-            background(surfaceColor, shape)
-        }
+        // Modifier.blur() blurs this composable's content too. Keep text/icons sharp when
+        // a true backdrop implementation is unavailable and fall back to the surface fill.
+        return background(surfaceColor, shape)
     }
     return drawBackdrop(
         backdrop = screenBackdrop,

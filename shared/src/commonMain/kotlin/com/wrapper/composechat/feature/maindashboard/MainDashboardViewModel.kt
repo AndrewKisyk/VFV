@@ -12,8 +12,8 @@ import kotlinx.coroutines.launch
 
 data class MainDashboardUiState(
     val mainPercent: Int = 0,
-    val requirementsPercent: Int = 0,
-    val recommendationsPercent: Int = 0,
+    val requirementsRingPoints: Int = 0,
+    val recommendationsRingPoints: Int = 0,
     val vfvAllDone: Boolean = false,
     val isLoading: Boolean = true,
 )
@@ -36,8 +36,8 @@ class MainDashboardViewModel(
             _state.update {
                 MainDashboardUiState(
                     mainPercent = p.mainPercent.coerceIn(0, 100),
-                    requirementsPercent = p.requirementsPercent.coerceIn(0, 100),
-                    recommendationsPercent = p.recommendationsPercent.coerceIn(0, 100),
+                    requirementsRingPoints = p.requirementsRingPoints.coerceIn(0, 75),
+                    recommendationsRingPoints = p.recommendationsRingPoints.coerceIn(0, 25),
                     vfvAllDone = p.vfvAllDone,
                     isLoading = false,
                 )

@@ -1,6 +1,7 @@
 package com.wrapper.composechat.feature.maindashboard
 
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,89 +9,99 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.wrapper.composechat.ui.liquidglass.vfvLiquidGlass
+import com.wrapper.composechat.resources.Res
+import com.wrapper.composechat.resources.requirements_tick_circle
 import com.wrapper.composechat.ui.theme.LocalVfvDisplayFontFamily
+import org.jetbrains.compose.resources.painterResource
 
-private val CounterWidth = 67.dp
 private val CounterHeight = 28.dp
-private val CounterPadding = 4.dp
-private val CounterCornerRadius = 14.dp
-private val CounterSurfaceColor = Color.White.copy(alpha = 0.19f)
-private val CounterBorderColor = Color.White.copy(alpha = 0.22f)
-private val CounterRingColor = Color.White.copy(alpha = 0.92f)
-private val CounterIconSize = 16.dp
-private val CounterIconTextGap = 4.dp
-private const val CounterBlurRadiusDp = VfvListCardCompleteBlurRadiusDp
+private val CounterShape = RoundedCornerShape(30.dp)
+private val CounterSurfaceColor = Color.White.copy(alpha = 0.20f)
+private val CounterRingBorder = Color.White.copy(alpha = 0.20f)
+private val CompletedIconBorder = Color(0xFF96FD9F)
+private val CompletedIconGradient = Brush.linearGradient(
+    colors = listOf(Color(0xFF6BEE76), Color(0xFF2DA838)),
+)
 
-/** Pill badge with liquid glass: ring icon + fraction text (e.g. `1/2`). Figma: 67×28, padding 4. */
+/**
+ * Figma «Elements / Features»: pill 28dp, white 20% fill.
+ * Incomplete → empty ring (`not_completed_icon`); complete → green (`completed_icon`).
+ */
 @Composable
 fun VfvRequirementsCounter(
     label: String,
     modifier: Modifier = Modifier,
+    completed: Boolean = false,
 ) {
     val family = LocalVfvDisplayFontFamily.current
-    val shape = RoundedCornerShape(CounterCornerRadius)
 
-    Box(
+    Row(
         modifier = modifier
-            .width(CounterWidth)
-            .height(CounterHeight),
+            .height(CounterHeight)
+            .clip(CounterShape)
+            .background(CounterSurfaceColor)
+            .padding(start = 4.dp, end = 16.dp, top = 4.dp, bottom = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Box(
-            Modifier
-                .matchParentSize()
-                .clip(shape)
-                .vfvLiquidGlass(
-                    blurRadiusDp = CounterBlurRadiusDp,
-                    shape = shape,
-                    surfaceColor = CounterSurfaceColor,
-                ),
-        )
-        Box(
-            Modifier
-                .matchParentSize()
-                .border(1.dp, CounterBorderColor, shape),
-        )
-        Row(
-            modifier = Modifier
-                .matchParentSize()
-                .padding(CounterPadding),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(CounterIconTextGap),
-        ) {
-            RequirementsCounterRingIcon(Modifier.size(CounterIconSize))
-            Text(
-                text = label,
-                color = Color.White,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = family,
-                maxLines = 1,
-            )
+        if (completed) {
+            RequirementsCompletedIcon()
+        } else {
+            RequirementsNotCompletedIcon()
         }
+        Text(
+            text = label,
+            color = Color.White,
+            fontSize = 13.sp,
+            lineHeight = 18.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = family,
+            maxLines = 1,
+        )
     }
 }
 
+/** Figma `not_completed_icon`: 20×20 empty circle, stroke white 20% 0.5. */
 @Composable
-private fun RequirementsCounterRingIcon(modifier: Modifier = Modifier) {
-    Canvas(modifier) {
-        val strokeWidth = 1.25.dp.toPx()
-        drawCircle(
-            color = CounterRingColor,
-            radius = size.minDimension / 2f - strokeWidth / 2f,
-            style = Stroke(width = strokeWidth),
+private fun RequirementsNotCompletedIcon(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .size(20.dp)
+            .clip(CircleShape)
+            .border(0.5.dp, CounterRingBorder, CircleShape),
+    )
+}
+
+/** Figma `completed_icon`: 20×20 green gradient + tick 12 with padding 4. */
+@Composable
+private fun RequirementsCompletedIcon(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .size(20.dp)
+            .clip(CircleShape)
+            .background(CompletedIconGradient, CircleShape)
+            .border(0.5.dp, CompletedIconBorder, CircleShape)
+            .padding(4.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Image(
+            painter = painterResource(Res.drawable.requirements_tick_circle),
+            contentDescription = null,
+            modifier = Modifier.size(12.dp),
+            contentScale = ContentScale.Fit,
         )
     }
 }
