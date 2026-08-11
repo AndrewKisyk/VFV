@@ -41,7 +41,6 @@ import org.jetbrains.compose.resources.painterResource
  */
 object ScoutLayout {
     /**
-     * “Канонічні” пропорції **повного** персонажа (у тебе: viewBox `0 0 160 192` у `Gemini_... 2.svg`).
      * Має збігатися з **спільним** design-space експорту [splash_scout_body] + [splash_scout_head], інакше піджени константи під фактичний кроп.
      */
     const val CombinedArtViewBoxWidthPx: Float = 160f

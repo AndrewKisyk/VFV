@@ -30,7 +30,6 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -51,6 +50,7 @@ import com.wrapper.composechat.resources.info_dialog_terms
 import com.wrapper.composechat.resources.requirements_tick_circle
 import com.wrapper.composechat.ui.components.VfvChromeCloseIconButton
 import com.wrapper.composechat.ui.components.VfvListItemEntrance
+import com.wrapper.composechat.ui.theme.Glassmorphism
 import com.wrapper.composechat.ui.theme.LocalVfvDisplayFontFamily
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
@@ -61,17 +61,8 @@ private val InfoDialogFeatureIconBorder = Color(0xFF96FD9F)
 private val InfoDialogFeatureIconGradient = Brush.linearGradient(
     colors = listOf(Color(0xFF6BEE76), Color(0xFF2DA838)),
 )
-private val InfoDialogButtonFill = Color(0xFF531DAB)
-private val InfoDialogButtonBorder = Color(0xFFB37FEB)
-private val InfoDialogButtonHighlight = Brush.linearGradient(
-    colorStops = arrayOf(
-        0.019f to Color(0xFFB37FEB).copy(alpha = 0.35f),
-        0.173f to Color(0x00D2AEF5),
-        0.874f to Color(0xFFEFDFFF).copy(alpha = 0.28f),
-    ),
-)
-private val InfoDialogButtonShadow = Color(0x529254DE)
-private val InfoDialogButtonShape = RoundedCornerShape(12.dp)
+/** Same pill as [com.wrapper.composechat.feature.auth.AuthScreen] `AuthContinueControl`. */
+private val InfoDialogActionShape = RoundedCornerShape(25.dp)
 
 @Immutable
 private data class InfoDialogFeature(
@@ -98,6 +89,7 @@ fun InfoDialogSheetContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFF09001F).copy(alpha = 0.72f))
             .statusBarsPadding()
             .navigationBarsPadding(),
     ) {
@@ -158,30 +150,16 @@ fun InfoDialogSheetContent(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(40.dp)
-                    .shadow(
-                        elevation = 16.dp,
-                        shape = InfoDialogButtonShape,
-                        ambientColor = InfoDialogButtonShadow,
-                        spotColor = InfoDialogButtonShadow,
-                    )
-                    .clip(InfoDialogButtonShape)
-                    .background(InfoDialogButtonFill)
-                    .border(0.5.dp, InfoDialogButtonBorder, InfoDialogButtonShape)
+                    .height(50.dp)
+                    .clip(InfoDialogActionShape)
+                    .background(Glassmorphism.primaryActionBrush)
                     .clickable(onClick = onChangeAge),
                 contentAlignment = Alignment.Center,
             ) {
-                Box(
-                    Modifier
-                        .matchParentSize()
-                        .background(InfoDialogButtonHighlight),
-                )
                 Text(
                     text = stringResource(Res.string.info_dialog_change_age),
                     color = Color.White,
-                    fontSize = 13.sp,
-                    lineHeight = 18.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     fontFamily = family,
                 )
             }

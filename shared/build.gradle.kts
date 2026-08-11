@@ -31,6 +31,7 @@ kotlin {
             implementation(compose.animation)
             implementation(compose.material3)
             implementation(compose.ui)
+            implementation("org.jetbrains.compose.ui:ui-backhandler:${libs.versions.composeMultiplatform.get()}")
             implementation(compose.components.resources)
             implementation(compose.materialIconsExtended)
             implementation(libs.jetbrains.navigation.compose)

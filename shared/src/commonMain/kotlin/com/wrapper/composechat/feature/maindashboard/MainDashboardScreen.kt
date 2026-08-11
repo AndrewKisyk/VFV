@@ -51,8 +51,13 @@ import com.wrapper.composechat.ui.theme.LocalVfvDisplayFontFamily
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.backhandler.BackHandler
+import com.wrapper.composechat.feature.home.LocalVfvTransitionInteractor
+import com.wrapper.composechat.feature.home.navigateSettled
 import com.wrapper.composechat.platform.isBackdropBlurAvailable
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
 import com.wrapper.composechat.platform.withSnapshotBlur
@@ -65,7 +70,7 @@ private const val ChatsSheetBackdropBlurRadiusDp = 20f
 /**
  * VFV main dashboard: night sky, ring gauge, two nav cards. Callbacks and [MainDashboardViewModel] unchanged.
  */
-@OptIn(ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun MainDashboardScreen(
     onOpenChats: () -> Unit,
@@ -75,11 +80,6 @@ fun MainDashboardScreen(
     viewModel: MainDashboardViewModel = koinInject(),
 ) {
     val state by viewModel.state.collectAsState()
-
-    LifecycleResumeEffect(Unit) {
-        viewModel.refresh()
-        onPauseOrDispose { }
-    }
 
     // Ring sweep: each point = 1% of the full track (75 req + 25 rec = closed circle).
     val reqAnimated by animateFloatAsState(
@@ -100,9 +100,34 @@ fun MainDashboardScreen(
     var showChatsAccessSheet by remember { mutableStateOf(false) }
     var chatsSheetBackground: ImageBitmap? by remember { mutableStateOf(null) }
     var chatsSheetOpenProgress by remember { mutableFloatStateOf(0f) }
+    var infoSheetDismiss by remember { mutableStateOf<(() -> Unit)?>(null) }
     val captureForSheet = rememberComposeViewBitmapCapture()
     val liveBackdropBlur = isBackdropBlurAvailable()
     val dashboardBlurRadiusDp = chatsSheetOpenProgress * ChatsSheetBackdropBlurRadiusDp
+    val transitionInteractor = LocalVfvTransitionInteractor.current
+
+    LifecycleResumeEffect(Unit) {
+        viewModel.refresh()
+        onPauseOrDispose {
+            // Leaving dashboard (nav to Groups/Recommendations/etc.) must not leave a
+            // half-open sheet / blur progress that shows as an empty overlay on return.
+            showChatsAccessSheet = false
+            chatsSheetBackground = null
+            chatsSheetOpenProgress = 0f
+            infoSheetDismiss = null
+        }
+    }
+
+    // Root screen: never finish the activity on back. Only dismiss InfoDialog if open.
+    BackHandler {
+        if (showChatsAccessSheet) {
+            infoSheetDismiss?.invoke() ?: run {
+                showChatsAccessSheet = false
+                chatsSheetBackground = null
+                chatsSheetOpenProgress = 0f
+            }
+        }
+    }
 
     Box(Modifier.fillMaxSize()) {
         Box(
@@ -122,18 +147,26 @@ fun MainDashboardScreen(
                 .fillMaxSize()
                 .statusBarsPadding()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 8.dp),
+                .padding(horizontal = VfvListChromeHorizontalPadding),
         ) {
             MainDashboardTopBar(
                 inProgressText = stringResource(Res.string.main_dashboard_in_progress),
                 onOpenChats = {
-                    if (!liveBackdropBlur) {
-                        chatsSheetBackground = captureForSheet()
-                            ?.withSnapshotBlur(ChatsSheetBackdropBlurRadiusDp)
+                    if (showChatsAccessSheet) {
+                        // Already open / closing — ignore spam taps on the chrome button.
+                        return@MainDashboardTopBar
                     }
-                    showChatsAccessSheet = true
+                    transitionInteractor.navigateSettled {
+                        if (!liveBackdropBlur) {
+                            chatsSheetBackground = captureForSheet()
+                                ?.withSnapshotBlur(ChatsSheetBackdropBlurRadiusDp)
+                        }
+                        showChatsAccessSheet = true
+                    }
                 },
-                onOpenSettings = onOpenSettings,
+                onOpenSettings = {
+                    transitionInteractor.navigateSettled(onOpenSettings)
+                },
                 chatsContentDescription = stringResource(Res.string.main_dashboard_chats),
                 settingsContentDescription = stringResource(Res.string.main_dashboard_settings),
             )
@@ -200,6 +233,7 @@ fun MainDashboardScreen(
                 showChatsAccessSheet = false
                 chatsSheetBackground = null
                 chatsSheetOpenProgress = 0f
+                infoSheetDismiss = null
             },
             backgroundSnapshot = if (liveBackdropBlur) null else chatsSheetBackground,
             revealLiveBackdrop = liveBackdropBlur,
@@ -208,13 +242,24 @@ fun MainDashboardScreen(
             onOpenProgressChange = { chatsSheetOpenProgress = it },
             contentFullScreen = true,
         ) { onAnimatedDismiss ->
+            DisposableEffect(onAnimatedDismiss) {
+                infoSheetDismiss = onAnimatedDismiss
+                onDispose {
+                    if (infoSheetDismiss === onAnimatedDismiss) {
+                        infoSheetDismiss = null
+                    }
+                }
+            }
             InfoDialogSheetContent(
                 onClose = onAnimatedDismiss,
                 onChangeAge = {
-                    showChatsAccessSheet = false
-                    chatsSheetBackground = null
-                    chatsSheetOpenProgress = 0f
-                    onOpenSettings()
+                    transitionInteractor.navigateSettled {
+                        showChatsAccessSheet = false
+                        chatsSheetBackground = null
+                        chatsSheetOpenProgress = 0f
+                        infoSheetDismiss = null
+                        onOpenSettings()
+                    }
                 },
             )
         }
@@ -243,11 +288,13 @@ private fun MainDashboardTopBar(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 12.dp),
-            color = Color.White.copy(alpha = 0.88f),
-            style = MaterialTheme.typography.labelLarge,
+            color = Color.White.copy(alpha = 0.60f),
+            fontSize = 11.sp,
             textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Normal,
+            fontWeight = FontWeight.Light,
             fontFamily = family,
+            letterSpacing = 0.sp,
+            maxLines = 1,
         )
         VfvChromeTrashIconButton(
             onClick = onOpenSettings,

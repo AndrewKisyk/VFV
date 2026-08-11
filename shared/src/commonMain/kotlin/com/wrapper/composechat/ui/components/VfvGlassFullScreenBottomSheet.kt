@@ -21,10 +21,13 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
@@ -45,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.wrapper.composechat.platform.isBackdropBlurAvailable
 import com.wrapper.composechat.platform.optionalBackdropBlur
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -75,25 +79,47 @@ fun VfvGlassFullScreenBottomSheet(
     val dismissTap = remember { MutableInteractionSource() }
     val density = LocalDensity.current
     val dismissDragThresholdPx = with(density) { 88.dp.toPx() }
-    val scope = rememberCoroutineScope()
-    var dragY by remember { mutableFloatStateOf(0f) }
     val onProgressUpdated = rememberUpdatedState(onOpenProgressChange)
     val onDismissUpdated = rememberUpdatedState(onDismissRequest)
+
+    // Host blur must not stick after this sheet leaves composition.
+    DisposableEffect(Unit) {
+        onDispose { onProgressUpdated.value?.invoke(0f) }
+    }
+
+    LaunchedEffect(visible) {
+        if (!visible) {
+            onProgressUpdated.value?.invoke(0f)
+        }
+    }
 
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(tween(200)),
         exit = fadeOut(tween(180)),
     ) {
+        // Scope is inside AnimatedVisibility so jobs die with the sheet session.
+        // Content stays composed during exit — so reopen before exit ends must re-run open
+        // (LaunchedEffect(visible)), not LaunchedEffect(Unit).
+        val scope = rememberCoroutineScope()
         BoxWithConstraints(
             modifier
                 .fillMaxSize()
                 .zIndex(10_000f),
         ) {
-            val maxHPx = with(density) { maxHeight.toPx() }
-            if (maxHPx > 0f) {
-            val onDismiss: () -> Unit = {
-                scope.launch {
+            val maxHPx = with(density) { maxHeight.toPx() }.coerceAtLeast(1f)
+
+            var dragY by remember { mutableFloatStateOf(maxHPx) }
+            var dismissJob by remember { mutableStateOf<Job?>(null) }
+            var openJob by remember { mutableStateOf<Job?>(null) }
+            // Bumped on each open so a stale dismiss cannot close a newer presentation.
+            var session by remember { mutableIntStateOf(0) }
+
+            val onDismiss: () -> Unit = dismiss@ {
+                if (dismissJob?.isActive == true) return@dismiss
+                openJob?.cancel()
+                val closingSession = session
+                dismissJob = scope.launch {
                     animate(
                         initialValue = dragY,
                         targetValue = maxHPx,
@@ -102,27 +128,46 @@ fun VfvGlassFullScreenBottomSheet(
                     ) { v, _ ->
                         dragY = v
                     }
-                    onDismissUpdated.value()
+                    if (closingSession == session) {
+                        onDismissUpdated.value()
+                    }
                 }
             }
 
-            LaunchedEffect(visible, maxHPx) {
-                if (!visible) return@LaunchedEffect
+            // Keyed on [visible]: AV keeps children during exit, so Unit would not re-fire on reopen.
+            LaunchedEffect(visible) {
+                if (!visible) {
+                    openJob?.cancel()
+                    return@LaunchedEffect
+                }
+                session += 1
+                dismissJob?.cancel()
+                dismissJob = null
+                openJob?.cancel()
                 dragY = maxHPx
-                animate(
-                    initialValue = maxHPx,
-                    targetValue = 0f,
-                    initialVelocity = 0f,
-                    animationSpec = tween(320),
-                ) { v, _ ->
-                    dragY = v
+                openJob = scope.launch {
+                    animate(
+                        initialValue = maxHPx,
+                        targetValue = 0f,
+                        initialVelocity = 0f,
+                        animationSpec = tween(320),
+                    ) { v, _ ->
+                        dragY = v
+                    }
+                }
+            }
+
+            DisposableEffect(Unit) {
+                onDispose {
+                    openJob?.cancel()
+                    dismissJob?.cancel()
+                    onProgressUpdated.value?.invoke(0f)
                 }
             }
 
             val openProgress = (1f - (dragY / maxHPx).coerceIn(0f, 1f))
             SideEffect {
-                val progress = if (visible) openProgress else 0f
-                onProgressUpdated.value?.invoke(progress)
+                onProgressUpdated.value?.invoke(openProgress)
             }
 
             val visibleHeightPx = (maxHPx - dragY).coerceIn(0f, maxHPx)
@@ -225,10 +270,11 @@ fun VfvGlassFullScreenBottomSheet(
                                 Modifier.pointerInput(maxHPx, dismissDragThresholdPx) {
                                     detectVerticalDragGestures(
                                         onDragEnd = {
-                                            scope.launch {
-                                                if (dragY > dismissDragThresholdPx) {
-                                                    onDismiss()
-                                                } else {
+                                            if (dragY > dismissDragThresholdPx) {
+                                                onDismiss()
+                                            } else {
+                                                openJob?.cancel()
+                                                openJob = scope.launch {
                                                     animate(
                                                         initialValue = dragY,
                                                         targetValue = 0f,
@@ -241,6 +287,7 @@ fun VfvGlassFullScreenBottomSheet(
                                             }
                                         },
                                         onVerticalDrag = { _, delta ->
+                                            if (dismissJob?.isActive == true) return@detectVerticalDragGestures
                                             dragY = (dragY + delta).coerceIn(0f, maxHPx)
                                         },
                                     )
@@ -277,6 +324,5 @@ fun VfvGlassFullScreenBottomSheet(
                 }
             }
         }
-    }
     }
 }

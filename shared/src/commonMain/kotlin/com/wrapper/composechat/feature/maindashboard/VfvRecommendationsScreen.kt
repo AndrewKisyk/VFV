@@ -31,6 +31,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -86,6 +89,7 @@ fun VfvRecommendationsScreen(
     val family = LocalVfvDisplayFontFamily.current
     val shapeCard = RoundedCornerShape(20.dp)
     val screenBackdrop = rememberVfvScreenBackdrop()
+    var backConsumed by remember { mutableStateOf(false) }
 
     DisposableEffect(viewModel) {
         onDispose { viewModel.onCleared() }
@@ -109,11 +113,15 @@ fun VfvRecommendationsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
-                .padding(horizontal = 20.dp, vertical = 8.dp),
+                .padding(horizontal = VfvListChromeHorizontalPadding),
         ) {
             VfvListChromeTopBar(
                 title = stringResource(Res.string.main_dashboard_recommendations_title).uppercase(),
-                onBack = onBack,
+                onBack = {
+                    if (backConsumed) return@VfvListChromeTopBar
+                    backConsumed = true
+                    onBack()
+                },
                 onTrash = { viewModel.resetAllReads() },
                 family = family,
             )

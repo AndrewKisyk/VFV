@@ -174,7 +174,7 @@ private fun VfvRecommendationDetailTopBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .padding(horizontal = 20.dp, vertical = 8.dp),
+                .padding(horizontal = VfvListChromeHorizontalPadding),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -186,11 +186,11 @@ private fun VfvRecommendationDetailTopBar(
                     modifier = Modifier
                         .weight(1f)
                         .padding(horizontal = 12.dp),
-                    color = Color.White.copy(alpha = 0.92f),
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Medium,
+                    color = Color.White.copy(alpha = 0.60f),
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Light,
                     fontFamily = family,
-                    letterSpacing = 1.2.sp,
+                    letterSpacing = 0.sp,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

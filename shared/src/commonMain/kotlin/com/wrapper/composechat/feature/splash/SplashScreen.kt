@@ -23,15 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -41,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wrapper.composechat.feature.maindashboard.drawCrossSparkle
 import com.wrapper.composechat.resources.*
+import com.wrapper.composechat.ui.components.VfvGradientProgressBar
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.max
@@ -189,40 +183,12 @@ fun SplashScreen(
         }
 
         val p = loadProgress.coerceIn(0f, 1f)
-        Canvas(
+        VfvGradientProgressBar(
+            progress = p,
             modifier = Modifier
                 .fillMaxWidth(0.533f)
                 .padding(bottom = with(density) { (h * 0.10f + 2f).toDp() })
-                .height(8.dp)
                 .align(Alignment.BottomCenter),
-        ) {
-            val trackBackgroundH = size.height
-            val trackH = trackBackgroundH * 0.8f
-            val trackW = size.width
-            val r = trackBackgroundH * 0.5f
-            drawRoundRect(
-                color = Color(0xFF28046B).copy(alpha = 0.6f),
-                size = Size(trackW, trackBackgroundH),
-                cornerRadius = CornerRadius(r, r),
-            )
-            drawRoundRect(
-                color = Color(0xFF28046B).copy(alpha = 0.4f),
-                size = Size(trackW, trackBackgroundH),
-                cornerRadius = CornerRadius(r, r),
-                style = Stroke(width = 1.5f),
-            )
-            val fillW = trackW * p
-            if (fillW > 2.5f) {
-                drawRoundRect(
-                    brush = Brush.horizontalGradient(
-                        0f to Color(0xFFDF18FF),
-                        0.38f to Color(0xFF8800DC),
-                        1f to Color(0xFF6400EC),
-                    ),
-                    size = Size(fillW, trackH),
-                    cornerRadius = CornerRadius(r, r),
-                )
-            }
-        }
+        )
     }
 }

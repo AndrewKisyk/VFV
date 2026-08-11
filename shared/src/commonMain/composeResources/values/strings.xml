@@ -22,7 +22,7 @@
     <string name="nav_back">Назад</string>
     <string name="groups_header_tagline">Чи здашся ти побачивши це?</string>
     <string name="groups_progress_total">Виконано: %1$d/%2$d</string>
-    <string name="groups_completed_label">Виконано:</string>
+    <string name="groups_completed_label">виконано:</string>
     <string name="groups_group1_title">Плавання</string>
     <string name="groups_group1_subtitle">Ранній прорух і руханка</string>
     <string name="groups_group2_title">Стрибки</string>

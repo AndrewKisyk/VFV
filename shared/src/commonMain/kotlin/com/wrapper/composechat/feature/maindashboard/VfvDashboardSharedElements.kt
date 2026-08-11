@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.wrapper.composechat.feature.home.LocalAnimatedVisibilityScope
 import com.wrapper.composechat.feature.home.LocalSharedTransitionScope
+import com.wrapper.composechat.feature.home.LocalVfvTransitionInteractor
 import com.wrapper.composechat.feature.home.playfulSpring
 
 /** Shared element key: requirements thumbnail on dashboard ↔ hero on [VfvGroupsScreen]. */
@@ -28,6 +29,11 @@ fun Modifier.recommendationsHeroSharedElement(): Modifier =
 private fun Modifier.vfvDashboardHeroSharedElement(key: String): Modifier {
     val st = LocalSharedTransitionScope.current ?: return this
     val av = LocalAnimatedVisibilityScope.current ?: return this
+    val interactor = LocalVfvTransitionInteractor.current
+    if (interactor != null && !interactor.sharedElementsEnabled) {
+        // Drop the match so an in-flight morph cancels; re-enabled when transition goes inactive.
+        return this
+    }
     return with(st) {
         then(
             Modifier.sharedElement(

@@ -1,7 +1,6 @@
 package com.wrapper.composechat.feature.maindashboard
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -35,21 +34,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wrapper.composechat.data.requirements.minRequiredForGroup
+import com.wrapper.composechat.feature.home.LocalVfvTransitionInteractor
+import com.wrapper.composechat.feature.home.navigateSettled
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
 import com.wrapper.composechat.ui.components.VfvGlassFullScreenBottomSheet
+import com.wrapper.composechat.ui.components.VfvGradientProgressBar
 import com.wrapper.composechat.ui.components.VfvListItemEntrance
 import com.wrapper.composechat.resources.*
 import com.wrapper.composechat.ui.liquidglass.LocalVfvScreenBackdrop
@@ -86,11 +83,6 @@ private val requirementGroups = listOf(
     RequirementGroupRow(Res.string.groups_group4_title, Res.string.groups_group4_subtitle, 4),
     RequirementGroupRow(Res.string.groups_group5_title, Res.string.groups_group5_subtitle, 5),
 )
-
-/** Figma `Progress Bar` (`323:5138`): 6dp fill inside a 1dp inset (`p-px`). */
-private val RequirementGroupProgressTrackHeight = 8.dp
-private val RequirementGroupProgressInset = 1.dp
-private val RequirementGroupProgressTrackColor = Color(0xFF28046B)
 
 private fun groupBadgeDrawable(groupIndex: Int, activeAsset: Boolean): DrawableResource {
     return when (groupIndex) {
@@ -130,6 +122,10 @@ fun VfvGroupsScreen(
     val screenBackdrop = rememberVfvScreenBackdrop()
     val sheetVisible = vmState.selectedGroupId != null
     var sheetAnimatedDismiss by remember { mutableStateOf<(() -> Unit)?>(null) }
+    val transitionInteractor = LocalVfvTransitionInteractor.current
+    // Exit transition keeps this screen composed — ignore repeat back taps so we don't
+    // pop past MainDashboard / leave NavHost empty.
+    var backToDashboardConsumed by remember { mutableStateOf(false) }
 
     DisposableEffect(viewModel) {
         onDispose { viewModel.onCleared() }
@@ -145,16 +141,13 @@ fun VfvGroupsScreen(
                 .fillMaxSize()
                 .vfvScreenLayerBackdrop(screenBackdrop),
         ) {
-            VfvGroupsScreenBackdrop(
-                heroDrawable = Res.drawable.main_dashboard_requirements,
-            )
+            VfvGroupsScreenBackdrop()
         }
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .vfvGroupsContentGradient()
                 .statusBarsPadding()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = VfvListChromeHorizontalPadding),
         ) {
             VfvListChromeTopBar(
                 title = stringResource(Res.string.main_dashboard_requirements_title).uppercase(),
@@ -165,16 +158,13 @@ fun VfvGroupsScreen(
                             sheetBackground = null
                             sheetOpenProgress = 0f
                         }
-                    } else {
+                    } else if (!backToDashboardConsumed) {
+                        backToDashboardConsumed = true
                         onBack()
                     }
                 },
                 onTrash = { viewModel.resetAllRequirements() },
                 family = family,
-                titleFontSize = 11.sp,
-                titleFontWeight = FontWeight.Light,
-                titleColor = Color.White.copy(alpha = 0.60f),
-                titleLetterSpacing = 0.sp,
             )
             Column(
                 modifier = Modifier
@@ -199,7 +189,7 @@ fun VfvGroupsScreen(
                         painter = painterResource(Res.drawable.main_dashboard_requirements),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.FillWidth,
+                        contentScale = ContentScale.Crop,
                     )
                 }
                 Spacer(Modifier.height(16.dp))
@@ -234,29 +224,32 @@ fun VfvGroupsScreen(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                requirementGroups.forEachIndexed { idx, group ->
-                    val done = vmState.donePerGroup.getOrElse(idx) { 0 }.coerceIn(0, GroupMaxPerGroup[idx])
-                    val max = GroupMaxPerGroup[idx]
-                    val complete = done >= max
-                    VfvListItemEntrance(index = idx) {
-                        RequirementGroupRowCard(
-                            title = stringResource(group.titleRes),
-                            subtitle = stringResource(group.subtitleRes),
-                            progress = done.toFloat() / max.coerceAtLeast(1),
-                            progressLabel = "$done/$max",
-                            complete = complete,
-                            badgeDrawable = groupBadgeDrawable(idx, activeAsset = complete),
-                            shape = shapeCard,
-                            family = family,
-                            onClick = {
-                                sheetBackground = captureForSheet()
-                                viewModel.openGroup(group.index1)
-                            },
-                        )
+                    requirementGroups.forEachIndexed { idx, group ->
+                        val done = vmState.donePerGroup.getOrElse(idx) { 0 }.coerceIn(0, GroupMaxPerGroup[idx])
+                        val max = GroupMaxPerGroup[idx]
+                        val complete = done >= max
+                        VfvListItemEntrance(index = idx) {
+                            RequirementGroupRowCard(
+                                title = stringResource(group.titleRes),
+                                subtitle = stringResource(group.subtitleRes),
+                                progress = done.toFloat() / max.coerceAtLeast(1),
+                                progressLabel = "$done/$max",
+                                complete = complete,
+                                badgeDrawable = groupBadgeDrawable(idx, activeAsset = complete),
+                                shape = shapeCard,
+                                family = family,
+                                onClick = {
+                                    transitionInteractor?.settleActiveSharedTransition()
+                                    transitionInteractor.navigateSettled {
+                                        sheetBackground = captureForSheet()
+                                        viewModel.openGroup(group.index1)
+                                    }
+                                },
+                            )
+                        }
                     }
                 }
             }
-        }
         }
         VfvGlassFullScreenBottomSheet(
             visible = sheetVisible,
@@ -304,6 +297,7 @@ private fun RequirementGroupRowCard(
     family: androidx.compose.ui.text.font.FontFamily?,
     onClick: () -> Unit,
 ) {
+    // Figma idle: rgba(9,0,31,0.4) + border; complete: rgba(255,255,255,0.1), no border.
     val cardBg = if (complete) RequirementGroupCardCompleteBg else RequirementGroupCardIdleBg
 
     Card(
@@ -337,6 +331,7 @@ private fun RequirementGroupRowCard(
                     .fillMaxSize()
                     .padding(12.dp),
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Image(
                     painter = painterResource(badgeDrawable),
@@ -344,7 +339,6 @@ private fun RequirementGroupRowCard(
                     modifier = Modifier.size(48.dp),
                     contentScale = ContentScale.Fit,
                 )
-                Spacer(Modifier.width(12.dp))
                 Column(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -370,13 +364,12 @@ private fun RequirementGroupRowCard(
                         overflow = TextOverflow.Ellipsis,
                     )
                     if (!complete) {
-                        RequirementGroupProgressBar(
+                        VfvGradientProgressBar(
                             progress = progress,
                             modifier = Modifier.fillMaxWidth(),
                         )
                     }
                 }
-                Spacer(Modifier.width(4.dp))
                 if (complete) {
                     Image(
                         painter = painterResource(Res.drawable.groups_row_complete_check),
@@ -399,42 +392,3 @@ private fun RequirementGroupRowCard(
     }
 }
 
-/** Figma `Groups/…/Progress Bar` (`323:5138`): `#28046b` pill with a gradient `Active` fill. */
-@Composable
-private fun RequirementGroupProgressBar(
-    progress: Float,
-    modifier: Modifier = Modifier,
-    trackHeight: Dp = RequirementGroupProgressTrackHeight,
-) {
-    val p = progress.coerceIn(0f, 1f)
-    Canvas(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(trackHeight),
-    ) {
-        val trackW = size.width
-        val trackH = size.height
-        drawRoundRect(
-            color = RequirementGroupProgressTrackColor,
-            size = Size(trackW, trackH),
-            cornerRadius = CornerRadius(trackH * 0.5f, trackH * 0.5f),
-        )
-        val inset = RequirementGroupProgressInset.toPx()
-        val fillH = (trackH - inset * 2f).coerceAtLeast(0f)
-        val fillW = (trackW - inset * 2f).coerceAtLeast(0f) * p
-        if (fillW <= 0f || fillH <= 0f) return@Canvas
-        drawRoundRect(
-            // Figma paints the gradient on `Active` itself, so it spans the filled width only.
-            brush = Brush.horizontalGradient(
-                0.12979f to Color(0xFFDF18FF),
-                0.41497f to Color(0xFF8800DC),
-                0.87208f to Color(0xFF6400EC),
-                startX = inset,
-                endX = inset + fillW,
-            ),
-            topLeft = Offset(inset, inset),
-            size = Size(fillW, fillH),
-            cornerRadius = CornerRadius(fillH * 0.5f, fillH * 0.5f),
-        )
-    }
-}

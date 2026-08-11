@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -21,14 +20,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wrapper.composechat.platform.optionalBackdropBlur
+import com.wrapper.composechat.resources.Res
+import com.wrapper.composechat.resources.groups_requirements_img_bg
 import com.wrapper.composechat.ui.components.VfvChromeBackIconButton
 import com.wrapper.composechat.ui.components.VfvChromeTrashIconButton
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+
+/** Horizontal inset shared by list screens so chrome icons align with Groups. */
+internal val VfvListChromeHorizontalPadding = 16.dp
 
 internal const val VfvListBackdropBlurRadiusDp = 38f
 internal const val VfvListCardCompleteBlurRadiusDp = 20f
@@ -51,20 +54,20 @@ private val VfvGroupsContentGradientTop = Color(0xFF3A0084).copy(alpha = 0.42f)
 private val VfvGroupsContentGradientBottom = Color(0xFF09001F).copy(alpha = 0.60f)
 
 /**
- * Figma `Groups/requirements_screen/Content` measures its gradient against the 1479dp content box,
- * so the dark stop (40.037%) lands 592dp below the top edge however tall the screen is.
+ * Figma `Content` fill:
+ * `linear-gradient(to bottom, rgba(58,0,132,0.42), rgba(9,0,31,0.6) 40.037%)`
+ * — dark 60% stop lands at ~40% of the screen, then holds to the bottom.
  */
-private val VfvGroupsContentGradientEndY = 592.dp
+private val VfvGroupsContentScrim = Brush.verticalGradient(
+    colorStops = arrayOf(
+        0f to VfvGroupsContentGradientTop,
+        0.40037f to VfvGroupsContentGradientBottom,
+        1f to VfvGroupsContentGradientBottom,
+    ),
+)
 
-internal fun Modifier.vfvGroupsContentGradient(): Modifier = drawBehind {
-    drawRect(
-        brush = Brush.verticalGradient(
-            colors = listOf(VfvGroupsContentGradientTop, VfvGroupsContentGradientBottom),
-            startY = 0f,
-            endY = VfvGroupsContentGradientEndY.toPx(),
-        ),
-    )
-}
+internal fun Modifier.vfvGroupsContentGradient(): Modifier =
+    background(brush = VfvGroupsContentScrim)
 
 @Composable
 internal fun VfvListScreenBackdrop(
@@ -109,21 +112,34 @@ internal fun VfvListScreenBackdrop(
     }
 }
 
-/** Groups — blurred hero only (`IMG BG`); scrim lives on [VfvGroupsContentGradient]. */
+/** Groups — Figma `IMG BG` + `Content` gradient scrim (inside layer backdrop for liquid glass). */
 @Composable
 internal fun VfvGroupsScreenBackdrop(
-    heroDrawable: DrawableResource,
     modifier: Modifier = Modifier,
+    heroDrawable: DrawableResource = Res.drawable.groups_requirements_img_bg,
 ) {
-    VfvListScreenBackdrop(
-        heroDrawable = heroDrawable,
-        modifier = modifier,
-        heroBlurRadiusDp = VfvGroupsBackdropHeroBlurRadiusDp,
-        baseColor = VfvGroupsScreenBaseColor,
-        heroOverscale = VfvGroupsBackdropHeroOverscale,
-        heroOffsetY = VfvGroupsBackdropHeroOffsetY,
-        contentScrimGradient = null,
-    )
+    Box(modifier = modifier.fillMaxSize().background(VfvGroupsScreenBaseColor)) {
+        // Figma `requirements_screen/IMG BG`: 520×900, top −40, blur 45.
+        Image(
+            painter = painterResource(heroDrawable),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    scaleX = VfvGroupsBackdropHeroOverscale
+                    scaleY = VfvGroupsBackdropHeroOverscale
+                    translationY = VfvGroupsBackdropHeroOffsetY.toPx()
+                }
+                .optionalBackdropBlur(VfvGroupsBackdropHeroBlurRadiusDp),
+            contentScale = ContentScale.Crop,
+        )
+        // Figma `requirements_screen/Content` fill gradient (42% → 60% dark).
+        Box(
+            Modifier
+                .fillMaxSize()
+                .vfvGroupsContentGradient(),
+        )
+    }
 }
 
 @Composable
@@ -133,10 +149,6 @@ internal fun VfvListChromeTopBar(
     onTrash: () -> Unit,
     family: FontFamily?,
     modifier: Modifier = Modifier,
-    titleFontSize: TextUnit = 15.sp,
-    titleFontWeight: FontWeight = FontWeight.Medium,
-    titleColor: Color = Color.White.copy(alpha = 0.92f),
-    titleLetterSpacing: TextUnit = 1.2.sp,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -148,11 +160,12 @@ internal fun VfvListChromeTopBar(
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 12.dp),
-            color = titleColor,
-            fontSize = titleFontSize,
-            fontWeight = titleFontWeight,
+            // Groups Figma chrome: 11sp Light, 60% white, no letter-spacing.
+            color = Color.White.copy(alpha = 0.60f),
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Light,
             fontFamily = family,
-            letterSpacing = titleLetterSpacing,
+            letterSpacing = 0.sp,
             textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
