@@ -47,6 +47,12 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
+/**
+ * Destination fade length. Kept >= the hero shared-element settle time so the outgoing screen
+ * stays composed until the morph finishes (otherwise the element snaps at the end).
+ */
+const val VfvNavTransitionDurationMs = 420
+
 object AppDestinations {
     const val MainDashboard = "main_dashboard"
     const val Chats = "chats"
@@ -153,6 +159,8 @@ fun RootNavHost(
             SharedTransitionLayout(modifier) {
                 val sharedShell = this@SharedTransitionLayout
                 val transitionInteractor = rememberVfvTransitionInteractor(sharedShell)
+                // Dashboard cards animate in once; on return the hero morph owns the motion.
+                var dashboardEntrancePlayed by remember { mutableStateOf(false) }
                 CompositionLocalProvider(
                     LocalVfvTransitionInteractor provides transitionInteractor,
                 ) {
@@ -163,25 +171,29 @@ fun RootNavHost(
                     ) {
                         composable(
                             route = AppDestinations.MainDashboard,
-                            enterTransition = { fadeIn(animationSpec = tween(280)) },
-                            exitTransition = { fadeOut(animationSpec = tween(280)) },
-                            popEnterTransition = { fadeIn(animationSpec = tween(280)) },
-                            popExitTransition = { fadeOut(animationSpec = tween(280)) },
+                            enterTransition = { fadeIn(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            exitTransition = { fadeOut(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            popEnterTransition = { fadeIn(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            popExitTransition = { fadeOut(animationSpec = tween(VfvNavTransitionDurationMs)) },
                         ) { _: NavBackStackEntry ->
                             CompositionLocalProvider(
                                 LocalSharedTransitionScope provides sharedShell,
                                 LocalAnimatedVisibilityScope provides this,
                             ) {
                                 MainDashboardScreen(
+                                    animateCardsEntrance = !dashboardEntrancePlayed,
                                     onOpenChats = {
+                                        dashboardEntrancePlayed = true
                                         transitionInteractor.navigateSettled {
                                             navController.navigate(AppDestinations.Chats)
                                         }
                                     },
                                     onOpenRequirements = {
+                                        dashboardEntrancePlayed = true
                                         navController.navigate(AppDestinations.Groups)
                                     },
                                     onOpenRecommendations = {
+                                        dashboardEntrancePlayed = true
                                         navController.navigate(AppDestinations.Recommendations)
                                     },
                                 )
@@ -189,10 +201,10 @@ fun RootNavHost(
                         }
                         composable(
                             route = AppDestinations.Chats,
-                            enterTransition = { fadeIn(animationSpec = tween(280)) },
-                            exitTransition = { fadeOut(animationSpec = tween(280)) },
-                            popEnterTransition = { fadeIn(animationSpec = tween(280)) },
-                            popExitTransition = { fadeOut(animationSpec = tween(280)) },
+                            enterTransition = { fadeIn(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            exitTransition = { fadeOut(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            popEnterTransition = { fadeIn(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            popExitTransition = { fadeOut(animationSpec = tween(VfvNavTransitionDurationMs)) },
                         ) { _: NavBackStackEntry ->
                             CompositionLocalProvider(
                                 LocalSharedTransitionScope provides sharedShell,
@@ -203,10 +215,10 @@ fun RootNavHost(
                         }
                         composable(
                             route = AppDestinations.Groups,
-                            enterTransition = { fadeIn(animationSpec = tween(280)) },
-                            exitTransition = { fadeOut(animationSpec = tween(280)) },
-                            popEnterTransition = { fadeIn(animationSpec = tween(280)) },
-                            popExitTransition = { fadeOut(animationSpec = tween(280)) },
+                            enterTransition = { fadeIn(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            exitTransition = { fadeOut(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            popEnterTransition = { fadeIn(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            popExitTransition = { fadeOut(animationSpec = tween(VfvNavTransitionDurationMs)) },
                         ) { _: NavBackStackEntry ->
                             CompositionLocalProvider(
                                 LocalSharedTransitionScope provides sharedShell,
@@ -221,10 +233,10 @@ fun RootNavHost(
                         }
                         composable(
                             route = AppDestinations.Recommendations,
-                            enterTransition = { fadeIn(animationSpec = tween(280)) },
-                            exitTransition = { fadeOut(animationSpec = tween(280)) },
-                            popEnterTransition = { fadeIn(animationSpec = tween(280)) },
-                            popExitTransition = { fadeOut(animationSpec = tween(280)) },
+                            enterTransition = { fadeIn(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            exitTransition = { fadeOut(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            popEnterTransition = { fadeIn(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            popExitTransition = { fadeOut(animationSpec = tween(VfvNavTransitionDurationMs)) },
                         ) { _: NavBackStackEntry ->
                             CompositionLocalProvider(
                                 LocalSharedTransitionScope provides sharedShell,
@@ -245,10 +257,10 @@ fun RootNavHost(
                             arguments = listOf(
                                 navArgument("topicId") { type = NavType.StringType },
                             ),
-                            enterTransition = { fadeIn(animationSpec = tween(280)) },
-                            exitTransition = { fadeOut(animationSpec = tween(280)) },
-                            popEnterTransition = { fadeIn(animationSpec = tween(280)) },
-                            popExitTransition = { fadeOut(animationSpec = tween(280)) },
+                            enterTransition = { fadeIn(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            exitTransition = { fadeOut(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            popEnterTransition = { fadeIn(animationSpec = tween(VfvNavTransitionDurationMs)) },
+                            popExitTransition = { fadeOut(animationSpec = tween(VfvNavTransitionDurationMs)) },
                         ) { backStackEntry ->
                             val topicId = backStackEntry.arguments?.getString("topicId").orEmpty()
                             CompositionLocalProvider(

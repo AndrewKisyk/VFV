@@ -77,6 +77,9 @@ fun MainDashboardScreen(
     onOpenRequirements: () -> Unit,
     onOpenRecommendations: () -> Unit,
     onOpenSettings: () -> Unit = {},
+    // The hero image lives inside the entrance wrapper; replaying slide/fade on return would
+    // move the shared-element target mid-morph and make it stutter.
+    animateCardsEntrance: Boolean = true,
     viewModel: MainDashboardViewModel = koinInject(),
 ) {
     val state by viewModel.state.collectAsState()
@@ -201,7 +204,7 @@ fun MainDashboardScreen(
                 }
             }
             Spacer(Modifier.height(12.dp))
-            VfvListItemEntrance(index = 0) {
+            VfvListItemEntrance(index = 0, shouldAnimate = animateCardsEntrance) {
                 DashboardNavCardV2(
                     onClick = onOpenRequirements,
                     title = stringResource(Res.string.main_dashboard_requirements_title),
@@ -213,7 +216,7 @@ fun MainDashboardScreen(
                 )
             }
             Spacer(Modifier.height(12.dp))
-            VfvListItemEntrance(index = 1) {
+            VfvListItemEntrance(index = 1, shouldAnimate = animateCardsEntrance) {
                 DashboardNavCardV2(
                     onClick = onOpenRecommendations,
                     title = stringResource(Res.string.main_dashboard_recommendations_title),

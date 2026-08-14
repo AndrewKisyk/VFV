@@ -1,12 +1,24 @@
 package com.wrapper.composechat.feature.maindashboard
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
 import com.wrapper.composechat.feature.home.LocalAnimatedVisibilityScope
 import com.wrapper.composechat.feature.home.LocalSharedTransitionScope
 import com.wrapper.composechat.feature.home.LocalVfvTransitionInteractor
-import com.wrapper.composechat.feature.home.playfulSpring
+
+/**
+ * Hero bounds spec. Must settle within [com.wrapper.composechat.navigation.VfvNavTransitionDurationMs]:
+ * a softer spring keeps running after the outgoing destination leaves composition, and the
+ * unmatched element then jumps to its final bounds (the stutter seen on back).
+ */
+private val VfvHeroBoundsSpring = spring<Rect>(
+    dampingRatio = Spring.DampingRatioNoBouncy,
+    stiffness = Spring.StiffnessMediumLow,
+)
 
 /** Shared element key: requirements thumbnail on dashboard ↔ hero on [VfvGroupsScreen]. */
 const val VfvRequirementsHeroSharedElementKey = "vfv_requirements_hero_image"
@@ -39,7 +51,7 @@ private fun Modifier.vfvDashboardHeroSharedElement(key: String): Modifier {
             Modifier.sharedElement(
                 sharedContentState = rememberSharedContentState(key = key),
                 animatedVisibilityScope = av,
-                boundsTransform = { _, _ -> playfulSpring },
+                boundsTransform = { _, _ -> VfvHeroBoundsSpring },
             ),
         )
     }
