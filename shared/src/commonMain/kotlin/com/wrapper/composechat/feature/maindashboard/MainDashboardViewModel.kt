@@ -45,6 +45,22 @@ class MainDashboardViewModel(
         }
     }
 
+    fun resetAllProgress() {
+        scope.launch {
+            repository.resetAllProgress()
+            val p = repository.loadProgress()
+            _state.update {
+                MainDashboardUiState(
+                    mainPercent = p.mainPercent.coerceIn(0, 100),
+                    requirementsRingPoints = p.requirementsRingPoints.coerceIn(0, 75),
+                    recommendationsRingPoints = p.recommendationsRingPoints.coerceIn(0, 25),
+                    vfvAllDone = p.vfvAllDone,
+                    isLoading = false,
+                )
+            }
+        }
+    }
+
     fun onCleared() {
         scope.cancel()
     }

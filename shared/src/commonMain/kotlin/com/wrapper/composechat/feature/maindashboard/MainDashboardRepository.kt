@@ -10,6 +10,7 @@ import com.wrapper.composechat.progress.VfvProgressCalculator
  */
 interface MainDashboardRepository {
     suspend fun loadProgress(): MainDashboardProgress
+    suspend fun resetAllProgress()
 }
 
 data class MainDashboardProgress(
@@ -64,5 +65,10 @@ class DefaultMainDashboardRepository(
             recommendationsRingPoints = recommendationsRingPoints,
             vfvAllDone = vfvAllDone,
         )
+    }
+
+    override suspend fun resetAllProgress() {
+        requirementsRepository.resetAllProgress()
+        recommendationsRepository.resetAllReads()
     }
 }

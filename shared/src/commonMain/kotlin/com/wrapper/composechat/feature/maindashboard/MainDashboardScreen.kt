@@ -28,6 +28,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.compose.runtime.mutableFloatStateOf
@@ -51,8 +54,6 @@ import com.wrapper.composechat.ui.theme.LocalVfvDisplayFontFamily
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.backhandler.BackHandler
@@ -63,8 +64,12 @@ import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
 import com.wrapper.composechat.platform.withSnapshotBlur
 import com.wrapper.composechat.ui.components.VfvChromeBackIconButton
 import com.wrapper.composechat.ui.components.VfvChromeTrashIconButton
+import com.wrapper.composechat.ui.components.VfvConfirmDeleteProgressDialog
 import com.wrapper.composechat.ui.components.VfvGlassFullScreenBottomSheet
 import com.wrapper.composechat.ui.components.VfvListItemEntrance
+import com.wrapper.composechat.ui.liquidglass.LocalVfvScreenBackdrop
+import com.wrapper.composechat.ui.liquidglass.rememberVfvScreenBackdrop
+import com.wrapper.composechat.ui.liquidglass.vfvScreenLayerBackdrop
 
 private const val ChatsSheetBackdropBlurRadiusDp = 20f
 /**
@@ -104,10 +109,13 @@ fun MainDashboardScreen(
     var chatsSheetBackground: ImageBitmap? by remember { mutableStateOf(null) }
     var chatsSheetOpenProgress by remember { mutableFloatStateOf(0f) }
     var infoSheetDismiss by remember { mutableStateOf<(() -> Unit)?>(null) }
+    var showConfirmDelete by remember { mutableStateOf(false) }
+    var confirmOpensAuth by remember { mutableStateOf(false) }
     val captureForSheet = rememberComposeViewBitmapCapture()
     val liveBackdropBlur = isBackdropBlurAvailable()
     val dashboardBlurRadiusDp = chatsSheetOpenProgress * ChatsSheetBackdropBlurRadiusDp
     val transitionInteractor = LocalVfvTransitionInteractor.current
+    val screenBackdrop = rememberVfvScreenBackdrop()
 
     LifecycleResumeEffect(Unit) {
         viewModel.refresh()
@@ -118,24 +126,34 @@ fun MainDashboardScreen(
             chatsSheetBackground = null
             chatsSheetOpenProgress = 0f
             infoSheetDismiss = null
+            showConfirmDelete = false
+            confirmOpensAuth = false
         }
     }
 
     // Root screen: never finish the activity on back. Only dismiss InfoDialog if open.
     BackHandler {
-        if (showChatsAccessSheet) {
-            infoSheetDismiss?.invoke() ?: run {
-                showChatsAccessSheet = false
-                chatsSheetBackground = null
-                chatsSheetOpenProgress = 0f
+        when {
+            showConfirmDelete -> {
+                showConfirmDelete = false
+                confirmOpensAuth = false
+            }
+            showChatsAccessSheet -> {
+                infoSheetDismiss?.invoke() ?: run {
+                    showChatsAccessSheet = false
+                    chatsSheetBackground = null
+                    chatsSheetOpenProgress = 0f
+                }
             }
         }
     }
 
+    CompositionLocalProvider(LocalVfvScreenBackdrop provides screenBackdrop) {
     Box(Modifier.fillMaxSize()) {
         Box(
             Modifier
                 .fillMaxSize()
+                .vfvScreenLayerBackdrop(screenBackdrop)
                 .then(
                     if (liveBackdropBlur && chatsSheetOpenProgress > 0f) {
                         Modifier.blur(dashboardBlurRadiusDp.dp)
@@ -167,8 +185,9 @@ fun MainDashboardScreen(
                         showChatsAccessSheet = true
                     }
                 },
-                onOpenSettings = {
-                    transitionInteractor.navigateSettled(onOpenSettings)
+                onClearProgress = {
+                    confirmOpensAuth = false
+                    showConfirmDelete = true
                 },
                 chatsContentDescription = stringResource(Res.string.main_dashboard_chats),
                 settingsContentDescription = stringResource(Res.string.main_dashboard_settings),
@@ -256,6 +275,18 @@ fun MainDashboardScreen(
             InfoDialogSheetContent(
                 onClose = onAnimatedDismiss,
                 onChangeAge = {
+                    confirmOpensAuth = true
+                    showConfirmDelete = true
+                },
+            )
+        }
+        VfvConfirmDeleteProgressDialog(
+            visible = showConfirmDelete,
+            onConfirm = {
+                val openAuth = confirmOpensAuth
+                showConfirmDelete = false
+                confirmOpensAuth = false
+                if (openAuth) {
                     transitionInteractor.navigateSettled {
                         showChatsAccessSheet = false
                         chatsSheetBackground = null
@@ -263,9 +294,16 @@ fun MainDashboardScreen(
                         infoSheetDismiss = null
                         onOpenSettings()
                     }
-                },
-            )
-        }
+                } else {
+                    viewModel.resetAllProgress()
+                }
+            },
+            onDismiss = {
+                showConfirmDelete = false
+                confirmOpensAuth = false
+            },
+        )
+    }
     }
 }
 
@@ -273,7 +311,7 @@ fun MainDashboardScreen(
 private fun MainDashboardTopBar(
     inProgressText: String,
     onOpenChats: () -> Unit,
-    onOpenSettings: () -> Unit,
+    onClearProgress: () -> Unit,
     chatsContentDescription: String,
     settingsContentDescription: String,
 ) {
@@ -300,7 +338,7 @@ private fun MainDashboardTopBar(
             maxLines = 1,
         )
         VfvChromeTrashIconButton(
-            onClick = onOpenSettings,
+            onClick = onClearProgress,
             contentDescription = settingsContentDescription,
         )
     }

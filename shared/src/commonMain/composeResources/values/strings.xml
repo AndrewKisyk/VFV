@@ -57,4 +57,8 @@
     <string name="info_dialog_feature_tracker">Живий трекер прогресу</string>
     <string name="info_dialog_feature_offline">Працює без інтернету</string>
     <string name="info_dialog_feature_no_ads">Без реклами</string>
+    <string name="delete_progress_title">Видалити прогрес?</string>
+    <string name="delete_progress_message">Увесь прогрес буде скинуто. Цю дію не можна скасувати.</string>
+    <string name="delete_progress_confirm">Видалити</string>
+    <string name="delete_progress_cancel">Скасувати</string>
 </resources>

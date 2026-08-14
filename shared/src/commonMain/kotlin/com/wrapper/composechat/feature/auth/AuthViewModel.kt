@@ -27,27 +27,27 @@ class AuthViewModel(
     private val _effects = Channel<AuthEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
-    init {
-        onEvent(AuthEvent.ScreenStarted)
-    }
-
     fun onCleared() {
         scope.cancel()
     }
 
-    /** Empty the form after [AuthRepository.clearProfile] so change-age starts a fresh session. */
+    /**
+     * After change-age: empty the form and drop a stale [AuthEffect.NavigateToHome]
+     * that [ScreenStarted] may have queued while a session still existed.
+     */
     fun resetForNewSession() {
         _state.value = AuthState()
+        while (_effects.tryReceive().isSuccess) {
+            // drop queued home navigation
+        }
     }
 
     fun onEvent(event: AuthEvent) {
         when (event) {
             is AuthEvent.ScreenStarted -> {
-                scope.launch {
-                    if (repository.hasSession()) {
-                        _effects.send(AuthEffect.NavigateToHome)
-                    }
-                }
+                // Session routing is owned by RootNavHost. Auto-skip here queued
+                // NavigateToHome before AuthScreen collected it, so change-age
+                // immediately bounced back to the dashboard.
             }
             is AuthEvent.AgeChanged -> {
                 _state.value = _state.value.copy(ageInput = event.value, ageError = false)

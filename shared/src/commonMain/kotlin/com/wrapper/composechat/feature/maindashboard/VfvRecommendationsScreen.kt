@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wrapper.composechat.ui.components.VfvConfirmDeleteProgressDialog
 import com.wrapper.composechat.ui.components.VfvListItemEntrance
 import com.wrapper.composechat.ui.liquidglass.LocalVfvScreenBackdrop
 import com.wrapper.composechat.ui.liquidglass.rememberVfvScreenBackdrop
@@ -90,6 +91,7 @@ fun VfvRecommendationsScreen(
     val shapeCard = RoundedCornerShape(20.dp)
     val screenBackdrop = rememberVfvScreenBackdrop()
     var backConsumed by remember { mutableStateOf(false) }
+    var showConfirmDelete by remember { mutableStateOf(false) }
 
     DisposableEffect(viewModel) {
         onDispose { viewModel.onCleared() }
@@ -122,7 +124,7 @@ fun VfvRecommendationsScreen(
                     backConsumed = true
                     onBack()
                 },
-                onTrash = { viewModel.resetAllReads() },
+                onTrash = { showConfirmDelete = true },
                 family = family,
             )
             Column(
@@ -195,6 +197,14 @@ fun VfvRecommendationsScreen(
                 }
             }
         }
+        VfvConfirmDeleteProgressDialog(
+            visible = showConfirmDelete,
+            onConfirm = {
+                showConfirmDelete = false
+                viewModel.resetAllReads()
+            },
+            onDismiss = { showConfirmDelete = false },
+        )
     }
     }
 }

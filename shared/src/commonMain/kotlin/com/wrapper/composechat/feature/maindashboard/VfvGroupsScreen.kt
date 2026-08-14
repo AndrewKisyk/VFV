@@ -32,7 +32,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -45,6 +47,7 @@ import com.wrapper.composechat.data.requirements.minRequiredForGroup
 import com.wrapper.composechat.feature.home.LocalVfvTransitionInteractor
 import com.wrapper.composechat.feature.home.navigateSettled
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
+import com.wrapper.composechat.ui.components.VfvConfirmDeleteProgressDialog
 import com.wrapper.composechat.ui.components.VfvGlassFullScreenBottomSheet
 import com.wrapper.composechat.ui.components.VfvGradientProgressBar
 import com.wrapper.composechat.ui.components.VfvListItemEntrance
@@ -105,7 +108,7 @@ private fun groupTitle(groupId: Int): org.jetbrains.compose.resources.StringReso
 /**
  * VFV «Вимоги» — п’ять груп норм як у [com.plstudio.a123.vfv.fragments.GroupsFragment].
  */
-@OptIn(ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun VfvGroupsScreen(
     onBack: () -> Unit,
@@ -126,6 +129,7 @@ fun VfvGroupsScreen(
     // Exit transition keeps this screen composed — ignore repeat back taps so we don't
     // pop past MainDashboard / leave NavHost empty.
     var backToDashboardConsumed by remember { mutableStateOf(false) }
+    var showConfirmDelete by remember { mutableStateOf(false) }
 
     DisposableEffect(viewModel) {
         onDispose { viewModel.onCleared() }
@@ -133,6 +137,18 @@ fun VfvGroupsScreen(
 
     val totalDone = vmState.donePerGroup.zip(GroupMaxPerGroup).sumOf { (d, m) -> d.coerceIn(0, m) }
     val totalMax = GroupMaxPerGroup.sum()
+
+    val dismissRequirementsSheet: () -> Unit = {
+        sheetAnimatedDismiss?.invoke() ?: run {
+            viewModel.closeSheet()
+            sheetBackground = null
+            sheetOpenProgress = 0f
+        }
+    }
+
+    BackHandler(enabled = sheetVisible) {
+        dismissRequirementsSheet()
+    }
 
     CompositionLocalProvider(LocalVfvScreenBackdrop provides screenBackdrop) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -153,17 +169,13 @@ fun VfvGroupsScreen(
                 title = stringResource(Res.string.main_dashboard_requirements_title).uppercase(),
                 onBack = {
                     if (vmState.selectedGroupId != null) {
-                        sheetAnimatedDismiss?.invoke() ?: run {
-                            viewModel.closeSheet()
-                            sheetBackground = null
-                            sheetOpenProgress = 0f
-                        }
+                        dismissRequirementsSheet()
                     } else if (!backToDashboardConsumed) {
                         backToDashboardConsumed = true
                         onBack()
                     }
                 },
-                onTrash = { viewModel.resetAllRequirements() },
+                onTrash = { showConfirmDelete = true },
                 family = family,
             )
             Column(
@@ -281,6 +293,14 @@ fun VfvGroupsScreen(
                 )
             }
         }
+        VfvConfirmDeleteProgressDialog(
+            visible = showConfirmDelete,
+            onConfirm = {
+                showConfirmDelete = false
+                viewModel.resetAllRequirements()
+            },
+            onDismiss = { showConfirmDelete = false },
+        )
     }
     }
 }
