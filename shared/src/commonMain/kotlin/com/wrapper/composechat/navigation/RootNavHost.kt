@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
@@ -27,7 +28,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.wrapper.composechat.auth.AuthRepository
+import com.wrapper.composechat.data.requirements.RequirementsRepository
 import com.wrapper.composechat.feature.auth.AuthScreen
+import com.wrapper.composechat.feature.auth.AuthViewModel
 import com.wrapper.composechat.feature.auth.VfvAuthTitleSharedElementKey
 import com.wrapper.composechat.feature.home.LocalAnimatedVisibilityScope
 import com.wrapper.composechat.feature.home.LocalSharedTransitionScope
@@ -45,6 +48,7 @@ import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 /**
@@ -70,6 +74,9 @@ fun RootNavHost(
 ) {
     val navController = rememberNavController()
     val authRepository = koinInject<AuthRepository>()
+    val requirementsRepository = koinInject<RequirementsRepository>()
+    val authViewModel = koinInject<AuthViewModel>()
+    val rootScope = rememberCoroutineScope()
     var bootstrapped by remember { mutableStateOf(false) }
     var needAuth by remember { mutableStateOf(true) }
     var splashProgress by remember { mutableStateOf(0f) }
@@ -195,6 +202,18 @@ fun RootNavHost(
                                     onOpenRecommendations = {
                                         dashboardEntrancePlayed = true
                                         navController.navigate(AppDestinations.Recommendations)
+                                    },
+                                    onOpenSettings = {
+                                        // Legacy MenuListFragment.nav_home: clear age/sex + undo
+                                        // all requirements, then open authorization.
+                                        rootScope.launch {
+                                            authSheetBackground = captureForAuthSheet()
+                                            requirementsRepository.resetAllProgress()
+                                            authRepository.clearProfile()
+                                            authViewModel.resetForNewSession()
+                                            needAuth = true
+                                            authFlowCompleted = false
+                                        }
                                     },
                                 )
                             }

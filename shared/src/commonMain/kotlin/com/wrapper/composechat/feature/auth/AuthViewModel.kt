@@ -35,6 +35,11 @@ class AuthViewModel(
         scope.cancel()
     }
 
+    /** Empty the form after [AuthRepository.clearProfile] so change-age starts a fresh session. */
+    fun resetForNewSession() {
+        _state.value = AuthState()
+    }
+
     fun onEvent(event: AuthEvent) {
         when (event) {
             is AuthEvent.ScreenStarted -> {

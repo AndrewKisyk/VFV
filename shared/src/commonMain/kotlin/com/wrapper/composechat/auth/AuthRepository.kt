@@ -16,4 +16,10 @@ interface AuthRepository {
     suspend fun getProfile(): UserProfile?
 
     suspend fun saveProfile(age: String, sex: Sex)
+
+    /**
+     * Same as [com.plstudio.a123.vfv.fragments.MenuListFragment.makeUserDataEmpty]:
+     * empty age/sex so [hasSession] is false and the auth screen is shown again.
+     */
+    suspend fun clearProfile()
 }

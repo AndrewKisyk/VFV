@@ -27,4 +27,8 @@ class SqlDelightAuthRepository(
         }
         database.userProfileQueries.upsertProfile(age = age, sex = sexCode)
     }
+
+    override suspend fun clearProfile() = withContext(Dispatchers.Default) {
+        database.userProfileQueries.clearProfile()
+    }
 }

@@ -10,3 +10,6 @@ SELECT * FROM user_profile WHERE id = 1;
 upsertProfile:
 INSERT OR REPLACE INTO user_profile(id, age, sex)
 VALUES (1, ?, ?);
+
+clearProfile:
+UPDATE user_profile SET age = '', sex = '' WHERE id = 1;
