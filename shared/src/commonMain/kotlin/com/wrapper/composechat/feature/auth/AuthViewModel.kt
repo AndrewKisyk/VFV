@@ -50,7 +50,10 @@ class AuthViewModel(
                 // immediately bounced back to the dashboard.
             }
             is AuthEvent.AgeChanged -> {
-                _state.value = _state.value.copy(ageInput = event.value, ageError = false)
+                _state.value = _state.value.copy(
+                    ageInput = event.value,
+                    ageError = AuthValidation.shouldShowAgeError(event.value),
+                )
             }
             is AuthEvent.SexSelected -> {
                 _state.value = _state.value.copy(selectedSex = event.sex, sexError = false)
@@ -58,8 +61,14 @@ class AuthViewModel(
             is AuthEvent.ContinueClicked -> {
                 val s = _state.value
                 val v = AuthValidation.validate(s.ageInput, s.selectedSex)
-                _state.value = s.copy(ageError = v.ageError, sexError = v.sexError)
-                if (!v.isValid) return
+                // Button should already be disabled when invalid; keep guard for safety.
+                if (!v.isValid) {
+                    _state.value = s.copy(
+                        ageError = AuthValidation.shouldShowAgeError(s.ageInput),
+                        sexError = v.sexError,
+                    )
+                    return
+                }
                 scope.launch {
                     val sex = s.selectedSex ?: return@launch
                     repository.saveProfile(s.ageInput.trim(), sex)

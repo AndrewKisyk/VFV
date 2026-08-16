@@ -13,6 +13,13 @@ object AuthValidation {
         return age in 12..17
     }
 
+    /**
+     * Live field error: show after each change when the value is non-empty and not 12–17.
+     * Empty input does not show an error (button stays disabled via [validate]).
+     */
+    fun shouldShowAgeError(ageInput: String): Boolean =
+        ageInput.isNotBlank() && !isAgeInputValid(ageInput)
+
     fun validate(ageInput: String, selectedSex: Sex?): Result {
         var ageError = false
         var sexError = false

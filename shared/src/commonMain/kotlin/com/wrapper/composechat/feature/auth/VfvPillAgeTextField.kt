@@ -1,5 +1,6 @@
 package com.wrapper.composechat.feature.auth
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
@@ -24,8 +25,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.ui.layout.ContentScale
+import com.wrapper.composechat.resources.Res
+import com.wrapper.composechat.resources.groups_row_complete_check
 import com.wrapper.composechat.ui.theme.ChatColors
 import com.wrapper.composechat.ui.theme.ChatDimens
+import org.jetbrains.compose.resources.painterResource
 
 // Leading check: light top → dark bottom
 private val vfvAgeCheckGradient = Brush.verticalGradient(
@@ -81,33 +86,27 @@ fun VfvPillAgeTextField(
         colors = colors,
         leadingIcon = if (showValidCheck) {
             {
-                Box(
-                    modifier = Modifier
-                        .padding(start = 4.dp)
-                        .size(30.dp)
-                        .clip(CircleShape)
-                        .background(vfvAgeCheckGradient, CircleShape),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Check,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                        tint = Color.White,
-                    )
-                }
+                Image(
+                    painter = painterResource(Res.drawable.groups_row_complete_check),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                        .padding(start = 4.dp),
+                    contentScale = ContentScale.Fit,
+                )
             }
         } else {
             null
         },
-        supportingText = {
-            if (isError && errorText != null) {
+        supportingText = if (isError && errorText != null) {
+            {
                 Text(
                     text = errorText,
                     color = errorColor,
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
+        } else {
+            null
         },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
     )

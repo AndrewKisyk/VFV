@@ -76,8 +76,7 @@ fun AuthScreen(
             }
         }
     }
-
-    // iOS cannot capture a bitmap; blur the live splash behind (same path as Info dialog).
+    
     VfvGlassFullScreenBottomSheet(
         visible = true,
         onDismissRequest = {},
@@ -145,12 +144,14 @@ private fun AuthFormContent(
                     onClick = { onSexSelect(Sex.Male) },
                     label = { Text(stringResource(Res.string.auth_sex_male)) },
                     colors = chipColors(),
+                    border = sexChipBorder(selected = state.selectedSex == Sex.Male),
                 )
                 FilterChip(
                     selected = state.selectedSex == Sex.Female,
                     onClick = { onSexSelect(Sex.Female) },
                     label = { Text(stringResource(Res.string.auth_sex_female)) },
                     colors = chipColors(),
+                    border = sexChipBorder(selected = state.selectedSex == Sex.Female),
                 )
             }
             if (state.sexError) {
@@ -261,7 +262,16 @@ private fun chipColors() = FilterChipDefaults.filterChipColors(
     selectedContainerColor = ChatColors.primary.copy(alpha = 0.45f),
     selectedLabelColor = ChatColors.onContent,
     selectedLeadingIconColor = ChatColors.onContent,
-    containerColor = Color.White.copy(alpha = 0.12f),
+    containerColor = Color.White.copy(alpha = 0.2f),
+    disabledContainerColor = Color.White.copy(alpha = 0.2f),
     labelColor = ChatColors.onContent,
     iconColor = ChatColors.onContentMuted,
+)
+
+@Composable
+private fun sexChipBorder(selected: Boolean) = FilterChipDefaults.filterChipBorder(
+    enabled = true,
+    selected = selected,
+    borderColor = Color.White.copy(alpha = 0.2f),
+    selectedBorderColor = Color.White.copy(alpha = 0.2f),
 )
