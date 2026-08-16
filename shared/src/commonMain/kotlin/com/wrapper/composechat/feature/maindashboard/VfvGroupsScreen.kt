@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import com.wrapper.composechat.data.requirements.minRequiredForGroup
 import com.wrapper.composechat.feature.home.LocalVfvTransitionInteractor
 import com.wrapper.composechat.feature.home.navigateSettled
+import com.wrapper.composechat.platform.isBackdropBlurAvailable
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
 import com.wrapper.composechat.ui.components.VfvConfirmDeleteProgressDialog
 import com.wrapper.composechat.ui.components.VfvGlassFullScreenBottomSheet
@@ -123,6 +125,7 @@ fun VfvGroupsScreen(
     var sheetOpenProgress by remember { mutableFloatStateOf(0f) }
     val captureForSheet = rememberComposeViewBitmapCapture()
     val screenBackdrop = rememberVfvScreenBackdrop()
+    val liveBackdropBlur = isBackdropBlurAvailable()
     val sheetVisible = vmState.selectedGroupId != null
     var sheetAnimatedDismiss by remember { mutableStateOf<(() -> Unit)?>(null) }
     val transitionInteractor = LocalVfvTransitionInteractor.current
@@ -130,6 +133,7 @@ fun VfvGroupsScreen(
     // pop past MainDashboard / leave NavHost empty.
     var backToDashboardConsumed by remember { mutableStateOf(false) }
     var showConfirmDelete by remember { mutableStateOf(false) }
+    val groupsBlurRadiusDp = sheetOpenProgress * RequirementsSheetBackdropBlurRadiusDp
 
     DisposableEffect(viewModel) {
         onDispose { viewModel.onCleared() }
@@ -155,16 +159,27 @@ fun VfvGroupsScreen(
         Box(
             Modifier
                 .fillMaxSize()
-                .vfvScreenLayerBackdrop(screenBackdrop),
+                .then(
+                    if (liveBackdropBlur && sheetOpenProgress > 0f) {
+                        Modifier.blur(groupsBlurRadiusDp.dp)
+                    } else {
+                        Modifier
+                    },
+                ),
         ) {
-            VfvGroupsScreenBackdrop()
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
-                .padding(horizontal = VfvListChromeHorizontalPadding),
-        ) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .vfvScreenLayerBackdrop(screenBackdrop),
+            ) {
+                VfvGroupsScreenBackdrop()
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .padding(horizontal = VfvListChromeHorizontalPadding),
+            ) {
             VfvListChromeTopBar(
                 title = stringResource(Res.string.main_dashboard_requirements_title).uppercase(),
                 onBack = {
@@ -253,7 +268,9 @@ fun VfvGroupsScreen(
                                 onClick = {
                                     transitionInteractor?.settleActiveSharedTransition()
                                     transitionInteractor.navigateSettled {
-                                        sheetBackground = captureForSheet()
+                                        if (!liveBackdropBlur) {
+                                            sheetBackground = captureForSheet()
+                                        }
                                         viewModel.openGroup(group.index1)
                                     }
                                 },
@@ -263,6 +280,7 @@ fun VfvGroupsScreen(
                 }
             }
         }
+        }
         VfvGlassFullScreenBottomSheet(
             visible = sheetVisible,
             onDismissRequest = {
@@ -270,9 +288,9 @@ fun VfvGroupsScreen(
                 sheetBackground = null
                 sheetOpenProgress = 0f
             },
-            backgroundSnapshot = sheetBackground,
-            revealLiveBackdrop = false,
-            blurBackgroundSnapshot = true,
+            backgroundSnapshot = if (liveBackdropBlur) null else sheetBackground,
+            revealLiveBackdrop = liveBackdropBlur,
+            blurBackgroundSnapshot = !liveBackdropBlur,
             backdropBlurRadiusDp = RequirementsSheetBackdropBlurRadiusDp,
             onOpenProgressChange = { sheetOpenProgress = it },
             contentFullScreen = true,

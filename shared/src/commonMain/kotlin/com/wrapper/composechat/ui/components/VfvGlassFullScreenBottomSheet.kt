@@ -202,15 +202,17 @@ fun VfvGlassFullScreenBottomSheet(
                                 .zIndex(0f)
                                 .then(snapshotBlurMod),
                         )
-                    } else {
+                    } else if (!isBackdropBlurAvailable()) {
+                        // No live blur and no snapshot — solid frost placeholder.
                         Box(
                             Modifier
                                 .fillMaxSize()
                                 .zIndex(0f)
-                                .then(frostedFallbackBlurMod)
                                 .background(ScrimBottomColor.copy(alpha = 0.85f)),
                         )
                     }
+                    // When live blur is available and snapshot is null, the host blurs the
+                    // real underlay (Info / Auth / Requirements on iOS). Only the scrim sits here.
                     Box(
                         Modifier
                             .fillMaxSize()

@@ -142,6 +142,7 @@ fun VfvRecommendationDetailScreen(
             }
         }
         VfvRecommendationDetailTopBar(
+            topicId = topicId,
             title = title,
             subtitle = subtitle,
             onBack = onBack,
@@ -157,6 +158,7 @@ fun VfvRecommendationDetailScreen(
 
 @Composable
 private fun VfvRecommendationDetailTopBar(
+    topicId: String,
     title: String,
     subtitle: String,
     onBack: () -> Unit,
@@ -181,34 +183,44 @@ private fun VfvRecommendationDetailTopBar(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 VfvChromeBackIconButton(onClick = onBack)
-                Text(
-                    text = title,
+                Box(
                     modifier = Modifier
                         .weight(1f)
                         .padding(horizontal = 12.dp),
-                    color = Color.White.copy(alpha = 0.60f),
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Light,
-                    fontFamily = family,
-                    letterSpacing = 0.sp,
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = title,
+                        modifier = Modifier.recommendationTitleSharedBounds(topicId),
+                        color = Color.White.copy(alpha = 0.60f),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Light,
+                        fontFamily = family,
+                        letterSpacing = 0.sp,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
                 Spacer(modifier = Modifier.size(32.dp))
             }
-            Text(
-                text = subtitle,
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 4.dp, start = 44.dp, end = 44.dp),
-                color = Color.White.copy(alpha = 0.65f),
-                fontSize = 14.sp,
-                fontFamily = family,
-                textAlign = TextAlign.Center,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = subtitle,
+                    modifier = Modifier.recommendationSubtitleSharedBounds(topicId),
+                    color = Color.White.copy(alpha = 0.65f),
+                    fontSize = 14.sp,
+                    fontFamily = family,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }

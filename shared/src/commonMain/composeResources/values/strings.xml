@@ -14,7 +14,7 @@
     <string name="main_dashboard_chats">Chats</string>
     <string name="main_dashboard_settings">Settings</string>
     <string name="main_dashboard_in_progress">ВИ В ПРОЦЕСІ</string>
-    <string name="main_dashboard_vfv_done">здано</string>
+    <string name="main_dashboard_vfv_done">ЗДАНО</string>
     <string name="main_dashboard_requirements_title">Вимоги</string>
     <string name="main_dashboard_requirements_subtitle">моя відзнака</string>
     <string name="main_dashboard_recommendations_title">Рекомендації</string>
@@ -34,7 +34,7 @@
     <string name="groups_group5_title">Мандрівки</string>
     <string name="groups_group5_subtitle">піша, водна</string>
     <string name="recommendations_header_tagline">Щоб був прогрес в тренуваннях,\nперш за все потрібно тренуватися.</string>
-    <string name="recommendations_read_label">Прочитано:</string>
+    <string name="recommendations_read_label">прочитано:</string>
     <string name="recommendations_topic1_title">Руханка?</string>
     <string name="recommendations_topic1_subtitle">шлях до ВФВ</string>
     <string name="recommendations_topic2_title">Стрибки</string>

@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -49,6 +50,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.wrapper.composechat.resources.*
 import com.wrapper.composechat.ui.theme.LocalVfvDisplayFontFamily
 import org.jetbrains.compose.resources.painterResource
@@ -60,6 +62,7 @@ import androidx.compose.ui.backhandler.BackHandler
 import com.wrapper.composechat.feature.home.LocalVfvTransitionInteractor
 import com.wrapper.composechat.feature.home.navigateSettled
 import com.wrapper.composechat.platform.isBackdropBlurAvailable
+import com.wrapper.composechat.platform.rememberCelebrationHaptic
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
 import com.wrapper.composechat.platform.withSnapshotBlur
 import com.wrapper.composechat.ui.components.VfvChromeBackIconButton
@@ -70,6 +73,14 @@ import com.wrapper.composechat.ui.components.VfvListItemEntrance
 import com.wrapper.composechat.ui.liquidglass.LocalVfvScreenBackdrop
 import com.wrapper.composechat.ui.liquidglass.rememberVfvScreenBackdrop
 import com.wrapper.composechat.ui.liquidglass.vfvScreenLayerBackdrop
+import io.github.vinceglb.confettikit.compose.ConfettiKit
+import io.github.vinceglb.confettikit.core.Angle
+import io.github.vinceglb.confettikit.core.Party
+import io.github.vinceglb.confettikit.core.Position
+import io.github.vinceglb.confettikit.core.Spread
+import io.github.vinceglb.confettikit.core.emitter.Emitter
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 private const val ChatsSheetBackdropBlurRadiusDp = 20f
 /**
@@ -100,7 +111,6 @@ fun MainDashboardScreen(
         animationSpec = tween(800),
         label = "rec",
     )
-    val family = LocalVfvDisplayFontFamily.current
     val cardBg = Color(0xFF020725)
 
     val requirementsImage = painterResource(Res.drawable.main_dashboard_requirements)
@@ -116,6 +126,20 @@ fun MainDashboardScreen(
     val dashboardBlurRadiusDp = chatsSheetOpenProgress * ChatsSheetBackdropBlurRadiusDp
     val transitionInteractor = LocalVfvTransitionInteractor.current
     val screenBackdrop = rememberVfvScreenBackdrop()
+    var celebrateDone by remember { mutableStateOf(false) }
+    var previousAllDone by remember { mutableStateOf<Boolean?>(null) }
+    val doneConfettiParties = remember { vfvDoneConfettiParties() }
+    val celebrationHaptic = rememberCelebrationHaptic()
+
+    LaunchedEffect(state.vfvAllDone, state.isLoading) {
+        if (state.isLoading) return@LaunchedEffect
+        val previous = previousAllDone
+        previousAllDone = state.vfvAllDone
+        // Fire on first paint when already done (app open) and on false → true.
+        if (state.vfvAllDone && previous != true) {
+            celebrateDone = true
+        }
+    }
 
     LifecycleResumeEffect(Unit) {
         viewModel.refresh()
@@ -171,7 +195,13 @@ fun MainDashboardScreen(
                 .padding(horizontal = VfvListChromeHorizontalPadding),
         ) {
             MainDashboardTopBar(
-                inProgressText = stringResource(Res.string.main_dashboard_in_progress),
+                statusText = stringResource(
+                    if (state.vfvAllDone) {
+                        Res.string.main_dashboard_vfv_done
+                    } else {
+                        Res.string.main_dashboard_in_progress
+                    },
+                ),
                 onOpenChats = {
                     if (showChatsAccessSheet) {
                         // Already open / closing — ignore spam taps on the chrome button.
@@ -204,23 +234,6 @@ fun MainDashboardScreen(
                     requirementsProgress = reqAnimated,
                     vfvAllDone = state.vfvAllDone,
                 )
-                if (state.vfvAllDone) {
-                    Text(
-                        text = stringResource(Res.string.main_dashboard_vfv_done),
-                        color = Color.White,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = family,
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 16.dp)
-                            .background(
-                                color = Color.White.copy(alpha = 0.2f),
-                                shape = RoundedCornerShape(50),
-                            )
-                            .padding(horizontal = 14.dp, vertical = 6.dp),
-                    )
-                }
             }
             Spacer(Modifier.height(12.dp))
             VfvListItemEntrance(index = 0, shouldAnimate = animateCardsEntrance) {
@@ -280,6 +293,24 @@ fun MainDashboardScreen(
                 },
             )
         }
+        if (celebrateDone) {
+            ConfettiKit(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .zIndex(10_000f),
+                parties = doneConfettiParties,
+                onParticleSystemStarted = { _, activeSystems ->
+                    if (activeSystems == 1) {
+                        celebrationHaptic()
+                    }
+                },
+                onParticleSystemEnded = { _, activeSystems ->
+                    if (activeSystems == 0) {
+                        celebrateDone = false
+                    }
+                },
+            )
+        }
         VfvConfirmDeleteProgressDialog(
             visible = showConfirmDelete,
             onConfirm = {
@@ -309,7 +340,7 @@ fun MainDashboardScreen(
 
 @Composable
 private fun MainDashboardTopBar(
-    inProgressText: String,
+    statusText: String,
     onOpenChats: () -> Unit,
     onClearProgress: () -> Unit,
     chatsContentDescription: String,
@@ -325,7 +356,7 @@ private fun MainDashboardTopBar(
             contentDescription = chatsContentDescription,
         )
         Text(
-            text = inProgressText,
+            text = statusText,
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 12.dp),
@@ -420,4 +451,36 @@ private fun DashboardNavCardV2(
             }
         }
     }
+}
+
+private val VfvConfettiColors = listOf(0xfce18a, 0xff726d, 0xb53ffe, 0xb48def, 0x42d4ff)
+
+private fun vfvDoneConfettiParties(): List<Party> {
+    val burst = Party(
+        speed = 0f,
+        maxSpeed = 32f,
+        damping = 0.9f,
+        spread = 360,
+        colors = VfvConfettiColors,
+        emitter = Emitter(duration = 120.milliseconds).max(120),
+        position = Position.Relative(0.5, 0.32),
+    )
+    val fromLeft = Party(
+        speed = 12f,
+        maxSpeed = 28f,
+        damping = 0.9f,
+        angle = Angle.RIGHT - 45,
+        spread = Spread.SMALL,
+        colors = VfvConfettiColors,
+        emitter = Emitter(duration = 1.6.seconds).perSecond(36),
+        position = Position.Relative(0.0, 0.22),
+    )
+    return listOf(
+        burst,
+        fromLeft,
+        fromLeft.copy(
+            angle = Angle.LEFT + 45,
+            position = Position.Relative(1.0, 0.22),
+        ),
+    )
 }

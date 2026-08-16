@@ -33,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.compose.ui.Alignment
@@ -44,6 +45,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wrapper.composechat.feature.home.LocalVfvTransitionInteractor
+import com.wrapper.composechat.feature.home.navigateSettled
 import com.wrapper.composechat.ui.components.VfvConfirmDeleteProgressDialog
 import com.wrapper.composechat.ui.components.VfvListItemEntrance
 import com.wrapper.composechat.ui.liquidglass.LocalVfvScreenBackdrop
@@ -75,6 +78,9 @@ private val recommendationTopics = vfvRecommendationTopics.map { topic ->
     )
 }
 
+/** Same secondary label style as Groups «виконано:» row. */
+private val RecommendationsReadSecondaryText = Color.White.copy(alpha = 0.60f)
+
 /**
  * VFV «Рекомендації» — список тем як у [com.plstudio.a123.vfv.fragments.RecomendationListFragment].
  */
@@ -92,6 +98,10 @@ fun VfvRecommendationsScreen(
     val screenBackdrop = rememberVfvScreenBackdrop()
     var backConsumed by remember { mutableStateOf(false) }
     var showConfirmDelete by remember { mutableStateOf(false) }
+    val transitionInteractor = LocalVfvTransitionInteractor.current
+    // Survives the trip to the detail screen: on pop the rows must stay put, otherwise the
+    // title morph would chase a row that is still sliding in.
+    var entrancePlayed by rememberSaveable { mutableStateOf(false) }
 
     DisposableEffect(viewModel) {
         onDispose { viewModel.onCleared() }
@@ -161,36 +171,41 @@ fun VfvRecommendationsScreen(
                     Image(
                         painter = painterResource(Res.drawable.groups_completed_label),
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(9.dp),
                     )
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(Modifier.width(4.dp))
                     Text(
                         text = stringResource(Res.string.recommendations_read_label),
-                        color = Color.White.copy(alpha = 0.82f),
-                        fontSize = 16.sp,
+                        color = RecommendationsReadSecondaryText,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Normal,
                         fontFamily = family,
                     )
                     Spacer(Modifier.weight(1f))
                     Text(
                         text = "${vmState.totalRead}/${vmState.totalCount}",
-                        color = Color.White,
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.Medium,
+                        color = RecommendationsReadSecondaryText,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Light,
                         fontFamily = family,
                     )
                 }
                 Spacer(Modifier.height(18.dp))
                 recommendationTopics.forEachIndexed { index, topic ->
                     val read = topic.id in vmState.readTopicIds
-                    VfvListItemEntrance(index = index) {
+                    VfvListItemEntrance(index = index, shouldAnimate = !entrancePlayed) {
                         RecommendationTopicRowCard(
+                            topicId = topic.id,
                             title = stringResource(topic.titleRes),
                             subtitle = stringResource(topic.subtitleRes),
                             read = read,
                             iconDrawable = topic.iconDrawable,
                             shape = shapeCard,
                             family = family,
-                            onClick = { onTopicClick(topic.id) },
+                            onClick = {
+                                entrancePlayed = true
+                                transitionInteractor.navigateSettled { onTopicClick(topic.id) }
+                            },
                         )
                     }
                     Spacer(Modifier.height(14.dp))
@@ -211,6 +226,7 @@ fun VfvRecommendationsScreen(
 
 @Composable
 private fun RecommendationTopicRowCard(
+    topicId: String,
     title: String,
     subtitle: String,
     read: Boolean,
@@ -286,6 +302,7 @@ private fun RecommendationTopicRowCard(
                 ) {
                     Text(
                         text = title,
+                        modifier = Modifier.recommendationTitleSharedBounds(topicId),
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -295,6 +312,10 @@ private fun RecommendationTopicRowCard(
                     )
                     Text(
                         text = subtitle,
+                        modifier = Modifier.recommendationSubtitleSharedBounds(
+                            topicId = topicId,
+                            alignment = Alignment.CenterStart,
+                        ),
                         color = secondaryText,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Normal,

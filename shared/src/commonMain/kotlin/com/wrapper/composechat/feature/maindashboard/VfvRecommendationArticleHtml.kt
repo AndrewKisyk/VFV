@@ -1,12 +1,13 @@
 package com.wrapper.composechat.feature.maindashboard
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -16,6 +17,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.LinkInteractionListener
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
@@ -88,13 +90,9 @@ internal fun VfvRecommendationArticleHtml(
                     Spacer(Modifier.height(10.dp))
                 }
                 is ArticleBlock.BulletItem -> {
-                    ArticleRichText(
-                        spans = listOf(InlineSpan("• ")) + block.spans,
+                    ArticleBulletItem(
+                        spans = block.spans,
                         family = family,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier.padding(start = 8.dp),
                     )
                     Spacer(Modifier.height(6.dp))
                 }
@@ -116,6 +114,35 @@ internal fun VfvRecommendationArticleHtml(
 }
 
 @Composable
+private fun ArticleBulletItem(
+    spans: List<InlineSpan>,
+    family: FontFamily?,
+) {
+    val linkUrl = spans.firstNotNullOfOrNull { it.link }
+    val uriHandler = LocalUriHandler.current
+    val interactionSource = remember { MutableInteractionSource() }
+    ArticleRichText(
+        spans = listOf(InlineSpan("• ")) + spans,
+        family = family,
+        fontSize = 15.sp,
+        fontWeight = FontWeight.Normal,
+        textAlign = TextAlign.Start,
+        modifier = Modifier
+            .padding(start = 8.dp)
+            .then(
+                if (linkUrl != null) {
+                    Modifier.clickable(
+                        indication = null,
+                        interactionSource = interactionSource,
+                    ) { uriHandler.openUri(linkUrl) }
+                } else {
+                    Modifier
+                },
+            ),
+    )
+}
+
+@Composable
 private fun ArticleRichText(
     spans: List<InlineSpan>,
     family: FontFamily?,
@@ -125,8 +152,18 @@ private fun ArticleRichText(
     modifier: Modifier = Modifier,
 ) {
     val uriHandler = LocalUriHandler.current
-    val annotated = remember(spans) { buildArticleAnnotatedString(spans) }
-    ClickableText(
+    val linkListener = remember(uriHandler) {
+        LinkInteractionListener { annotation ->
+            val url = (annotation as? LinkAnnotation.Url)?.url ?: return@LinkInteractionListener
+            uriHandler.openUri(url)
+        }
+    }
+    val annotated = remember(spans, linkListener) {
+        buildArticleAnnotatedString(spans, linkListener)
+    }
+    // Use Text (not ClickableText): LinkAnnotation taps are handled natively.
+    // ClickableText + getLinkAnnotations is unreliable for list-item-only links (cardio).
+    Text(
         text = annotated,
         modifier = modifier.fillMaxWidth(),
         style = androidx.compose.ui.text.TextStyle(
@@ -137,17 +174,13 @@ private fun ArticleRichText(
             textAlign = textAlign,
             lineHeight = (fontSize.value * 1.45f).sp,
         ),
-        onClick = { offset ->
-            annotated.getLinkAnnotations(offset, offset).firstOrNull()?.let { annotation ->
-                (annotation.item as? LinkAnnotation.Url)?.let { link ->
-                    uriHandler.openUri(link.url)
-                }
-            }
-        },
     )
 }
 
-private fun buildArticleAnnotatedString(spans: List<InlineSpan>): AnnotatedString =
+private fun buildArticleAnnotatedString(
+    spans: List<InlineSpan>,
+    linkListener: LinkInteractionListener,
+): AnnotatedString =
     buildAnnotatedString {
         spans.forEach { span ->
             if (span.text.isEmpty()) return@forEach
@@ -166,6 +199,7 @@ private fun buildArticleAnnotatedString(spans: List<InlineSpan>): AnnotatedStrin
                     LinkAnnotation.Url(
                         url = span.link,
                         styles = TextLinkStyles(style = style),
+                        linkInteractionListener = linkListener,
                     ),
                 ) {
                     withStyle(style) {
@@ -208,6 +242,8 @@ internal fun recommendationArticleImage(assetName: String): DrawableResource? =
 private fun parseRecommendationArticleHtml(rawHtml: String): List<ArticleBlock> {
     val normalized = rawHtml
         .replace("\r\n", "\n")
+        // Legacy typos: <\a>, <\h2> → </a>, </h2>
+        .replace(Regex("""<\\(/?[a-zA-Z0-9]+)>"""), "</$1>")
         .replace(Regex("""<br\s*/?>""", RegexOption.IGNORE_CASE), "\n")
         .replace(Regex("""<\s*br\s*>""", RegexOption.IGNORE_CASE), "\n")
     val blocks = mutableListOf<ArticleBlock>()
@@ -263,7 +299,10 @@ private fun parseRecommendationArticleHtml(rawHtml: String): List<ArticleBlock> 
                 val centered = tagContent.contains("text-align: center", ignoreCase = true)
                 blocks += parseInnerContentBlocks(inner, centered = centered)
             }
-            "ul" -> Unit
+            // Recurse into list body so nested <li> become BulletItems (do not skip).
+            "ul", "ol" -> {
+                blocks += parseRecommendationArticleHtml(inner)
+            }
             else -> appendPlainParagraph(inner, blocks)
         }
         index = if (endIndex == -1) tagEnd + 1 else endIndex + endTag.length
@@ -386,7 +425,9 @@ private fun parseInlineRecursive(
             "i", "em" -> parseInlineRecursive(inner, out, bold = bold, italic = true, link = link)
             "u" -> parseInlineRecursive(inner, out, bold = bold, italic = italic, link = link)
             "a" -> {
-                val href = extractAttribute(tagContent, "href")?.let(::unwrapAttr)
+                val href = extractAttribute(tagContent, "href")
+                    ?.let(::unwrapAttr)
+                    ?.let(::normalizeHref)
                 parseInlineRecursive(inner, out, bold = bold, italic = true, link = href ?: link)
             }
             else -> parseInlineRecursive(inner, out, bold = bold, italic = italic, link = link)
@@ -416,6 +457,13 @@ private fun extractAttribute(tagContent: String, name: String): String? {
 
 private fun unwrapAttr(value: String): String =
     value.trim().trim('\'', '"')
+
+/** Legacy HTML uses href="'https://...'" — strip leftover quotes / spaces. */
+private fun normalizeHref(value: String): String? {
+    val cleaned = value.trim().trim('\'', '"', ' ', '\n', '\t')
+    if (cleaned.isEmpty()) return null
+    return cleaned
+}
 
 private fun decodeHtmlEntities(text: String): String =
     text

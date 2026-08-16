@@ -42,6 +42,7 @@ kotlin {
             implementation(libs.sqldelight.runtime)
             implementation(libs.sqldelight.coroutines)
             implementation(libs.kashif.backdrop)
+            implementation(libs.confettikit)
         }
         commonTest.dependencies {
             implementation(libs.kotlinx.coroutines.core)

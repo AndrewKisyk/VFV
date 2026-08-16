@@ -19,7 +19,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
@@ -27,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.savedstate.read
 import com.wrapper.composechat.auth.AuthRepository
 import com.wrapper.composechat.data.requirements.RequirementsRepository
 import com.wrapper.composechat.feature.auth.AuthScreen
@@ -44,6 +47,7 @@ import com.wrapper.composechat.feature.maindashboard.VfvGroupsScreen
 import com.wrapper.composechat.feature.maindashboard.VfvRecommendationDetailScreen
 import com.wrapper.composechat.feature.maindashboard.VfvRecommendationsScreen
 import com.wrapper.composechat.feature.splash.SplashScreen
+import com.wrapper.composechat.platform.isBackdropBlurAvailable
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -56,6 +60,8 @@ import org.koin.compose.koinInject
  * stays composed until the morph finishes (otherwise the element snaps at the end).
  */
 const val VfvNavTransitionDurationMs = 420
+
+private const val AuthHostBackdropBlurRadiusDp = 20f
 
 object AppDestinations {
     const val MainDashboard = "main_dashboard"
@@ -124,7 +130,14 @@ fun RootNavHost(
                         loadProgress = splashProgressAnimated,
                         modifier = Modifier
                             .fillMaxSize()
-                            .zIndex(0f),
+                            .zIndex(0f)
+                            .then(
+                                if (authVisible && isBackdropBlurAvailable()) {
+                                    Modifier.blur(AuthHostBackdropBlurRadiusDp.dp)
+                                } else {
+                                    Modifier
+                                },
+                            ),
                     )
                     AnimatedVisibility(
                         visible = authVisible,
@@ -281,7 +294,9 @@ fun RootNavHost(
                             popEnterTransition = { fadeIn(animationSpec = tween(VfvNavTransitionDurationMs)) },
                             popExitTransition = { fadeOut(animationSpec = tween(VfvNavTransitionDurationMs)) },
                         ) { backStackEntry ->
-                            val topicId = backStackEntry.arguments?.getString("topicId").orEmpty()
+                            val topicId = backStackEntry.arguments
+                                ?.read { getStringOrNull("topicId") }
+                                .orEmpty()
                             CompositionLocalProvider(
                                 LocalSharedTransitionScope provides sharedShell,
                                 LocalAnimatedVisibilityScope provides this,

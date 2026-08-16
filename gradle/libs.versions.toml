@@ -18,6 +18,7 @@ koinCompose = "3.5.6"
 sqldelight = "2.0.2"
 navigationCompose = "2.8.0"
 kashifBackdrop = "0.0.1-alpha02"
+confettikit = "0.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -52,6 +53,7 @@ jetbrains-navigation-compose = { group = "org.jetbrains.androidx.navigation", na
 jetbrains-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleKmp" }
 koin-compose-multiplatform = { group = "io.insert-koin", name = "koin-compose", version.ref = "koin-compose-mp" }
 kashif-backdrop = { group = "io.github.kashif-mehmood-km", name = "backdrop", version.ref = "kashifBackdrop" }
+confettikit = { group = "io.github.vinceglb", name = "confettikit", version.ref = "confettikit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

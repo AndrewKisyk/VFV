@@ -56,6 +56,8 @@ import kotlinx.coroutines.flow.collectLatest
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
+private const val AuthSheetBackdropBlurRadiusDp = 20f
+
 @Composable
 fun AuthScreen(
     onNavigateToHome: () -> Unit,
@@ -65,6 +67,7 @@ fun AuthScreen(
     titleImageModifier: Modifier = Modifier,
 ) {
     val state by viewModel.state.collectAsState()
+    val liveBackdropBlur = isBackdropBlurAvailable()
 
     LaunchedEffect(viewModel) {
         viewModel.effects.collectLatest { effect ->
@@ -74,13 +77,15 @@ fun AuthScreen(
         }
     }
 
-
-    // Blur + strip: same defaults as [com.wrapper.composechat.feature.maindashboard.MainDashboardScreen] chats sheet.
+    // iOS cannot capture a bitmap; blur the live splash behind (same path as Info dialog).
     VfvGlassFullScreenBottomSheet(
         visible = true,
         onDismissRequest = {},
-        backgroundSnapshot = backgroundSnapshot,
+        backgroundSnapshot = if (liveBackdropBlur) null else backgroundSnapshot,
         fullScreenBlurredSnapshot = true,
+        revealLiveBackdrop = liveBackdropBlur,
+        blurBackgroundSnapshot = !liveBackdropBlur,
+        backdropBlurRadiusDp = AuthSheetBackdropBlurRadiusDp,
         swipeToDismissEnabled = false,
     ) { _ ->
         AuthFormContent(
@@ -91,7 +96,6 @@ fun AuthScreen(
             titleImageModifier = titleImageModifier,
         )
     }
-
 }
 
 @Composable
