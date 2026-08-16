@@ -63,6 +63,7 @@ object SplashSkyLayout {
     const val SceneHeightInBox: Float = 0.55f
     /** Shift the secondary scene upward from bottom (fraction of centrepiece height); brings it above mid-box. */
     const val SceneLiftFromBottomFraction: Float = 0.30f
+    const val SceneLiftFromBottomFractionForeground: Float = 0.34f
     const val CloudLeftSizeMinDFraction: Float = 0.5f
     const val CloudRightSizeMinDFraction: Float = 0.6f
     const val CloudMidSizeMinDFraction: Float = 0.38f
@@ -103,7 +104,7 @@ object SplashSkyLayout {
     fun sceneImageBottomFromScreenTopPx(screenHeightPx: Float): Float {
         val childH = screenHeightPx * BoxHeightFraction
         val yTop = (screenHeightPx - childH) / 2f
-        val lift = childH * SceneLiftFromBottomFraction
+        val lift = childH * SceneLiftFromBottomFractionForeground
         return yTop + childH - lift
     }
 }
