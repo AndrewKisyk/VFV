@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ВФВ — Privacy Policy &amp; Terms of Use</title>
+  <meta name="description" content="Privacy Policy &amp; Terms of Use for the VFV app (Physical Fitness Badge) for NSOU — Plast." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-top: #020725;
+      --bg-mid: #09001f;
+      --primary: #6c63ff;
+      --text: #ffffff;
+      --text-muted: rgba(198, 208, 255, 0.88);
+      --glass: rgba(9, 0, 31, 0.55);
+      --stroke: rgba(255, 255, 255, 0.12);
+      --ok: #96fd9f;
+      --max: 920px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      font-family: "Manrope", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse 80% 50% at 80% 0%, rgba(108, 99, 255, 0.28), transparent 55%),
+        radial-gradient(ellipse 60% 40% at 10% 90%, rgba(58, 0, 132, 0.45), transparent 50%),
+        linear-gradient(165deg, var(--bg-top) 0%, var(--bg-mid) 48%, #1a0048 100%);
+      line-height: 1.6;
+    }
+
+    .wrap {
+      width: min(100% - 2rem, var(--max));
+      margin: 0 auto;
+      padding: 3.5rem 0 4rem;
+    }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.45rem 0.75rem 0.45rem 1.05rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .brand strong {
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      font-size: 0.95rem;
+    }
+
+    .brand span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(108, 99, 255, 0.45);
+      color: #e8e6ff;
+    }
+
+    .lang {
+      display: inline-flex;
+      gap: 0.35rem;
+      padding: 0.25rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--stroke);
+    }
+
+    .lang button {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.7);
+      background: transparent;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .lang button.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(108, 99, 255, 0.95), rgba(90, 79, 224, 0.9));
+    }
+
+    h1 {
+      font-size: clamp(1.85rem, 4vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .audience {
+      color: rgba(182, 190, 255, 0.9);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 1.75rem;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-bottom: 2rem;
+    }
+
+    .tabs a {
+      text-decoration: none;
+      color: #fff;
+      font-size: 0.875rem;
+      font-weight: 700;
+      padding: 0.7rem 1.25rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid transparent;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    }
+
+    .tabs a:hover { transform: translateY(-1px); border-color: var(--stroke); }
+
+    .tabs a.active {
+      background: linear-gradient(135deg, rgba(108, 99, 255, 0.94), rgba(90, 79, 224, 0.88));
+      box-shadow: 0 10px 28px rgba(108, 99, 255, 0.28);
+    }
+
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      border-radius: 1.75rem;
+      padding: clamp(1.5rem, 3vw, 2.75rem);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    .meta {
+      color: rgba(165, 178, 255, 0.85);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.75rem;
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin: 1.75rem 0 0.65rem;
+    }
+
+    h2:first-of-type { margin-top: 0; }
+
+    p, li {
+      color: rgba(220, 226, 255, 0.92);
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+    }
+
+    ul {
+      padding-left: 1.2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    li { margin-bottom: 0.4rem; }
+    li::marker { color: var(--ok); }
+
+    a.inline {
+      color: #b8b3ff;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .contacts {
+      margin-top: 0.5rem;
+      padding: 1rem 1.15rem;
+      border-radius: 1rem;
+      background: rgba(108, 99, 255, 0.12);
+      border: 1px solid rgba(108, 99, 255, 0.28);
+    }
+
+    .contacts p { margin-bottom: 0.45rem; }
+    .contacts p:last-child { margin-bottom: 0; }
+
+    footer {
+      text-align: center;
+      margin-top: 2.5rem;
+      color: rgba(180, 190, 255, 0.65);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    @media (max-width: 560px) {
+      .wrap { padding-top: 2.25rem; }
+      .tabs a { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <strong>ВФВ</strong>
+        <span>Legal</span>
+      </div>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" id="lang-uk" data-lang="uk" class="active">UA</button>
+        <button type="button" id="lang-en" data-lang="en">EN</button>
+      </div>
+    </div>
+
+    <h1 id="t-title"></h1>
+    <p class="subtitle" id="t-subtitle"></p>
+    <p class="audience" id="t-audience"></p>
+
+    <nav class="tabs" aria-label="Sections">
+      <a href="#privacy" id="tab-privacy" class="active"></a>
+      <a href="#terms" id="tab-terms"></a>
+    </nav>
+
+    <article class="card">
+      <p class="meta" id="t-updated"></p>
+
+      <div id="privacy" class="panel active"></div>
+      <div id="terms" class="panel"></div>
+    </article>
+
+    <footer id="t-footer"></footer>
+  </div>
+
+  <script>
+    (function () {
+      var CONTACT_EMAIL = "polyglot893@gmail.com";
+      var CONTACT_LINKEDIN = "https://www.linkedin.com/in/andrew-kisyk-b906641b6/";
+
+      var i18n = {
+        uk: {
+          title: "Privacy Policy & Terms of Use",
+          subtitle: "Додаток ВФВ · Відзнака Фізичної Вправності",
+          audience: "Призначений для НСОУ — Пласт (Національна скаутська організація України).",
+          tabPrivacy: "Політика конфіденційності",
+          tabTerms: "Умови використання",
+          updated: "Останнє оновлення: 16 серпня 2026",
+          footer: "© 2026 ВФВ · НСОУ — Пласт · Offline · Без реклами",
+          privacyHtml:
+            "<h2>1. Хто ми</h2>" +
+            "<p>Додаток «ВФВ» (Відзнака Фізичної Вправності) створений для членів і симпатиків <strong>НСОУ — Пласт</strong> (Національна скаутська організація України). Він допомагає підліткам віком 12–17 років ознайомитися з вимогами відзнаки та відстежувати прогрес підготовки. Основний функціонал працює офлайн і не містить реклами.</p>" +
+            "<h2>2. Які дані ми обробляємо</h2>" +
+            "<p>На вашому пристрої локально можуть зберігатися:</p>" +
+            "<ul>" +
+            "<li>вік і стать — щоб показувати відповідні нормативи;</li>" +
+            "<li>прогрес виконання вимог і статус прочитаних рекомендацій;</li>" +
+            "<li>технічні логи / аналітика використання (якщо увімкнено Firebase Analytics).</li>" +
+            "</ul>" +
+            "<p>Ми не вимагаємо створення облікового запису та не збираємо платіжні дані. Додаток не призначений для публікації персональних повідомлень чи чату.</p>" +
+            "<h2>3. Для чого використовуються дані</h2>" +
+            "<ul>" +
+            "<li>персоналізація нормативів за віком і статтю;</li>" +
+            "<li>збереження прогресу між запусками;</li>" +
+            "<li>покращення стабільності та розуміння використання функцій (через Firebase).</li>" +
+            "</ul>" +
+            "<h2>4. Firebase та сторонні сервіси</h2>" +
+            "<p>Додаток може використовувати сервіси Google Firebase (зокрема Analytics) для технічної аналітики. Обробка таких даних регулюється політиками Google: <a class=\"inline\" href=\"https://firebase.google.com/support/privacy\" target=\"_blank\" rel=\"noopener noreferrer\">Firebase Privacy</a>.</p>" +
+            "<h2>5. Зберігання та безпека</h2>" +
+            "<p>Профільні дані та прогрес зберігаються локально на пристрої. Видалення додатку зазвичай призводить до видалення локальних даних. Ми застосовуємо розумні технічні заходи для захисту конфігурації застосунку, але жоден спосіб передачі чи зберігання даних не є абсолютно безпечним.</p>" +
+            "<h2>6. Діти та підлітки</h2>" +
+            "<p>Додаток орієнтований на користувачів 12–17 років у контексті вимог відзнаки Пласту. Ми не навмисно збираємо більше персональних даних, ніж потрібно для роботи офлайн-функцій. Батьки або опікуни можуть у будь-який момент видалити додаток з пристрою.</p>" +
+            "<h2>7. Ваші права</h2>" +
+            "<ul>" +
+            "<li>змінити вік / стать у налаштуваннях профілю додатку;</li>" +
+            "<li>скинути прогрес або видалити додаток;</li>" +
+            "<li>звернутися із запитом щодо приватності за контактами нижче.</li>" +
+            "</ul>" +
+            "<h2>8. Контакти</h2>" +
+            "<p>З питань політики конфіденційності звертайтесь:</p>" +
+            "<div class=\"contacts\">" +
+            "<p>Email: <a class=\"inline\" href=\"mailto:" + CONTACT_EMAIL + "\">" + CONTACT_EMAIL + "</a></p>" +
+            "<p>LinkedIn: <a class=\"inline\" href=\"" + CONTACT_LINKEDIN + "\" target=\"_blank\" rel=\"noopener noreferrer\">Andrew Kisyk</a></p>" +
+            "</div>" +
+            "<h2>9. Зміни політики</h2>" +
+            "<p>Ми можемо оновлювати цю політику. Актуальна версія завжди доступна на цій сторінці з датою останнього оновлення.</p>",
+          termsHtml:
+            "<h2>1. Прийняття умов</h2>" +
+            "<p>Використовуючи додаток «ВФВ», ви погоджуєтесь із цими Умовами використання та Політикою конфіденційності. Якщо ви не згодні — будь ласка, не користуйтеся додатком.</p>" +
+            "<h2>2. Призначення сервісу</h2>" +
+            "<p>Додаток призначений для <strong>НСОУ — Пласт</strong> і надає інформацію про вимоги Відзнаки Фізичної Вправності, рекомендації з тренувань і локальний трекер прогресу. Це допоміжний інструмент підготовки, а не офіційна заміна процедур здачі відзнаки чи медичних консультацій.</p>" +
+            "<h2>3. Вікові обмеження</h2>" +
+            "<p>Функціонал розрахований на вікові групи 12–17 років. Вказуючи вік у додатку, ви підтверджуєте, що дані введені коректно (або за згодою батьків / опікунів, якщо це вимагається у вашій юрисдикції).</p>" +
+            "<h2>4. Безпека занять</h2>" +
+            "<p>Фізичні вправи можуть нести ризики. Перед тренуваннями враховуйте стан здоров’я, рекомендації виховника / тренера / лікаря та правила безпеки. Розробник не несе відповідальності за травми чи наслідки неправильного виконання вправ.</p>" +
+            "<h2>5. Інтелектуальна власність</h2>" +
+            "<p>Інтерфейс, тексти, ілюстрації та структура додатку захищені правами інтелектуальної власності. Заборонено копіювати, модифікувати чи поширювати матеріали без дозволу, окрім випадків, прямо дозволених законом. Назви та символіка Пласту належать відповідним правовласникам.</p>" +
+            "<h2>6. Обмеження відповідальності</h2>" +
+            "<p>Додаток надається «як є». Ми не гарантуємо безперервну роботу без помилок. Наскільки дозволяє закон, відповідальність обмежується максимально допустимим обсягом щодо збитків, пов’язаних із використанням або неможливістю використання додатку.</p>" +
+            "<h2>7. Зміни умов</h2>" +
+            "<p>Умови можуть оновлюватися. Продовження використання додатку після публікації змін означає прийняття оновленої версії.</p>" +
+            "<h2>8. Контакти</h2>" +
+            "<p>З питань Privacy Policy &amp; Terms of Use звертайтесь:</p>" +
+            "<div class=\"contacts\">" +
+            "<p>Email: <a class=\"inline\" href=\"mailto:" + CONTACT_EMAIL + "\">" + CONTACT_EMAIL + "</a></p>" +
+            "<p>LinkedIn: <a class=\"inline\" href=\"" + CONTACT_LINKEDIN + "\" target=\"_blank\" rel=\"noopener noreferrer\">Andrew Kisyk</a></p>" +
+            "</div>"
+        },
+        en: {
+          title: "Privacy Policy & Terms of Use",
+          subtitle: "VFV app · Physical Fitness Badge",
+          audience: "Intended for NSOU — Plast (National Scout Organization of Ukraine).",
+          tabPrivacy: "Privacy Policy",
+          tabTerms: "Terms of Use",
+          updated: "Last updated: August 16, 2026",
+          footer: "© 2026 VFV · NSOU — Plast · Offline · No ads",
+          privacyHtml:
+            "<h2>1. Who we are</h2>" +
+            "<p>The “VFV” app (Physical Fitness Badge) is intended for members and supporters of <strong>NSOU — Plast</strong> (National Scout Organization of Ukraine). It helps teens aged 12–17 learn badge requirements and track preparation progress. Core features work offline and the app contains no ads.</p>" +
+            "<h2>2. Data we process</h2>" +
+            "<p>The following may be stored locally on your device:</p>" +
+            "<ul>" +
+            "<li>age and sex — to show matching standards;</li>" +
+            "<li>requirement progress and read status of recommendations;</li>" +
+            "<li>technical logs / usage analytics (if Firebase Analytics is enabled).</li>" +
+            "</ul>" +
+            "<p>We do not require an account and do not collect payment data. The app is not designed for personal messaging or chat.</p>" +
+            "<h2>3. Why we use data</h2>" +
+            "<ul>" +
+            "<li>personalizing standards by age and sex;</li>" +
+            "<li>keeping progress between sessions;</li>" +
+            "<li>improving stability and understanding feature usage (via Firebase).</li>" +
+            "</ul>" +
+            "<h2>4. Firebase and third parties</h2>" +
+            "<p>The app may use Google Firebase services (including Analytics) for technical analytics. Such processing is governed by Google’s policies: <a class=\"inline\" href=\"https://firebase.google.com/support/privacy\" target=\"_blank\" rel=\"noopener noreferrer\">Firebase Privacy</a>.</p>" +
+            "<h2>5. Storage and security</h2>" +
+            "<p>Profile data and progress are stored locally on the device. Uninstalling the app usually removes local data. We take reasonable technical measures to protect the app configuration, but no transmission or storage method is completely secure.</p>" +
+            "<h2>6. Children and teens</h2>" +
+            "<p>The app is aimed at users aged 12–17 in the context of Plast badge requirements. We do not knowingly collect more personal data than needed for offline features. Parents or guardians may uninstall the app at any time.</p>" +
+            "<h2>7. Your rights</h2>" +
+            "<ul>" +
+            "<li>change age / sex in the in-app profile settings;</li>" +
+            "<li>reset progress or uninstall the app;</li>" +
+            "<li>contact us about privacy using the details below.</li>" +
+            "</ul>" +
+            "<h2>8. Contact</h2>" +
+            "<p>For privacy questions, reach out via:</p>" +
+            "<div class=\"contacts\">" +
+            "<p>Email: <a class=\"inline\" href=\"mailto:" + CONTACT_EMAIL + "\">" + CONTACT_EMAIL + "</a></p>" +
+            "<p>LinkedIn: <a class=\"inline\" href=\"" + CONTACT_LINKEDIN + "\" target=\"_blank\" rel=\"noopener noreferrer\">Andrew Kisyk</a></p>" +
+            "</div>" +
+            "<h2>9. Policy changes</h2>" +
+            "<p>We may update this policy. The current version is always available on this page with the last-updated date.</p>",
+          termsHtml:
+            "<h2>1. Acceptance</h2>" +
+            "<p>By using the “VFV” app, you agree to these Terms of Use and the Privacy Policy. If you do not agree, please do not use the app.</p>" +
+            "<h2>2. Purpose of the service</h2>" +
+            "<p>The app is intended for <strong>NSOU — Plast</strong> and provides information about Physical Fitness Badge requirements, training tips, and a local progress tracker. It is a preparation aid, not an official substitute for badge assessment procedures or medical advice.</p>" +
+            "<h2>3. Age limits</h2>" +
+            "<p>Features are designed for ages 12–17. By entering an age in the app, you confirm the data is accurate (or entered with parental / guardian consent where required).</p>" +
+            "<h2>4. Training safety</h2>" +
+            "<p>Physical exercise involves risk. Before training, consider your health, guidance from educators / coaches / doctors, and safety rules. The developer is not liable for injuries or consequences of improper exercise.</p>" +
+            "<h2>5. Intellectual property</h2>" +
+            "<p>The app interface, copy, illustrations, and structure are protected by intellectual property rights. Copying, modifying, or distributing materials without permission is prohibited except as allowed by law. Plast names and symbols belong to their respective rights holders.</p>" +
+            "<h2>6. Limitation of liability</h2>" +
+            "<p>The app is provided “as is”. We do not guarantee uninterrupted, error-free operation. To the fullest extent permitted by law, liability is limited regarding damages related to use of or inability to use the app.</p>" +
+            "<h2>7. Changes to terms</h2>" +
+            "<p>Terms may be updated. Continued use after publication means you accept the updated version.</p>" +
+            "<h2>8. Contact</h2>" +
+            "<p>For Privacy Policy &amp; Terms of Use questions:</p>" +
+            "<div class=\"contacts\">" +
+            "<p>Email: <a class=\"inline\" href=\"mailto:" + CONTACT_EMAIL + "\">" + CONTACT_EMAIL + "</a></p>" +
+            "<p>LinkedIn: <a class=\"inline\" href=\"" + CONTACT_LINKEDIN + "\" target=\"_blank\" rel=\"noopener noreferrer\">Andrew Kisyk</a></p>" +
+            "</div>"
+        }
+      };
+
+      var privacy = document.getElementById("privacy");
+      var terms = document.getElementById("terms");
+      var tabPrivacy = document.getElementById("tab-privacy");
+      var tabTerms = document.getElementById("tab-terms");
+      var lang = localStorage.getItem("vfv_legal_lang") ||
+        ((navigator.language || "").toLowerCase().indexOf("uk") === 0 ? "uk" : "en");
+
+      function applyLang(next) {
+        lang = next === "en" ? "en" : "uk";
+        localStorage.setItem("vfv_legal_lang", lang);
+        document.documentElement.lang = lang;
+        var t = i18n[lang];
+        document.title = "ВФВ — " + t.title;
+        document.getElementById("t-title").textContent = t.title;
+        document.getElementById("t-subtitle").textContent = t.subtitle;
+        document.getElementById("t-audience").textContent = t.audience;
+        document.getElementById("t-updated").textContent = t.updated;
+        document.getElementById("t-footer").textContent = t.footer;
+        tabPrivacy.textContent = t.tabPrivacy;
+        tabTerms.textContent = t.tabTerms;
+        privacy.innerHTML = t.privacyHtml;
+        terms.innerHTML = t.termsHtml;
+        document.getElementById("lang-uk").classList.toggle("active", lang === "uk");
+        document.getElementById("lang-en").classList.toggle("active", lang === "en");
+      }
+
+      function show(hash) {
+        var isTerms = hash === "#terms";
+        privacy.classList.toggle("active", !isTerms);
+        terms.classList.toggle("active", isTerms);
+        tabPrivacy.classList.toggle("active", !isTerms);
+        tabTerms.classList.toggle("active", isTerms);
+        if (!hash || (hash !== "#privacy" && hash !== "#terms")) {
+          history.replaceState(null, "", "#privacy");
+        }
+      }
+
+      function onHash() {
+        var hash = location.hash || "#privacy";
+        if (hash.indexOf("figmacapture=") !== -1) return;
+        show(hash === "#terms" ? "#terms" : "#privacy");
+      }
+
+      document.getElementById("lang-uk").addEventListener("click", function () { applyLang("uk"); });
+      document.getElementById("lang-en").addEventListener("click", function () { applyLang("en"); });
+      window.addEventListener("hashchange", onHash);
+
+      applyLang(lang);
+      onHash();
+    })();
+  </script>
+</body>
+</html>

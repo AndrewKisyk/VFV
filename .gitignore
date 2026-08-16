@@ -17,6 +17,7 @@ local.properties
 *.jks
 *.keystore
 google-services.json
+GoogleService-Info.plist
 secrets.properties
 
 # IDE (IntelliJ / Android Studio)
@@ -46,3 +47,6 @@ replay_pid*
 
 # iOS / CocoaPods (if used under this project)
 Pods/
+
+# Firebase
+.firebase/

@@ -51,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import com.wrapper.composechat.core.VfvLegalUrls
 import com.wrapper.composechat.resources.*
 import com.wrapper.composechat.ui.theme.LocalVfvDisplayFontFamily
 import org.jetbrains.compose.resources.painterResource
@@ -64,6 +65,7 @@ import com.wrapper.composechat.feature.home.navigateSettled
 import com.wrapper.composechat.platform.isBackdropBlurAvailable
 import com.wrapper.composechat.platform.rememberCelebrationHaptic
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
+import com.wrapper.composechat.platform.rememberOpenExternalUrl
 import com.wrapper.composechat.platform.withSnapshotBlur
 import com.wrapper.composechat.ui.components.VfvChromeBackIconButton
 import com.wrapper.composechat.ui.components.VfvChromeTrashIconButton
@@ -124,6 +126,7 @@ fun MainDashboardScreen(
     val liveBackdropBlur = isBackdropBlurAvailable()
     val dashboardBlurRadiusDp = chatsSheetOpenProgress * ChatsSheetBackdropBlurRadiusDp
     val transitionInteractor = LocalVfvTransitionInteractor.current
+    val openExternalUrl = rememberOpenExternalUrl()
     val screenBackdrop = rememberVfvScreenBackdrop()
     var celebrateDone by remember { mutableStateOf(false) }
     var previousAllDone by remember { mutableStateOf<Boolean?>(null) }
@@ -289,6 +292,9 @@ fun MainDashboardScreen(
                 onChangeAge = {
                     confirmOpensAuth = true
                     showConfirmDelete = true
+                },
+                onTermsClick = {
+                    openExternalUrl(VfvLegalUrls.PrivacyAndTerms)
                 },
             )
         }
