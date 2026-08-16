@@ -32,7 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.wrapper.composechat.feature.maindashboard.drawCrossSparkle
+import com.wrapper.composechat.feature.dashboard.drawCrossSparkle
 import com.wrapper.composechat.resources.*
 import com.wrapper.composechat.ui.components.VfvGradientProgressBar
 import org.jetbrains.compose.resources.painterResource

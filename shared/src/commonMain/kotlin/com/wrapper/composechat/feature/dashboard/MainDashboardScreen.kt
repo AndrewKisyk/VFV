@@ -1,4 +1,4 @@
-package com.wrapper.composechat.feature.maindashboard
+package com.wrapper.composechat.feature.dashboard
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -89,7 +89,6 @@ private const val ChatsSheetBackdropBlurRadiusDp = 20f
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun MainDashboardScreen(
-    onOpenChats: () -> Unit,
     onOpenRequirements: () -> Unit,
     onOpenRecommendations: () -> Unit,
     onOpenSettings: () -> Unit = {},
@@ -202,7 +201,7 @@ fun MainDashboardScreen(
                         Res.string.main_dashboard_in_progress
                     },
                 ),
-                onOpenChats = {
+                onOpenInfo = {
                     if (showChatsAccessSheet) {
                         // Already open / closing — ignore spam taps on the chrome button.
                         return@MainDashboardTopBar
@@ -219,7 +218,7 @@ fun MainDashboardScreen(
                     confirmOpensAuth = false
                     showConfirmDelete = true
                 },
-                chatsContentDescription = stringResource(Res.string.main_dashboard_chats),
+                infoContentDescription = stringResource(Res.string.main_dashboard_info),
                 settingsContentDescription = stringResource(Res.string.main_dashboard_settings),
             )
             Spacer(Modifier.height(8.dp))
@@ -341,9 +340,9 @@ fun MainDashboardScreen(
 @Composable
 private fun MainDashboardTopBar(
     statusText: String,
-    onOpenChats: () -> Unit,
+    onOpenInfo: () -> Unit,
     onClearProgress: () -> Unit,
-    chatsContentDescription: String,
+    infoContentDescription: String,
     settingsContentDescription: String,
 ) {
     val family = LocalVfvDisplayFontFamily.current
@@ -352,8 +351,8 @@ private fun MainDashboardTopBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         VfvChromeBackIconButton(
-            onClick = onOpenChats,
-            contentDescription = chatsContentDescription,
+            onClick = onOpenInfo,
+            contentDescription = infoContentDescription,
         )
         Text(
             text = statusText,

@@ -38,14 +38,12 @@ import com.wrapper.composechat.feature.auth.VfvAuthTitleSharedElementKey
 import com.wrapper.composechat.feature.home.LocalAnimatedVisibilityScope
 import com.wrapper.composechat.feature.home.LocalSharedTransitionScope
 import com.wrapper.composechat.feature.home.LocalVfvTransitionInteractor
-import com.wrapper.composechat.feature.home.MainStackFlow
-import com.wrapper.composechat.feature.home.navigateSettled
 import com.wrapper.composechat.feature.home.playfulSpring
 import com.wrapper.composechat.feature.home.rememberVfvTransitionInteractor
-import com.wrapper.composechat.feature.maindashboard.MainDashboardScreen
-import com.wrapper.composechat.feature.maindashboard.VfvGroupsScreen
-import com.wrapper.composechat.feature.maindashboard.VfvRecommendationDetailScreen
-import com.wrapper.composechat.feature.maindashboard.VfvRecommendationsScreen
+import com.wrapper.composechat.feature.dashboard.MainDashboardScreen
+import com.wrapper.composechat.feature.groups.VfvGroupsScreen
+import com.wrapper.composechat.feature.recommendations.VfvRecommendationDetailScreen
+import com.wrapper.composechat.feature.recommendations.VfvRecommendationsScreen
 import com.wrapper.composechat.feature.splash.SplashScreen
 import com.wrapper.composechat.platform.isBackdropBlurAvailable
 import com.wrapper.composechat.platform.rememberComposeViewBitmapCapture
@@ -65,7 +63,6 @@ private const val AuthHostBackdropBlurRadiusDp = 20f
 
 object AppDestinations {
     const val MainDashboard = "main_dashboard"
-    const val Chats = "chats"
     const val Groups = "vfv_groups"
     const val Recommendations = "vfv_recommendations"
     const val RecommendationDetail = "vfv_recommendation_detail/{topicId}"
@@ -202,12 +199,6 @@ fun RootNavHost(
                             ) {
                                 MainDashboardScreen(
                                     animateCardsEntrance = !dashboardEntrancePlayed,
-                                    onOpenChats = {
-                                        dashboardEntrancePlayed = true
-                                        transitionInteractor.navigateSettled {
-                                            navController.navigate(AppDestinations.Chats)
-                                        }
-                                    },
                                     onOpenRequirements = {
                                         dashboardEntrancePlayed = true
                                         navController.navigate(AppDestinations.Groups)
@@ -229,20 +220,6 @@ fun RootNavHost(
                                         }
                                     },
                                 )
-                            }
-                        }
-                        composable(
-                            route = AppDestinations.Chats,
-                            enterTransition = { fadeIn(animationSpec = tween(VfvNavTransitionDurationMs)) },
-                            exitTransition = { fadeOut(animationSpec = tween(VfvNavTransitionDurationMs)) },
-                            popEnterTransition = { fadeIn(animationSpec = tween(VfvNavTransitionDurationMs)) },
-                            popExitTransition = { fadeOut(animationSpec = tween(VfvNavTransitionDurationMs)) },
-                        ) { _: NavBackStackEntry ->
-                            CompositionLocalProvider(
-                                LocalSharedTransitionScope provides sharedShell,
-                                LocalAnimatedVisibilityScope provides this,
-                            ) {
-                                MainStackFlow()
                             }
                         }
                         composable(

@@ -40,11 +40,11 @@ import com.wrapper.composechat.auth.Sex
 import com.wrapper.composechat.resources.Res
 import com.wrapper.composechat.resources.auth_age_error
 import com.wrapper.composechat.resources.auth_age_label
+import com.wrapper.composechat.resources.auth_continue
 import com.wrapper.composechat.resources.auth_sex_error
 import com.wrapper.composechat.resources.auth_sex_female
 import com.wrapper.composechat.resources.auth_sex_label
 import com.wrapper.composechat.resources.auth_sex_male
-import com.wrapper.composechat.resources.frosted_chats_continue
 import com.wrapper.composechat.platform.isBackdropBlurAvailable
 import com.wrapper.composechat.platform.optionalBackdropBlur
 import com.wrapper.composechat.ui.components.VfvGlassFullScreenBottomSheet
@@ -176,7 +176,7 @@ private fun AuthFormContent(
 private val AuthFrostTrackBorder = Color.White.copy(alpha = 0.2f)
 private val AuthFrostTrackFillFallback = Color.White.copy(alpha = 0.12f)
 private val AuthFrostTrackFillBlur = Color.White.copy(alpha = 0.07f)
-/** Same as [com.wrapper.composechat.ui.components.SwipeToActionButton] label on frosted track. */
+/** Same as frosted track label style on the disabled continue control. */
 private val AuthContinueDisabledText = Color(0xFFE8D4FF)
 
 @Composable
@@ -186,7 +186,7 @@ private fun AuthContinueControl(
     modifier: Modifier = Modifier,
 ) {
     val family = LocalVfvDisplayFontFamily.current
-    val continueLabel = stringResource(Res.string.frosted_chats_continue)
+    val continueLabel = stringResource(Res.string.auth_continue)
     val shape = RoundedCornerShape(25.dp)
     val frostBlurRadiusDp = 18f
 

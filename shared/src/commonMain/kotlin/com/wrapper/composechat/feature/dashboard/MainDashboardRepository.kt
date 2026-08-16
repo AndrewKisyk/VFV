@@ -1,7 +1,8 @@
-package com.wrapper.composechat.feature.maindashboard
+package com.wrapper.composechat.feature.dashboard
 
 import com.wrapper.composechat.auth.AuthRepository
 import com.wrapper.composechat.data.recommendations.RecommendationsRepository
+import com.wrapper.composechat.data.recommendations.VfvRecommendationTopicIds
 import com.wrapper.composechat.data.requirements.RequirementsRepository
 import com.wrapper.composechat.progress.VfvProgressCalculator
 
@@ -48,7 +49,7 @@ class DefaultMainDashboardRepository(
         )
         val recommendationsRingPoints = VfvProgressCalculator.recommendationsRingPoints(
             readTopicCount = readTopicCount,
-            totalTopics = vfvRecommendationTopics.size,
+            totalTopics = VfvRecommendationTopicIds.size,
         )
         val mainPercent = VfvProgressCalculator.computeAllRes(
             doneCount = totalDone,

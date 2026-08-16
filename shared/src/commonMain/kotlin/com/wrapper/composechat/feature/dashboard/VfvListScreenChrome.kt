@@ -1,4 +1,4 @@
-package com.wrapper.composechat.feature.maindashboard
+package com.wrapper.composechat.feature.dashboard
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

@@ -1,4 +1,4 @@
-package com.wrapper.composechat.feature.maindashboard
+package com.wrapper.composechat.feature.dashboard
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

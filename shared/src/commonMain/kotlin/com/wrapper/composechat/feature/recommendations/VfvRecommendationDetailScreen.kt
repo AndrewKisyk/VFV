@@ -1,4 +1,4 @@
-package com.wrapper.composechat.feature.maindashboard
+package com.wrapper.composechat.feature.recommendations
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.animateColorAsState
@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.wrapper.composechat.feature.dashboard.VfvListChromeHorizontalPadding
 import com.wrapper.composechat.ui.components.VfvChromeBackIconButton
 import com.wrapper.composechat.ui.theme.LocalVfvDisplayFontFamily
 import kotlinx.coroutines.CoroutineScope

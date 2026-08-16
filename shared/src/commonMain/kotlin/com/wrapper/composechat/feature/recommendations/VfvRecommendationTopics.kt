@@ -1,4 +1,4 @@
-package com.wrapper.composechat.feature.maindashboard
+package com.wrapper.composechat.feature.recommendations
 
 import com.wrapper.composechat.resources.Res
 import com.wrapper.composechat.resources.*

@@ -1,4 +1,4 @@
-package com.wrapper.composechat.feature.maindashboard
+package com.wrapper.composechat.feature.groups
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.Image
@@ -45,6 +45,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wrapper.composechat.data.requirements.minRequiredForGroup
+import com.wrapper.composechat.feature.dashboard.VfvGroupsScreenBackdrop
+import com.wrapper.composechat.feature.dashboard.VfvListChromeHorizontalPadding
+import com.wrapper.composechat.feature.dashboard.VfvListChromeTopBar
+import com.wrapper.composechat.feature.dashboard.requirementsHeroSharedElement
 import com.wrapper.composechat.feature.home.LocalVfvTransitionInteractor
 import com.wrapper.composechat.feature.home.navigateSettled
 import com.wrapper.composechat.platform.isBackdropBlurAvailable
